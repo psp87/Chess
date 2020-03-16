@@ -9,7 +9,7 @@
       "allowedHungarianPrefixes": [ "db", "at", "or", "up", "it", "un", "x", "y", "id", "ip", "bg" ]
     },
     "documentationRules": {
-      "companyName": "WebChess",
+      "companyName": "Chess",
       "copyrightText": "Copyright (c) {companyName}. All Rights Reserved.",
       "documentInterfaces": false,
       "documentInternalElements": false

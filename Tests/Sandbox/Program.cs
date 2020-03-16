@@ -5,14 +5,14 @@
     using System.IO;
     using System.Threading.Tasks;
 
-    using WebChess.Data;
-    using WebChess.Data.Common;
-    using WebChess.Data.Common.Repositories;
-    using WebChess.Data.Models;
-    using WebChess.Data.Repositories;
-    using WebChess.Data.Seeding;
-    using WebChess.Services.Data;
-    using WebChess.Services.Messaging;
+    using Chess.Data;
+    using Chess.Data.Common;
+    using Chess.Data.Common.Repositories;
+    using Chess.Data.Models;
+    using Chess.Data.Repositories;
+    using Chess.Data.Seeding;
+    using Chess.Services.Data;
+    using Chess.Services.Messaging;
 
     using CommandLine;
 
