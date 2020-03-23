@@ -1,9 +1,9 @@
 ﻿namespace Chess.Web.ViewModels.Settings
 {
+    using AutoMapper;
+
     using Chess.Data.Models;
     using Chess.Services.Mapping;
-
-    using AutoMapper;
 
     public class SettingViewModel : IMapFrom<Setting>, IHaveCustomMappings
     {

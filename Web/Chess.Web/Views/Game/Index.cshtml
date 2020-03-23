@@ -1,0 +1,19 @@
+﻿@{
+    this.ViewData["Title"] = "New Game";
+}
+
+<link rel="stylesheet" href="css/chessboard-1.0.0.min.css">
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="js/chessboard-1.0.0.min.js"></script>
+<div id="board1" style="width: 600px"></div>
+<script>
+    var config = {
+        pieceTheme: 'img/chesspieces/wikipedia/{piece}.png',
+        draggable: true,
+        dropOffBoard: 'snapback', // this is the default
+        showNotation: true,
+        orientation: 'white',
+        position: 'start'
+    }
+    var board1 = ChessBoard('board1', config);
+</script>

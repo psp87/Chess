@@ -13,7 +13,7 @@
             return this.View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Stats()
         {
             return this.View();
         }
