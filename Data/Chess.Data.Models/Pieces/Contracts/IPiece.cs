@@ -1,8 +1,10 @@
 ﻿namespace Chess.Data.Models.Pieces.Contracts
 {
+    using System;
+
     using Chess.Data.Models.Enums;
 
-    public interface IPiece
+    public interface IPiece : ICloneable
     {
         string Id { get; set; }
 
@@ -10,7 +12,9 @@
 
         Color Color { get; }
 
-        char Abbreviation { get; set; }
+        char Abbreviation { get; }
+
+        Position Position { get; set; }
 
         bool IsFirstMove { get; set; }
 
@@ -23,5 +27,7 @@
         bool Move();
 
         bool Take();
+
+        string ToString();
     }
 }

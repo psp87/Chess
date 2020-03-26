@@ -3,55 +3,43 @@
     using Chess.Common;
     using Chess.Data.Models.Enums;
     using Chess.Data.Models.Pieces;
+    using Chess.Data.Models.Pieces.Contracts;
 
     public class Factory
     {
-        public static Piece GetPawn(Color color)
+        public static IPiece GetPawn(Color color)
         {
-            Piece pawn = new Pawn(color);
-            return pawn;
+            return new Pawn(color);
         }
 
-        public static Piece GetRook(Color color)
+        public static IPiece GetRook(Color color)
         {
-            Piece rook = new Rook(color);
-            return rook;
+            return new Rook(color);
         }
 
-        public static Piece GetKnight(Color color)
+        public static IPiece GetKnight(Color color)
         {
-            Piece knight = new Knight(color);
-            return knight;
+            return new Knight(color);
         }
 
-        public static Piece GetBishop(Color color)
+        public static IPiece GetBishop(Color color)
         {
-            Piece bishop = new Bishop(color);
-            return bishop;
+            return new Bishop(color);
         }
 
-        public static Piece GetQueen(Color color)
+        public static IPiece GetQueen(Color color)
         {
-            Piece queen = new Queen(color);
-            return queen;
+            return new Queen(color);
         }
 
-        public static Piece GetKing(Color color)
+        public static IPiece GetKing(Color color)
         {
-            Piece king = new King(color);
-            return king;
+            return new King(color);
         }
 
-        public static Piece GetNone()
+        public static Square GetSquare()
         {
-            Piece none = new None();
-            return none;
-        }
-
-        public static Square GetSquare(PositionX col, PositionY row)
-        {
-            Square square = new Square(col, row);
-            return square;
+            return new Square();
         }
 
         public static Square[][] GetBoardMatrix()
@@ -64,6 +52,16 @@
             }
 
             return matrix;
+        }
+
+        public static Position GetPosition(PosX posX, PosY posY)
+        {
+            return new Position(posX, posY);
+        }
+
+        public static Board GetBoard()
+        {
+            return new Board();
         }
     }
 }

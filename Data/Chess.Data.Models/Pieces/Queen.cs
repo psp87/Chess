@@ -4,14 +4,14 @@
 
     using Chess.Data.Models.Enums;
 
-    public class Pawn : Piece, ICloneable
+    public class Queen : Piece, ICloneable
     {
-        public Pawn(Color color)
+        public Queen(Color color)
             : base(color)
         {
         }
 
-        public override char Abbreviation => 'P';
+        public override char Abbreviation => 'Q';
 
         public override bool IsMoveAvailable()
         {

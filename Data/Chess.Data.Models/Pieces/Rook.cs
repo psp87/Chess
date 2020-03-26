@@ -4,23 +4,21 @@
 
     using Chess.Data.Models.Enums;
 
-    public class None : Piece, ICloneable
+    public class Rook : Piece, ICloneable
     {
-        public None()
+        public Rook(Color color)
+            : base(color)
         {
-            this.Id = Guid.NewGuid().ToString();
-            this.Color = Color.None;
-            this.Abbreviation = 'E';
-            this.IsFirstMove = false;
-            this.IsLastMove = false;
         }
 
-        public override void Attacking()
+        public override char Abbreviation => 'R';
+
+        public override bool IsMoveAvailable()
         {
             throw new NotImplementedException();
         }
 
-        public override bool IsMoveAvailable()
+        public override void Attacking()
         {
             throw new NotImplementedException();
         }

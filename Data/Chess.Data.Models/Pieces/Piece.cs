@@ -7,13 +7,23 @@
 
     public abstract class Piece : IPiece, ICloneable
     {
+        public Piece(Color color)
+        {
+            this.Id = Guid.NewGuid().ToString();
+            this.Color = color;
+            this.IsFirstMove = true;
+            this.IsLastMove = false;
+        }
+
         public string Id { get; set; }
 
-        public string Name { get => this.GetType().Name.ToString(); }
+        public string Name => this.GetType().Name.ToString();
 
         public Color Color { get; set; }
 
-        public char Abbreviation { get; set; }
+        public abstract char Abbreviation { get; }
+
+        public Position Position { get; set; }
 
         public bool IsFirstMove { get; set; }
 
@@ -27,9 +37,14 @@
 
         public abstract bool Take();
 
-        public object Clone()
+        public override string ToString()
         {
-            throw new NotImplementedException();
+            return this.Position.ToString();
+        }
+
+        public virtual object Clone()
+        {
+            return this.Clone();
         }
     }
 }

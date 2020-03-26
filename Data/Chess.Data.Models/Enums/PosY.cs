@@ -1,6 +1,6 @@
 ﻿namespace Chess.Data.Models.Enums
 {
-    public enum PositionY
+    public enum PosY
     {
         One = 0,
         Two = 1,

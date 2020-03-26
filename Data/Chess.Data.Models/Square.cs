@@ -4,34 +4,55 @@
     using System.Collections.Generic;
 
     using Chess.Data.Models.Enums;
+    using Chess.Data.Models.Pieces;
     using Chess.Data.Models.Pieces.Contracts;
 
     public class Square : ICloneable
     {
-        public Square(PositionX positionX, PositionY positionY)
+        private IPiece piece;
+
+        public Square()
         {
-            this.PositionX = positionX;
-            this.PositionY = positionY;
-            this.Piece = Factory.GetNone();
-            this.IsOccupied = false;
-            this.IsAttacked = new List<Square>();
+            this.IsAttacked = new List<IPiece>();
         }
 
-        public PositionX PositionX { get; set; }
+        public IPiece Piece
+        {
+            get { return this.piece; }
 
-        public PositionY PositionY { get; set; }
+            set
+            {
+                this.piece = value;
+                if (this.piece != null)
+                {
+                    this.piece.Position.PosX = this.Position.PosX;
+                    this.piece.Position.PosY = this.Position.PosY;
+                }
+            }
+        }
+
+        public Position Position { get; set; }
+
+        public string Name { get; set; }
 
         public Color Color { get; set; }
 
-        public IPiece Piece { get; set; }
+        public List<IPiece> IsAttacked { get; set; }
 
-        public bool IsOccupied { get; set; }
-
-        public List<Square> IsAttacked { get; set; }
+        public override string ToString()
+        {
+            return this.Piece?.Abbreviation + this.Name;
+        }
 
         public object Clone()
         {
-            throw new NotImplementedException();
+            return new Square()
+            {
+                Color = this.Color,
+                Name = this.Name,
+                Position = this.Position.Clone() as Position,
+                Piece = this.Piece?.Clone() as Piece,
+            };
         }
     }
 }
