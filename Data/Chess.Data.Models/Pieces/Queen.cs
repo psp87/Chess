@@ -3,6 +3,7 @@
     using System;
 
     using Chess.Data.Models.Enums;
+    using Chess.Data.Models.Helpers;
 
     public class Queen : Piece, ICloneable
     {
@@ -13,24 +14,109 @@
 
         public override char Abbreviation => 'Q';
 
-        public override bool IsMoveAvailable()
+        public override void IsMoveAvailable(Square[][] boardMatrix)
         {
-            throw new NotImplementedException();
+            for (int i = -1; i <= 1; i++)
+            {
+                for (int k = -1; k <= 1; k++)
+                {
+                    if (i == 0 && k == 0)
+                    {
+                        continue;
+                    }
+
+                    var newPosition = Factory.GetPosition(this.Position.X + k, this.Position.Y + i);
+
+                    if (newPosition.IsInBoard())
+                    {
+                        var checkedSquare = boardMatrix[(int)newPosition.X][(int)newPosition.Y];
+
+                        if (checkedSquare.Piece == null || checkedSquare.Piece.Color != this.Color)
+                        {
+                            this.IsMoveable = true;
+                        }
+                    }
+                }
+            }
+
+            this.IsMoveable = false;
         }
 
-        public override void Attacking()
+        public override void Attacking(Square[][] boardMatrix)
         {
-            throw new NotImplementedException();
+            this.SquareAttacked(-1, -1, boardMatrix);
+            this.SquareAttacked(-1, 0, boardMatrix);
+            this.SquareAttacked(-1, 1, boardMatrix);
+            this.SquareAttacked(0, -1, boardMatrix);
+            this.SquareAttacked(0, 1, boardMatrix);
+            this.SquareAttacked(1, -1, boardMatrix);
+            this.SquareAttacked(1, 0, boardMatrix);
+            this.SquareAttacked(1, 1, boardMatrix);
         }
 
-        public override bool Move()
+        public override bool Move(Position toPos, Square[][] boardMatrix)
         {
-            throw new NotImplementedException();
+            if (toPos.Y != this.Position.Y && toPos.X == this.Position.X)
+            {
+                if (RookChecks.Movement(toPos, this.Position, boardMatrix))
+                {
+                    this.Position.Y = toPos.Y;
+                    return true;
+                }
+            }
+
+            if (toPos.Y == this.Position.Y && toPos.X != this.Position.X)
+            {
+                if (RookChecks.Movement(toPos, this.Position, boardMatrix))
+                {
+                    this.Position.X = toPos.X;
+                    return true;
+                }
+            }
+
+            int differenceX = Math.Abs(toPos.X - this.Position.X);
+            int differenceY = Math.Abs(toPos.Y - this.Position.Y);
+
+            if (differenceY == differenceX)
+            {
+                if (BishopChecks.Movement(toPos, this.Position, boardMatrix))
+                {
+                    this.Position.X = toPos.X;
+                    this.Position.Y = toPos.Y;
+                    return true;
+                }
+            }
+
+            return false;
         }
 
-        public override bool Take()
+        public override bool Take(Position toPosition, Square[][] boardMatrix)
         {
-            throw new NotImplementedException();
+            return this.Move(toPosition, boardMatrix);
+        }
+
+        private void SquareAttacked(int signX, int signY, Square[][] boardMatrix)
+        {
+            for (int i = 1; i <= 7; i++)
+            {
+                for (int k = 1; k <= 7; k++)
+                {
+                    var newPosition = Factory.GetPosition(this.Position.X, this.Position.Y);
+
+                    newPosition.X += signX * k;
+                    newPosition.Y += signY * i;
+
+                    if (newPosition.IsInBoard())
+                    {
+                        boardMatrix[(int)newPosition.X][(int)newPosition.Y].IsAttacked.Add(this);
+
+                        if (boardMatrix[(int)newPosition.X][(int)newPosition.Y].Piece != null)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
 }

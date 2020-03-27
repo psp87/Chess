@@ -3,6 +3,7 @@
     using System;
 
     using Chess.Data.Models.Enums;
+    using Chess.Data.Models.Helpers;
 
     public class Bishop : Piece, ICloneable
     {
@@ -54,7 +55,7 @@
 
             if (differenceY == differenceX)
             {
-                if (this.OccupiedSquaresCheck(toPos, boardMatrix))
+                if (BishopChecks.Movement(toPos, this.Position, boardMatrix))
                 {
                     this.Position.X = toPos.X;
                     this.Position.Y = toPos.Y;
@@ -92,61 +93,6 @@
                     }
                 }
             }
-        }
-
-        private bool OccupiedSquaresCheck(Position toPos, Square[][] boardMatrix)
-        {
-            int squaresCount = Math.Abs((int)this.Position.Y - (int)toPos.Y) - 1;
-
-            if (toPos.Y < this.Position.Y && toPos.X < this.Position.X)
-            {
-                if (this.HelperFunction(-1, -1, squaresCount, boardMatrix))
-                {
-                    return true;
-                }
-            }
-
-            if (toPos.Y > this.Position.Y && toPos.X > this.Position.X)
-            {
-                if (this.HelperFunction(-1, 1, squaresCount, boardMatrix))
-                {
-                    return true;
-                }
-            }
-
-            if (toPos.Y < this.Position.Y && toPos.X > this.Position.X)
-            {
-                if (this.HelperFunction(1, -1, squaresCount, boardMatrix))
-                {
-                    return true;
-                }
-            }
-
-            if (toPos.Y > this.Position.Y && toPos.X < this.Position.X)
-            {
-                if (this.HelperFunction(1, 1, squaresCount, boardMatrix))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private bool HelperFunction(int signX, int signY, int squaresCount, Square[][] boardMatrix)
-        {
-            for (int i = 1; i <= squaresCount; i++)
-            {
-                int colCheck = (int)this.Position.X + (signX * i);
-                int rowCheck = (int)this.Position.Y + (signY * i);
-
-                if (boardMatrix[colCheck][rowCheck].Piece != null)
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
     }
 }

@@ -3,6 +3,7 @@
     using System;
 
     using Chess.Data.Models.Enums;
+    using Chess.Data.Models.Helpers;
 
     public class Rook : Piece, ICloneable
     {
@@ -33,7 +34,7 @@
         {
             if (toPos.Y != this.Position.Y && toPos.X == this.Position.X)
             {
-                if (this.OccupiedSquaresCheck(toPos, boardMatrix))
+                if (RookChecks.Movement(toPos, this.Position, boardMatrix))
                 {
                     this.Position.Y = toPos.Y;
                     return true;
@@ -42,7 +43,7 @@
 
             if (toPos.Y == this.Position.Y && toPos.X != this.Position.X)
             {
-                if (this.OccupiedSquaresCheck(toPos, boardMatrix))
+                if (RookChecks.Movement(toPos, this.Position, boardMatrix))
                 {
                     this.Position.X = toPos.X;
                     return true;
@@ -102,44 +103,6 @@
                     }
                 }
             }
-        }
-
-        private bool OccupiedSquaresCheck(Position toPos, Square[][] boardMatrix)
-        {
-            if (toPos.Y != this.Position.Y)
-            {
-                int rowDifference = Math.Abs((int)this.Position.Y - (int)this.Position.Y) - 1;
-
-                for (int i = 1; i <= rowDifference; i++)
-                {
-                    int sign = this.Position.Y < toPos.Y ? i : -i;
-
-                    int rowCheck = (int)this.Position.Y + sign;
-
-                    if (boardMatrix[rowCheck][(int)this.Position.X].Piece != null)
-                    {
-                        return false;
-                    }
-                }
-            }
-            else
-            {
-                int colDifference = Math.Abs((int)this.Position.X - (int)toPos.X) - 1;
-
-                for (int i = 1; i <= colDifference; i++)
-                {
-                    int sign = this.Position.X < toPos.X ? i : -i;
-
-                    int colCheck = (int)this.Position.X + sign;
-
-                    if (boardMatrix[(int)this.Position.Y][colCheck].Piece != null)
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
         }
     }
 }
