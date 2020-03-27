@@ -25,8 +25,8 @@
                 this.piece = value;
                 if (this.piece != null)
                 {
-                    this.piece.Position.PosX = this.Position.PosX;
-                    this.piece.Position.PosY = this.Position.PosY;
+                    this.piece.Position.X = this.Position.X;
+                    this.piece.Position.Y = this.Position.Y;
                 }
             }
         }

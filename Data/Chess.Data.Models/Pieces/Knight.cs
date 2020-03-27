@@ -39,49 +39,49 @@
 
         public override bool Move(Position toPos, Square[][] boardMatrix)
         {
-            if (toPos.PosX == this.Position.PosX - 1 && toPos.PosY == this.Position.PosY - 2)
+            if (toPos.X == this.Position.X - 1 && toPos.Y == this.Position.Y - 2)
             {
                 this.Position = toPos;
                 return true;
             }
 
-            if (toPos.PosX == this.Position.PosX + 1 && toPos.PosY == this.Position.PosY - 2)
+            if (toPos.X == this.Position.X + 1 && toPos.Y == this.Position.Y - 2)
             {
                 this.Position = toPos;
                 return true;
             }
 
-            if (toPos.PosX == this.Position.PosX - 1 && toPos.PosY == this.Position.PosY + 2)
+            if (toPos.X == this.Position.X - 1 && toPos.Y == this.Position.Y + 2)
             {
                 this.Position = toPos;
                 return true;
             }
 
-            if (toPos.PosX == this.Position.PosX + 1 && toPos.PosY == this.Position.PosY + 2)
+            if (toPos.X == this.Position.X + 1 && toPos.Y == this.Position.Y + 2)
             {
                 this.Position = toPos;
                 return true;
             }
 
-            if (toPos.PosX == this.Position.PosX - 2 && toPos.PosY == this.Position.PosY - 1)
+            if (toPos.X == this.Position.X - 2 && toPos.Y == this.Position.Y - 1)
             {
                 this.Position = toPos;
                 return true;
             }
 
-            if (toPos.PosX == this.Position.PosX - 2 && toPos.PosY == this.Position.PosY + 1)
+            if (toPos.X == this.Position.X - 2 && toPos.Y == this.Position.Y + 1)
             {
                 this.Position = toPos;
                 return true;
             }
 
-            if (toPos.PosX == this.Position.PosX + 2 && toPos.PosY == this.Position.PosY - 1)
+            if (toPos.X == this.Position.X + 2 && toPos.Y == this.Position.Y - 1)
             {
                 this.Position = toPos;
                 return true;
             }
 
-            if (toPos.PosX == this.Position.PosX + 2 && toPos.PosY == this.Position.PosY + 1)
+            if (toPos.X == this.Position.X + 2 && toPos.Y == this.Position.Y + 1)
             {
                 this.Position = toPos;
                 return true;
@@ -97,12 +97,12 @@
 
         private void SquareAttacked(int x, int y, Square[][] boardMatrix)
         {
-            var newPosition = Factory.GetPosition(this.Position.PosX + x, this.Position.PosY + y);
+            var newPosition = Factory.GetPosition(this.Position.X + x, this.Position.Y + y);
 
             if (newPosition.IsInBoard())
             {
-                int col = (int)newPosition.PosX;
-                int row = (int)newPosition.PosY;
+                int col = (int)newPosition.X;
+                int row = (int)newPosition.Y;
 
                 boardMatrix[col][row].IsAttacked.Add(this);
             }
@@ -110,12 +110,12 @@
 
         private void MoveCheck(int x, int y, Square[][] boardMatrix)
         {
-            var newPosition = Factory.GetPosition(this.Position.PosX + x, this.Position.PosY + y);
+            var newPosition = Factory.GetPosition(this.Position.X + x, this.Position.Y + y);
 
             if (newPosition.IsInBoard())
             {
-                int col = (int)newPosition.PosX;
-                int row = (int)newPosition.PosY;
+                int col = (int)newPosition.X;
+                int row = (int)newPosition.Y;
 
                 var square = boardMatrix[col][row];
 

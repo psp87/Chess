@@ -54,7 +54,7 @@
             return matrix;
         }
 
-        public static Position GetPosition(PosX posX, PosY posY)
+        public static Position GetPosition(X posX, Y posY)
         {
             return new Position(posX, posY);
         }

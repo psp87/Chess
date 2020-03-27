@@ -6,29 +6,29 @@
 
     public class Position : ICloneable
     {
-        public Position(PosX posX, PosY posY)
+        public Position(X posX, Y posY)
         {
-            this.PosX = posX;
-            this.PosY = posY;
+            this.X = posX;
+            this.Y = posY;
         }
 
-        public PosX PosX { get; set; }
+        public X X { get; set; }
 
-        public PosY PosY { get; set; }
+        public Y Y { get; set; }
 
         public bool IsInBoard()
         {
-            return this.PosX >= PosX.A && this.PosX <= PosX.H && this.PosY >= PosY.One && this.PosY <= PosY.Eight;
+            return this.X >= X.A && this.X <= X.H && this.Y >= Y.One && this.Y <= Y.Eight;
         }
 
         public override string ToString()
         {
-            return "[" + this.PosX + ", " + this.PosY + "]";
+            return "[" + this.X + ", " + this.Y + "]";
         }
 
         public object Clone()
         {
-            return new Position(this.PosX, this.PosY);
+            return new Position(this.X, this.Y);
         }
     }
 }

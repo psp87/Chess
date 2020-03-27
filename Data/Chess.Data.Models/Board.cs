@@ -42,7 +42,7 @@
                     var name = this.letters[col] + (row + 1);
                     var square = new Square()
                     {
-                        Position = Factory.GetPosition((PosX)col, (PosY)row),
+                        Position = Factory.GetPosition((X)col, (Y)row),
                         Piece = this.startingPosition.FirstOrDefault(x => x.Key.Equals(name)).Value,
                         Color = toggle,
                         Name = name,

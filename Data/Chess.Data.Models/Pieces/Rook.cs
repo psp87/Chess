@@ -31,20 +31,20 @@
 
         public override bool Move(Position toPos, Square[][] boardMatrix)
         {
-            if (toPos.PosY != this.Position.PosY && toPos.PosX == this.Position.PosX)
+            if (toPos.Y != this.Position.Y && toPos.X == this.Position.X)
             {
                 if (this.OccupiedSquaresCheck(toPos, boardMatrix))
                 {
-                    this.Position.PosY = toPos.PosY;
+                    this.Position.Y = toPos.Y;
                     return true;
                 }
             }
 
-            if (toPos.PosY == this.Position.PosY && toPos.PosX != this.Position.PosX)
+            if (toPos.Y == this.Position.Y && toPos.X != this.Position.X)
             {
                 if (this.OccupiedSquaresCheck(toPos, boardMatrix))
                 {
-                    this.Position.PosX = toPos.PosX;
+                    this.Position.X = toPos.X;
                     return true;
                 }
             }
@@ -59,15 +59,15 @@
 
         private void MoveCheck(int x, int y, Square[][] boardMatrix)
         {
-            var newPosition = Factory.GetPosition(this.Position.PosX, this.Position.PosY);
+            var newPosition = Factory.GetPosition(this.Position.X, this.Position.Y);
 
-            newPosition.PosX += x;
-            newPosition.PosY += y;
+            newPosition.X += x;
+            newPosition.Y += y;
 
             if (newPosition.IsInBoard())
             {
-                int col = (int)newPosition.PosX;
-                int row = (int)newPosition.PosY;
+                int col = (int)newPosition.X;
+                int row = (int)newPosition.Y;
 
                 var checkedSquare = boardMatrix[col][row];
 
@@ -82,17 +82,17 @@
 
         private void SquareAttacked(int signX, int signY, Square[][] boardMatrix)
         {
-            var newPosition = Factory.GetPosition(this.Position.PosX, this.Position.PosY);
+            var newPosition = Factory.GetPosition(this.Position.X, this.Position.Y);
 
             for (int i = 1; i <= 7; i++)
             {
-                newPosition.PosX += signX * i;
-                newPosition.PosY += signY * i;
+                newPosition.X += signX * i;
+                newPosition.Y += signY * i;
 
                 if (newPosition.IsInBoard())
                 {
-                    int col = (int)newPosition.PosX;
-                    int row = (int)newPosition.PosY;
+                    int col = (int)newPosition.X;
+                    int row = (int)newPosition.Y;
 
                     boardMatrix[col][row].IsAttacked.Add(this);
 
@@ -106,17 +106,17 @@
 
         private bool OccupiedSquaresCheck(Position toPos, Square[][] boardMatrix)
         {
-            if (toPos.PosY != this.Position.PosY)
+            if (toPos.Y != this.Position.Y)
             {
-                int rowDifference = Math.Abs((int)this.Position.PosY - (int)this.Position.PosY) - 1;
+                int rowDifference = Math.Abs((int)this.Position.Y - (int)this.Position.Y) - 1;
 
                 for (int i = 1; i <= rowDifference; i++)
                 {
-                    int sign = this.Position.PosY < toPos.PosY ? i : -i;
+                    int sign = this.Position.Y < toPos.Y ? i : -i;
 
-                    int rowCheck = (int)this.Position.PosY + sign;
+                    int rowCheck = (int)this.Position.Y + sign;
 
-                    if (boardMatrix[rowCheck][(int)this.Position.PosX].Piece != null)
+                    if (boardMatrix[rowCheck][(int)this.Position.X].Piece != null)
                     {
                         return false;
                     }
@@ -124,15 +124,15 @@
             }
             else
             {
-                int colDifference = Math.Abs((int)this.Position.PosX - (int)toPos.PosX) - 1;
+                int colDifference = Math.Abs((int)this.Position.X - (int)toPos.X) - 1;
 
                 for (int i = 1; i <= colDifference; i++)
                 {
-                    int sign = this.Position.PosX < toPos.PosX ? i : -i;
+                    int sign = this.Position.X < toPos.X ? i : -i;
 
-                    int colCheck = (int)this.Position.PosX + sign;
+                    int colCheck = (int)this.Position.X + sign;
 
-                    if (boardMatrix[(int)this.Position.PosY][colCheck].Piece != null)
+                    if (boardMatrix[(int)this.Position.Y][colCheck].Piece != null)
                     {
                         return false;
                     }
