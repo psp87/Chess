@@ -20,13 +20,15 @@
 
         bool IsLastMove { get; set; }
 
-        bool IsMoveAvailable(Square[][] boardMatrix);
+        bool IsMoveable { get; set; }
+
+        void IsMoveAvailable(Square[][] boardMatrix);
 
         void Attacking(Square[][] boardMatrix);
 
-        bool Move(Position toPosition);
+        bool Move(Position toPosition, Square[][] boardMatrix);
 
-        bool Take(Position toPosition);
+        bool Take(Position toPosition, Square[][] boardMatrix);
 
         string ToString();
     }

@@ -29,13 +29,15 @@
 
         public bool IsLastMove { get; set; }
 
-        public abstract bool IsMoveAvailable(Square[][] boardMatrix);
+        public bool IsMoveable { get; set; }
+
+        public abstract void IsMoveAvailable(Square[][] boardMatrix);
 
         public abstract void Attacking(Square[][] boardMatrix);
 
-        public abstract bool Move(Position toPosition);
+        public abstract bool Move(Position toPosition, Square[][] boardMatrix);
 
-        public abstract bool Take(Position toPosition);
+        public abstract bool Take(Position toPosition, Square[][] boardMatrix);
 
         public override string ToString()
         {
