@@ -73,5 +73,10 @@
         {
             return new Player(name, color);
         }
+
+        public static Move GetMove()
+        {
+            return new Move();
+        }
     }
 }
