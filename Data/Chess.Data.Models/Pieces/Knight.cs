@@ -15,14 +15,47 @@
 
         public override void IsMoveAvailable(Square[][] boardMatrix)
         {
-            this.MoveCheck(-1, -2, boardMatrix);
-            this.MoveCheck(-1, 2, boardMatrix);
-            this.MoveCheck(1, -2, boardMatrix);
-            this.MoveCheck(1, 2, boardMatrix);
-            this.MoveCheck(-2, -1, boardMatrix);
-            this.MoveCheck(-2, 1, boardMatrix);
-            this.MoveCheck(2, -1, boardMatrix);
-            this.MoveCheck(2, 1, boardMatrix);
+            if (this.MoveCheck(-1, -2, boardMatrix))
+            {
+                return;
+            }
+
+            if (this.MoveCheck(-1, 2, boardMatrix))
+            {
+                return;
+            }
+
+            if (this.MoveCheck(1, -2, boardMatrix))
+            {
+                return;
+            }
+
+            if (this.MoveCheck(1, 2, boardMatrix))
+            {
+                return;
+            }
+
+            if (this.MoveCheck(-2, -1, boardMatrix))
+            {
+                return;
+            }
+
+            if (this.MoveCheck(-2, 1, boardMatrix))
+            {
+                return;
+            }
+
+            if (this.MoveCheck(2, -1, boardMatrix))
+            {
+                return;
+            }
+
+            if (this.MoveCheck(2, 1, boardMatrix))
+            {
+                return;
+            }
+
+            this.IsMoveable = false;
         }
 
         public override void Attacking(Square[][] boardMatrix)
@@ -97,35 +130,32 @@
 
         private void SquareAttacked(int x, int y, Square[][] boardMatrix)
         {
-            var newPosition = Factory.GetPosition(this.Position.X + x, this.Position.Y + y);
-
-            if (newPosition.IsInBoard())
+            if (Position.IsInBoard(this.Position.X + x, this.Position.Y + y))
             {
-                int col = (int)newPosition.X;
-                int row = (int)newPosition.Y;
+                int col = (int)this.Position.X + x;
+                int row = (int)this.Position.Y + y;
 
                 boardMatrix[col][row].IsAttacked.Add(this);
             }
         }
 
-        private void MoveCheck(int x, int y, Square[][] boardMatrix)
+        private bool MoveCheck(int x, int y, Square[][] boardMatrix)
         {
-            var newPosition = Factory.GetPosition(this.Position.X + x, this.Position.Y + y);
-
-            if (newPosition.IsInBoard())
+            if (Position.IsInBoard(this.Position.X + x, this.Position.Y + y))
             {
-                int col = (int)newPosition.X;
-                int row = (int)newPosition.Y;
+                int col = (int)this.Position.X + x;
+                int row = (int)this.Position.Y + y;
 
                 var square = boardMatrix[col][row];
 
                 if (square.Piece == null || square.Piece.Color != this.Color)
                 {
                     this.IsMoveable = true;
+                    return true;
                 }
             }
 
-            this.IsMoveable = false;
+            return false;
         }
     }
 }

@@ -16,10 +16,27 @@
 
         public override void IsMoveAvailable(Square[][] boardMatrix)
         {
-            this.MoveCheck(-1, -1, boardMatrix);
-            this.MoveCheck(-1, 1, boardMatrix);
-            this.MoveCheck(1, -1, boardMatrix);
-            this.MoveCheck(1, 1, boardMatrix);
+            if (this.MoveCheck(-1, -1, boardMatrix))
+            {
+                return;
+            }
+
+            if (this.MoveCheck(-1, 1, boardMatrix))
+            {
+                return;
+            }
+
+            if (this.MoveCheck(1, -1, boardMatrix))
+            {
+                return;
+            }
+
+            if (this.MoveCheck(1, 1, boardMatrix))
+            {
+                return;
+            }
+
+            this.IsMoveable = false;
         }
 
         public override void Attacking(Square[][] boardMatrix)
@@ -58,27 +75,23 @@
             return this.Move(toPos, boardMatrix);
         }
 
-        private void MoveCheck(int x, int y, Square[][] boardMatrix)
+        private bool MoveCheck(int x, int y, Square[][] boardMatrix)
         {
-            var newPosition = Factory.GetPosition(this.Position.X, this.Position.Y);
-
-            newPosition.X += x;
-            newPosition.Y += y;
-
-            if (newPosition.IsInBoard())
+            if (Position.IsInBoard(this.Position.X + x, this.Position.Y + y))
             {
-                int col = (int)newPosition.X;
-                int row = (int)newPosition.Y;
+                int col = (int)this.Position.X + x;
+                int row = (int)this.Position.Y + y;
 
                 var checkedSquare = boardMatrix[col][row];
 
                 if (checkedSquare.Piece == null || checkedSquare.Piece.Color != this.Color)
                 {
                     this.IsMoveable = true;
+                    return true;
                 }
             }
 
-            this.IsMoveable = false;
+            return false;
         }
 
         private void SquareAttacked(int signX, int signY, Square[][] boardMatrix)
@@ -90,7 +103,7 @@
                 newPosition.X += signX * i;
                 newPosition.Y += signY * i;
 
-                if (newPosition.IsInBoard())
+                if (Position.IsInBoard(newPosition.X, newPosition.Y))
                 {
                     int col = (int)newPosition.X;
                     int row = (int)newPosition.Y;

@@ -20,12 +20,10 @@
             {
                 for (int k = -1; k <= 1; k += 2)
                 {
-                    var newPosition = Factory.GetPosition(this.Position.X + k, this.Position.Y + i);
-
-                    if (newPosition.IsInBoard())
+                    if (Position.IsInBoard(this.Position.X + k, this.Position.Y + i))
                     {
-                        int col = (int)newPosition.X;
-                        int row = (int)newPosition.Y;
+                        int col = (int)this.Position.X + k;
+                        int row = (int)this.Position.Y + i;
 
                         var checkedSquare = boardMatrix[col][row];
 
@@ -80,7 +78,7 @@
                 newPosition.X += signX * i;
                 newPosition.Y += signY * i;
 
-                if (newPosition.IsInBoard())
+                if (Position.IsInBoard(newPosition.X, newPosition.Y))
                 {
                     int col = (int)newPosition.X;
                     int row = (int)newPosition.Y;

@@ -16,9 +16,9 @@
 
         public Y Y { get; set; }
 
-        public bool IsInBoard()
+        public static bool IsInBoard(X x, Y y)
         {
-            return this.X >= X.A && this.X <= X.H && this.Y >= Y.One && this.Y <= Y.Eight;
+            return x >= X.A && x <= X.H && y >= Y.One && y <= Y.Eight;
         }
 
         public override string ToString()

@@ -25,15 +25,14 @@
                         continue;
                     }
 
-                    var newPosition = Factory.GetPosition(this.Position.X + k, this.Position.Y + i);
-
-                    if (newPosition.IsInBoard())
+                    if (Position.IsInBoard(this.Position.X + k, this.Position.Y + i))
                     {
-                        var checkedSquare = boardMatrix[(int)newPosition.X][(int)newPosition.Y];
+                        var checkedSquare = boardMatrix[(int)this.Position.X + k][(int)this.Position.Y + i];
 
                         if (checkedSquare.Piece == null || checkedSquare.Piece.Color != this.Color)
                         {
                             this.IsMoveable = true;
+                            return;
                         }
                     }
                 }
@@ -106,7 +105,7 @@
                     newPosition.X += signX * k;
                     newPosition.Y += signY * i;
 
-                    if (newPosition.IsInBoard())
+                    if (Position.IsInBoard(newPosition.X, newPosition.Y))
                     {
                         boardMatrix[(int)newPosition.X][(int)newPosition.Y].IsAttacked.Add(this);
 
