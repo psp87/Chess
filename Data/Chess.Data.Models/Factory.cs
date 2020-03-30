@@ -37,6 +37,11 @@
             return new King(color);
         }
 
+        public static Position GetPosition(X posX, Y posY)
+        {
+            return new Position(posX, posY);
+        }
+
         public static Square GetSquare()
         {
             return new Square();
@@ -54,14 +59,14 @@
             return matrix;
         }
 
-        public static Position GetPosition(X posX, Y posY)
-        {
-            return new Position(posX, posY);
-        }
-
         public static Board GetBoard()
         {
             return new Board();
+        }
+
+        public static Game GetGame(Player player1, Player player2)
+        {
+            return new Game(player1, player2);
         }
 
         public static Player GetPlayer(string name, Color color)
