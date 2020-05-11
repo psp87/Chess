@@ -1,96 +1,54 @@
-﻿namespace Chess.Data.Models.Pieces
+﻿namespace Chess.Models.Pieces
 {
-    using System;
+    using Enums;
+    using Helpers;
 
-    using Chess.Data.Models.Enums;
-    using Chess.Data.Models.Helpers;
-
-    public class Bishop : Piece, ICloneable
+    public class Bishop : Piece
     {
+        private BishopBahaviour bishop;
+
         public Bishop(Color color)
             : base(color)
         {
+            this.bishop = Factory.GetBishopBehaviour();
         }
 
-        public override char Abbreviation => 'B';
+        public override char Symbol => 'B';
 
-        public override void IsMoveAvailable(Square[][] boardMatrix)
-        {
-            for (int i = -1; i <= 1; i += 2)
+        public override bool[,] FigureMatrix 
+        { 
+            get => new bool[Globals.CellRows, Globals.CellCols]
             {
-                for (int k = -1; k <= 1; k += 2)
-                {
-                    if (Position.IsInBoard(this.Position.X + k, this.Position.Y + i))
-                    {
-                        int col = (int)this.Position.X + k;
-                        int row = (int)this.Position.Y + i;
-
-                        var checkedSquare = boardMatrix[col][row];
-
-                        if (checkedSquare.Piece == null || checkedSquare.Piece.Color != this.Color)
-                        {
-                            this.IsMoveable = true;
-                        }
-                    }
-                }
-            }
-
-            this.IsMoveable = false;
+                { false, false, false, false, false, false, false, false, false },
+                { false, false, false, false, true, false, false, false, false },
+                { false, false, false, true, true, true, false, false, false },
+                { false, false, true, true, false, true, true, false, false },
+                { false, false, true, false, false, false, true, false, false },
+                { false, false, false, true, false, true, false, false, false },
+                { false, false, false, false, true, false, false, false, false },
+                { false, false, true, true, false, true, true, false, false },
+                { false, false, false, false, false, false, false, false, false }
+            };
         }
 
-        public override void Attacking(Square[][] boardMatrix)
+        public override void IsMoveAvailable(Square[][] matrix)
         {
-            this.SquareAttacked(-1, -1, boardMatrix);
-            this.SquareAttacked(-1, 1, boardMatrix);
-            this.SquareAttacked(1, -1, boardMatrix);
-            this.SquareAttacked(1, 1, boardMatrix);
+            this.IsMovable = this.bishop.IsMoveAvailable(this, matrix) ? true : false;
         }
 
-        public override bool Move(Position toPos, Square[][] boardMatrix)
+        public override void Attacking(Square[][] matrix)
         {
-            int differenceX = Math.Abs(toPos.X - this.Position.X);
-            int differenceY = Math.Abs(toPos.Y - this.Position.Y);
-
-            if (differenceY == differenceX)
-            {
-                if (BishopChecks.Movement(toPos, this.Position, boardMatrix))
-                {
-                    this.Position.X = toPos.X;
-                    this.Position.Y = toPos.Y;
-                    return true;
-                }
-            }
-
-            return false;
+            this.bishop.Attacking(this, matrix);
         }
 
-        public override bool Take(Position toPos, Square[][] boardMatrix)
+        public override bool Move(Position to, Square[][] matrix)
         {
-            return this.Move(toPos, boardMatrix);
+            return this.bishop.Move(this, to, matrix);
         }
 
-        private void SquareAttacked(int signX, int signY, Square[][] boardMatrix)
+        public override bool Take(Position to, Square[][] matrix)
         {
-            for (int i = 1; i <= 7; i++)
-            {
-                var newPosition = Factory.GetPosition(this.Position.X, this.Position.Y);
-
-                newPosition.X += signX * i;
-                newPosition.Y += signY * i;
-
-                if (Position.IsInBoard(newPosition.X, newPosition.Y))
-                {
-                    int col = (int)newPosition.X;
-                    int row = (int)newPosition.Y;
-
-                    boardMatrix[col][row].IsAttacked.Add(this);
-
-                    if (boardMatrix[col][row].Piece != null)
-                    {
-                        break;
-                    }
-                }
-            }
+            return this.Move(to, matrix);
         }
     }
 }

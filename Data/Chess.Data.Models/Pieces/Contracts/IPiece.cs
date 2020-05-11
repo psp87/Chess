@@ -1,18 +1,18 @@
-﻿namespace Chess.Data.Models.Pieces.Contracts
+﻿namespace Chess.Models.Pieces.Contracts
 {
     using System;
 
-    using Chess.Data.Models.Enums;
+    using Enums;
 
     public interface IPiece : ICloneable
     {
-        string Id { get; set; }
-
         string Name { get; }
 
         Color Color { get; }
 
-        char Abbreviation { get; }
+        char Symbol { get; }
+
+        bool[,] FigureMatrix { get; }
 
         Position Position { get; set; }
 
@@ -20,16 +20,14 @@
 
         bool IsLastMove { get; set; }
 
-        bool IsMoveable { get; set; }
+        bool IsMovable { get; set; }
 
-        void IsMoveAvailable(Square[][] boardMatrix);
+        void IsMoveAvailable(Square[][] matrix);
 
-        void Attacking(Square[][] boardMatrix);
+        void Attacking(Square[][] matrix);
 
         bool Move(Position toPosition, Square[][] boardMatrix);
 
         bool Take(Position toPosition, Square[][] boardMatrix);
-
-        string ToString();
     }
 }

@@ -1,12 +1,23 @@
-﻿namespace Chess.Data.Models
+﻿namespace Chess.Models
 {
-    using Chess.Common;
-    using Chess.Data.Models.Enums;
-    using Chess.Data.Models.Pieces;
-    using Chess.Data.Models.Pieces.Contracts;
+    using Chess.View;
+    using Enums;
+    using Pieces;
+    using Pieces.Contracts;
+    using Pieces.Helpers;
 
     public class Factory
     {
+        public static Board GetBoard()
+        {
+            return new Board();
+        }
+
+        public static Player GetPlayer(string name, Color color)
+        {
+            return new Player(name, color);
+        }
+
         public static IPiece GetPawn(Color color)
         {
             return new Pawn(color);
@@ -34,12 +45,22 @@
 
         public static IPiece GetKing(Color color)
         {
-            return new King(color);
+             return new King(color);
         }
 
-        public static Position GetPosition(X posX, Y posY)
+        public static IPiece GetEmpty()
         {
-            return new Position(posX, posY);
+            return new Empty();
+        }
+
+        public static Position GetPosition()
+        {
+            return new Position();
+        }
+
+        public static Position GetPosition(int y, int x)
+        {
+            return new Position(y, x);
         }
 
         public static Square GetSquare()
@@ -47,36 +68,56 @@
             return new Square();
         }
 
-        public static Square[][] GetBoardMatrix()
+        public static Square GetSquare(int x, int y)
         {
-            Square[][] matrix = new Square[GlobalConstants.BoardRows][];
+            return new Square(x, y);
+        }
 
-            for (int row = 0; row < GlobalConstants.BoardRows; row++)
+        public static Square[][] GetMatrix()
+        {
+            Square[][] matrix = new Square[Globals.BoardRows][];
+
+            for (int row = 0; row < Globals.BoardRows; row++)
             {
-                matrix[row] = new Square[GlobalConstants.BoardCols];
+                matrix[row] = new Square[Globals.BoardCols];
             }
 
             return matrix;
         }
 
-        public static Board GetBoard()
+        public static RookBehaviour GetRookBehaviour()
         {
-            return new Board();
+            return new RookBehaviour();
         }
 
-        public static Game GetGame(Player player1, Player player2)
+        public static BishopBahaviour GetBishopBehaviour()
         {
-            return new Game(player1, player2);
+            return new BishopBahaviour();
         }
 
-        public static Player GetPlayer(string name, Color color)
+        public static Game GetGame()
         {
-            return new Player(name, color);
+            return new Game();
+        }
+
+        public static Print GetPrint()
+        {
+            return new Print();
+        }
+
+        public static Draw GetDraw()
+        {
+            return new Draw();
         }
 
         public static Move GetMove()
         {
             return new Move();
+        }
+
+        public static Move GetMove(Move move)
+        {
+            return new Move(move);
         }
     }
 }

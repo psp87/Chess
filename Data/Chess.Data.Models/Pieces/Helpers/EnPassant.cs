@@ -1,4 +1,4 @@
-﻿namespace Chess.Data.Models
+﻿namespace Chess.Models.Pieces.Helpers
 {
     public static class EnPassant
     {

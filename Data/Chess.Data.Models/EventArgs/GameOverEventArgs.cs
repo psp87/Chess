@@ -1,8 +1,8 @@
-﻿namespace Chess.Data.Models.EventArgs
+﻿namespace Chess.Models.EventArgs
 {
     using System;
 
-    using Chess.Data.Models.Enums;
+    using Enums;
 
     public class GameOverEventArgs : EventArgs
     {

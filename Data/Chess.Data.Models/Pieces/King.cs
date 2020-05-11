@@ -1,20 +1,39 @@
-﻿namespace Chess.Data.Models.Pieces
+﻿namespace Chess.Models.Pieces
 {
     using System;
     using System.Linq;
 
-    using Chess.Data.Models.Enums;
+    using Enums;
+    using View;
 
-    public class King : Piece, ICloneable
+    public class King : Piece
     {
+        private Draw drawer = Factory.GetDraw();
+
         public King(Color color)
             : base(color)
         {
         }
 
-        public override char Abbreviation => 'K';
+        public override char Symbol => 'K';
 
-        public override void IsMoveAvailable(Square[][] boardMatrix)
+        public override bool[,] FigureMatrix
+        {
+            get => new bool[Globals.CellRows, Globals.CellCols]
+            {
+                { false, false, false, false, false, false, false, false, false },
+                { false, false, false, false, true, false, false, false, false },
+                { false, false, false, true, true, true, false, false, false },
+                { false, true, true, false, true, false, true, true, false },
+                { false, true, true, true, false, true, true, true, false },
+                { false, true, true, true, true, true, true, true, false },
+                { false, false, true, true, true, true, true, false, false },
+                { false, false, true, true, true, true, true, false, false },
+                { false, false, false, false, false, false, false, false, false }
+            };
+        }
+
+        public override void IsMoveAvailable(Square[][] matrix)
         {
             for (int x = -1; x <= 1; x++)
             {
@@ -27,24 +46,25 @@
 
                     if (Position.IsInBoard(this.Position.X + x, this.Position.Y + y))
                     {
-                        var checkedSquare = boardMatrix[(int)this.Position.X + x][(int)this.Position.Y + y];
+                        var checkedSquare = matrix[this.Position.Y + y][this.Position.X + x];
 
-                        if ((checkedSquare.Piece != null &&
+                        if ((checkedSquare.IsOccupied &&
                             checkedSquare.Piece.Color != this.Color &&
-                            !checkedSquare.IsAttacked.Where(x => x.Color != this.Color).Any()) ||
-                            (checkedSquare.Piece == null &&
-                            !checkedSquare.IsAttacked.Where(x => x.Color != this.Color).Any()))
+                            !checkedSquare.IsAttacked.Where(p => p.Color != this.Color).Any()) ||
+                            (!checkedSquare.IsOccupied &&
+                            !checkedSquare.IsAttacked.Where(p => p.Color != this.Color).Any()))
                         {
-                            this.IsMoveable = true;
+                            this.IsMovable = true;
+                            return;
                         }
                     }
                 }
             }
 
-            this.IsMoveable = false;
+            this.IsMovable = false;
         }
 
-        public override void Attacking(Square[][] boardMatrix)
+        public override void Attacking(Square[][] matrix)
         {
             for (int x = -1; x <= 1; x++)
             {
@@ -57,64 +77,58 @@
 
                     if (Position.IsInBoard(this.Position.X + x, this.Position.Y + y))
                     {
-                        var posX = (int)this.Position.X + x;
-                        var posY = (int)this.Position.Y + y;
-
-                        boardMatrix[posX][posY].IsAttacked.Add(this);
+                        matrix[this.Position.Y + y][this.Position.X + x].IsAttacked.Add(this);
                     }
                 }
             }
         }
 
-        public override bool Move(Position toPos, Square[][] boardMatrix)
+        public override bool Move(Position to, Square[][] matrix)
         {
-            if (!boardMatrix[(int)toPos.X][(int)toPos.Y].IsAttacked.Where(x => x.Color != this.Color).Any())
+            if (!matrix[to.Y][to.X].IsAttacked.Where(x => x.Color != this.Color).Any())
             {
-                for (int posX = -1; posX <= 1; posX++)
+                for (int x = -1; x <= 1; x++)
                 {
-                    for (int posY = -1; posY <= 1; posY++)
+                    for (int y = -1; y <= 1; y++)
                     {
-                        if (posX == 0 && posY == 0)
+                        if (x == 0 && y == 0)
                         {
                             continue;
                         }
 
-                        if (toPos.X == this.Position.X + posX && toPos.Y == this.Position.Y + posY)
+                        if (to.X == this.Position.X + x && to.Y == this.Position.Y + y)
                         {
-                            this.Position.Y += posX;
-                            this.Position.X += posY;
                             this.IsFirstMove = false;
                             return true;
                         }
                     }
                 }
 
-                if (this.IsFirstMove && toPos.Y == this.Position.Y)
+                if (this.IsFirstMove && to.Y == this.Position.Y && 
+                    (to.X == this.Position.X + 2 || to.X == this.Position.X - 2))
                 {
-                    if (toPos.X == this.Position.X + 2)
+                    int sign = to.X == this.Position.X + 2 ? -1 : 1;
+                    int lastPiecePosition = to.X == this.Position.X + 2 ? 7 : 0;
+
+                    var firstSquareOnWay = matrix[this.Position.Y][to.X + sign];
+                    var secondSquareOnWay = matrix[this.Position.Y][to.X];
+                    var lastPiece = matrix[this.Position.Y][lastPiecePosition].Piece;
+
+                    if (this.OccupiedSquaresCheck(to, matrix) && 
+                        lastPiece is Rook && 
+                        lastPiece.IsFirstMove && 
+                        !firstSquareOnWay.IsAttacked.Where(x => x.Color != this.Color).Any() && 
+                        !secondSquareOnWay.IsAttacked.Where(x => x.Color != this.Color).Any())
                     {
-                        var square = boardMatrix[7][(int)this.Position.Y];
-                        if (this.OccupiedSquaresCheck(toPos, boardMatrix) && square.Piece is Rook && square.Piece.IsFirstMove)
-                        {
-                            this.Position.X += 2;
-                            this.IsFirstMove = false;
+                        this.IsFirstMove = false;
 
-                            // TO DO CASTLE LOGIC
-                            return true;
-                        }
-                    }
+                        matrix[this.Position.Y][to.X + sign].Piece = matrix[this.Position.Y][lastPiecePosition].Piece;
+                        matrix[this.Position.Y][lastPiecePosition].Piece = Factory.GetEmpty();
 
-                    if (toPos.X == this.Position.X - 2)
-                    {
-                        var square = boardMatrix[0][(int)this.Position.Y];
-                        if (this.OccupiedSquaresCheck(toPos, boardMatrix) && square.Piece is Rook && square.Piece.IsFirstMove)
-                        {
-                            this.Position.X -= 2;
-                            this.IsFirstMove = false;
+                        this.drawer.EmptySquare(this.Position.Y, lastPiecePosition);
+                        this.drawer.Piece(this.Position.Y, to.X + sign, matrix[this.Position.Y][to.X + sign].Piece);
 
-                            // TO DO CASTLE LOGIC
-                            return true;
-                        }
+                        return true;
                     }
                 }
             }
@@ -122,27 +136,25 @@
             return false;
         }
 
-        public override bool Take(Position toPos, Square[][] boardMatrix)
+        public override bool Take(Position to, Square[][] matrix)
         {
-            return this.Move(toPos, boardMatrix);
+            return this.Move(to, matrix);
         }
 
-        private bool OccupiedSquaresCheck(Position toPos, Square[][] boardMatrix)
+        private bool OccupiedSquaresCheck(Position to, Square[][] matrix)
         {
-            int colDifference = Math.Abs((int)this.Position.X - (int)toPos.X) - 1;
+            int colDifference = Math.Abs(this.Position.X - to.X) - 1;
 
-            if ((int)this.Position.X > (int)toPos.X)
+            if (this.Position.X > to.X)
             {
                 colDifference += 2;
             }
 
             for (int i = 1; i <= colDifference; i++)
             {
-                int sign = this.Position.X < toPos.X ? i : -i;
+                int sign = this.Position.X < to.X ? i : -i;
 
-                int colCheck = (int)this.Position.X + sign;
-
-                if (boardMatrix[(int)this.Position.Y][colCheck].Piece != null)
+                if (matrix[this.Position.Y][this.Position.X + sign].IsOccupied)
                 {
                     return false;
                 }

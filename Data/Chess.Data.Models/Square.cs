@@ -1,11 +1,11 @@
-﻿namespace Chess.Data.Models
+﻿namespace Chess.Models
 {
     using System;
     using System.Collections.Generic;
 
-    using Chess.Data.Models.Enums;
-    using Chess.Data.Models.Pieces;
-    using Chess.Data.Models.Pieces.Contracts;
+    using Enums;
+    using Pieces;
+    using Pieces.Contracts;
 
     public class Square : ICloneable
     {
@@ -14,6 +14,12 @@
         public Square()
         {
             this.IsAttacked = new List<IPiece>();
+            this.Position = Factory.GetPosition();
+        }
+
+        public Square(int posY, int posX) : this()
+        {
+            this.Position = Factory.GetPosition(posX, posY);
         }
 
         public IPiece Piece
@@ -27,6 +33,8 @@
                 {
                     this.piece.Position.X = this.Position.X;
                     this.piece.Position.Y = this.Position.Y;
+
+                    this.IsOccupied = this.piece is Empty ? false : true;
                 }
             }
         }
@@ -37,11 +45,13 @@
 
         public Color Color { get; set; }
 
+        public bool IsOccupied { get; set; }
+
         public List<IPiece> IsAttacked { get; set; }
 
         public override string ToString()
         {
-            return this.Piece?.Abbreviation + this.Name;
+            return this.Piece?.Symbol + this.Name;
         }
 
         public object Clone()
@@ -51,7 +61,7 @@
                 Color = this.Color,
                 Name = this.Name,
                 Position = this.Position.Clone() as Position,
-                Piece = this.Piece?.Clone() as Piece,
+                Piece = this.Piece.Clone() as Piece,
             };
         }
     }

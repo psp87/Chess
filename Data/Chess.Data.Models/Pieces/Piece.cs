@@ -1,27 +1,31 @@
-﻿namespace Chess.Data.Models.Pieces
+﻿namespace Chess.Models.Pieces
 {
     using System;
 
-    using Chess.Data.Models.Enums;
-    using Chess.Data.Models.Pieces.Contracts;
+    using Contracts;
+    using Enums;
 
     public abstract class Piece : IPiece, ICloneable
     {
         public Piece(Color color)
         {
-            this.Id = Guid.NewGuid().ToString();
+            Position = Factory.GetPosition();
             this.Color = color;
             this.IsFirstMove = true;
-            this.IsLastMove = false;
         }
 
-        public string Id { get; set; }
+        public Piece()
+        {
+            Position = Factory.GetPosition();
+        }
 
         public string Name => this.GetType().Name.ToString();
 
         public Color Color { get; set; }
 
-        public abstract char Abbreviation { get; }
+        public abstract char Symbol { get; }
+
+        public abstract bool[,] FigureMatrix { get; }
 
         public Position Position { get; set; }
 
@@ -29,7 +33,7 @@
 
         public bool IsLastMove { get; set; }
 
-        public bool IsMoveable { get; set; }
+        public bool IsMovable { get; set; }
 
         public abstract void IsMoveAvailable(Square[][] boardMatrix);
 
@@ -41,7 +45,7 @@
 
         public override string ToString()
         {
-            return this.Position.ToString();
+            return Position.ToString();
         }
 
         public virtual object Clone()

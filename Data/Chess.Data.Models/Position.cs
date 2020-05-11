@@ -1,34 +1,36 @@
-﻿namespace Chess.Data.Models
+﻿namespace Chess.Models
 {
     using System;
 
-    using Chess.Data.Models.Enums;
-
     public class Position : ICloneable
     {
-        public Position(X posX, Y posY)
+        public Position() : this(-1, -1)
         {
-            this.X = posX;
-            this.Y = posY;
         }
 
-        public X X { get; set; }
-
-        public Y Y { get; set; }
-
-        public static bool IsInBoard(X x, Y y)
+        public Position(int posY, int posX)
         {
-            return x >= X.A && x <= X.H && y >= Y.One && y <= Y.Eight;
+            this.Y = posY;
+            this.X = posX;
+        }
+
+        public int X { get; set; }
+
+        public int Y { get; set; }
+
+        public static bool IsInBoard(int x, int y)
+        {
+            return x >= 0 && x <= 7 && y >= 0 && y <= 7;
         }
 
         public override string ToString()
         {
-            return "[" + this.X + ", " + this.Y + "]";
+            return "[" + this.Y + ", " + this.X + "]";
         }
 
         public object Clone()
         {
-            return new Position(this.X, this.Y);
+            return Factory.GetPosition(this.Y, this.X);
         }
     }
 }

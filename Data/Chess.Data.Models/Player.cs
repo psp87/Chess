@@ -1,10 +1,9 @@
-﻿namespace Chess.Data.Models
+﻿namespace Chess.Models
 {
-    using System;
     using System.Collections.Generic;
 
-    using Chess.Data.Models.Enums;
-    using Chess.Data.Models.Pieces;
+    using Enums;
+    using Pieces;
 
     public class Player
     {
@@ -12,12 +11,6 @@
 
         public Player(string name, Color color)
         {
-            this.Id = Guid.NewGuid().ToString();
-            this.UserName = name;
-            this.Color = color;
-            this.IsMoveAvailable = true;
-            this.IsCheck = false;
-            this.IsCheckmate = false;
             this.takenFigures = new Dictionary<string, int>()
             {
                 { nameof(Pawn), 0 },
@@ -26,38 +19,29 @@
                 { nameof(Rook), 0 },
                 { nameof(Queen), 0 },
             };
-            this.InitializeMove();
+            this.Name = name;
+            this.Color = color;
+            this.IsMoveAvailable = true;
         }
 
-        public string Id { get; set; }
-
-        public string GameId { get; set; }
-
-        public string UserName { get; set; }
+        public string Name { get; }
 
         public Color Color { get; }
 
-        public bool IsCheck { get; set; }
-
-        public bool IsCheckmate { get; set; }
-
-        public bool IsMoveAvailable { get; set; }
-
         public bool HasToMove { get; set; }
 
-        public int Points { get; set; }
+        public bool IsCheck { get; set; }
+
+        public bool IsMoveAvailable { get; set; }
 
         public void TakeFigure(string figureName)
         {
             this.takenFigures[figureName]++;
         }
 
-        public void InitializeMove()
+        public int TakenFigures(string figureName)
         {
-            if (this.Color == Color.Light)
-            {
-                this.HasToMove = true;
-            }
+            return this.takenFigures[figureName];
         }
     }
 }

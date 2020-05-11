@@ -1,29 +1,25 @@
-﻿namespace Chess.Data.Models
+﻿namespace Chess.Models
 {
     using System;
 
-    using Chess.Data.Models.Enums;
-    using Chess.Data.Models.EventArgs;
+    using Enums;
+    using EventArgs;
+    using View;
 
     public class Game
     {
-        public Game(Player player1, Player player2)
+        private Print printer;
+        private Draw drawer;
+
+        public Game()
         {
-            this.Id = Guid.NewGuid().ToString("D");
+            this.printer = Factory.GetPrint();
+            this.drawer = Factory.GetDraw();
 
             this.ChessBoard = Factory.GetBoard();
-            this.ChessBoard.Initialize();
-
-            this.Player1 = player1;
-            this.Player2 = player2;
-
-            this.Player1.GameId = this.Id;
-            this.Player2.GameId = this.Id;
         }
 
         public event EventHandler OnGameOver;
-
-        public string Id { get; set; }
 
         public Board ChessBoard { get; set; }
 
@@ -31,23 +27,63 @@
 
         public Player Player2 { get; set; }
 
-        public Player MovingPlayer => this.Player1?.HasToMove ?? false ? this.Player1 : this.Player2;
+        public Player MovingPlayer => this.Player1?.HasToMove ?? false ? this.Player2 : this.Player1;
 
-        public Player WaitingPlayer => this.Player1?.HasToMove ?? false ? this.Player2 : this.Player1;
+        public Player Opponent => this.Player1?.HasToMove ?? false ? this.Player1 : this.Player2;
 
-        public Move MoveSelected(Square start, Square end)
+        public void GetPlayers()
         {
-            var move = this.ChessBoard.MakeMove(start, end);
-            if (move != null)
-            {
-                this.ChangeTurn();
-                this.GameOverCheck();
-            }
+            this.printer.PlayersMenu(Color.Light);
+            var namePlayer1 = Console.ReadLine();
+            this.printer.PlayersMenu(Color.Dark);
+            var namePlayer2 = Console.ReadLine();
 
-            return move;
+            Player player1 = Factory.GetPlayer(namePlayer1.ToUpper(), Color.Light);
+            Player player2 = Factory.GetPlayer(namePlayer2.ToUpper(), Color.Dark);
+
+            this.Player1 = player1;
+            this.Player2 = player2;
         }
 
-        private void ChangeTurn()
+        public void New()
+        {
+            this.ChessBoard.Initialize();
+
+            this.printer.Stats(this.MovingPlayer, this.Opponent);
+            this.printer.ExampleText();
+            this.printer.GameMenu();
+            this.drawer.BoardOrientate(this.ChessBoard.Matrix, this.MovingPlayer.Color);
+        }
+
+        public void End()
+        {
+            Console.ReadLine();
+            Console.Clear();
+            this.drawer.BoardEmpty(Color.Light);
+        }
+
+        public void Start()
+        {
+            while (Globals.GameOver.ToString() == GameOver.None.ToString())
+            {
+                Globals.TurnCounter++;
+
+                this.printer.Turn(this.MovingPlayer);
+                this.ChessBoard.MakeMove(this.MovingPlayer, this.Opponent);
+
+                if (Globals.GameOver.ToString() != GameOver.None.ToString())
+                {
+                    this.OnGameOver?.Invoke(this.MovingPlayer, new GameOverEventArgs(Globals.GameOver));
+                }
+
+                this.printer.Stats(this.Player1, this.Player2);
+                this.ChangeTurns();
+
+                this.drawer.BoardOrientate(this.ChessBoard.Matrix, this.MovingPlayer.Color);
+            }
+        }
+
+        private void ChangeTurns()
         {
             if (this.Player1.HasToMove)
             {
@@ -58,15 +94,6 @@
             {
                 this.Player2.HasToMove = false;
                 this.Player1.HasToMove = true;
-            }
-        }
-
-        private void GameOverCheck()
-        {
-            var gameOverCheck = this.ChessBoard.CheckMateOrStalemate(this.MovingPlayer.Color);
-            if (gameOverCheck != GameOver.None)
-            {
-                this.OnGameOver?.Invoke(this.MovingPlayer, new GameOverEventArgs(gameOverCheck));
             }
         }
     }
