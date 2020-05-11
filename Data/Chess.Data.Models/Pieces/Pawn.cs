@@ -12,22 +12,6 @@
 
         public override char Symbol => 'P';
 
-        public override bool[,] FigureMatrix 
-        { 
-            get => new bool[Globals.CellRows, Globals.CellCols]
-            {
-                { false, false, false, false, false, false, false, false, false },
-                { false, false, false, false, false, false, false, false, false },
-                { false, false, false, false, true, false, false, false, false },
-                { false, false, false, true, true, true, false, false, false },
-                { false, false, false, true, true, true, false, false, false },
-                { false, false, false, false, true, false, false, false, false },
-                { false, false, false, true, true, true, false, false, false },
-                { false, false, true, true, true, true, true, false, false },
-                { false, false, false, false, false, false, false, false, false }
-            };
-        }
-
         public override void IsMoveAvailable(Square[][] matrix)
         {
             int sign = this.Color == Color.Light ? -1 : 1;

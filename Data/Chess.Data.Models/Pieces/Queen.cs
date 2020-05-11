@@ -17,22 +17,6 @@
 
         public override char Symbol => 'Q';
 
-        public override bool[,] FigureMatrix 
-        { 
-            get => new bool[Globals.CellRows, Globals.CellCols]
-            {
-                { false, false, false, false, false, false, false, false, false },
-                { false, false, false, false, true, false, false, false, false },
-                { false, false, true, false, true, false, true, false, false },
-                { false, false, false, true, false, true, false, false, false },
-                { false, true, false, true, true, true, false, true, false },
-                { false, false, true, false, true, false, true, false, false },
-                { false, false, true, true, false, true, true, false, false },
-                { false, false, true, true, true, true, true, false, false },
-                { false, false, false, false, false, false, false, false, false }
-            };
-        }
-
         public override void IsMoveAvailable(Square[][] matrix)
         {
             if (this.bishop.IsMoveAvailable(this, matrix) ||

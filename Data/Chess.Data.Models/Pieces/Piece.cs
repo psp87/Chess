@@ -25,8 +25,6 @@
 
         public abstract char Symbol { get; }
 
-        public abstract bool[,] FigureMatrix { get; }
-
         public Position Position { get; set; }
 
         public bool IsFirstMove { get; set; }

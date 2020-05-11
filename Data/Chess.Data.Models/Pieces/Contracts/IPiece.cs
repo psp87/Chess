@@ -12,8 +12,6 @@
 
         char Symbol { get; }
 
-        bool[,] FigureMatrix { get; }
-
         Position Position { get; set; }
 
         bool IsFirstMove { get; set; }

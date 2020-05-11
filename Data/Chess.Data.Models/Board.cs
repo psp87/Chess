@@ -4,17 +4,17 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
-
+    using Chess.Common;
     using Enums;
     using Pieces;
     using Pieces.Contracts;
     using Pieces.Helpers;
-    using View;
+    //using View;
 
     public class Board : ICloneable
     {
-        private Print printer;
-        private Draw drawer;
+        //private Print printer;
+        //private Draw drawer;
         private Queue<Move> movesQueue;
 
         private string[] letters = new string[] { "A", "B", "C", "D", "E", "F", "G", "H" };
@@ -34,8 +34,8 @@
 
         public Board()
         {
-            this.printer = Factory.GetPrint();
-            this.drawer = Factory.GetDraw();
+            //this.printer = Factory.GetPrint();
+            //this.drawer = Factory.GetDraw();
             this.movesQueue = new Queue<Move>();
 
             this.Matrix = Factory.GetMatrix();
@@ -53,7 +53,7 @@
             {
                 try
                 {
-                    this.GetCommand();
+                    //this.GetCommand();
 
                     if (this.MovePiece(movingPlayer, opponent) ||
                         this.TakePiece(movingPlayer, opponent) ||
@@ -67,7 +67,7 @@
 
                         if (this.IsPlayerChecked(opponent))
                         {
-                            this.printer.Check(movingPlayer);
+                            //this.printer.Check(movingPlayer);
                             this.IsOpponentCheckmate(movingPlayer, opponent, this.Move.End);
                         }
 
@@ -76,12 +76,12 @@
 
                     if (!success)
                     {
-                        this.printer.Invalid(movingPlayer);
+                        //this.printer.Invalid(movingPlayer);
                     }
                 }
                 catch (Exception)
                 {
-                    this.printer.Exception(movingPlayer);
+                    //this.printer.Exception(movingPlayer);
                     continue;
                 }
             }
@@ -90,16 +90,16 @@
             this.IsGameDraw();
             this.IsGameStalemate(opponent);
 
-            this.printer.EmptyMessageScreen(movingPlayer);
+            //this.printer.EmptyMessageScreen(movingPlayer);
         }
 
         public void Initialize()
         {
             var toggle = Color.Light;
 
-            for (int row = 0; row < Globals.BoardRows; row++)
+            for (int row = 0; row < GlobalConstants.BoardRows; row++)
             {
-                for (int col = 0; col < Globals.BoardCols; col++)
+                for (int col = 0; col < GlobalConstants.BoardCols; col++)
                 {
                     var name = this.letters[col] + (8 - row);
                     var square = new Square()
@@ -141,24 +141,24 @@
             return board;
         }
 
-        private void GetCommand()
-        {
-            string text = Console.ReadLine();
+        //private void GetCommand()
+        //{
+        //    string text = Console.ReadLine();
 
-            string pattern = @"([A-Za-z])([A-Za-z])([1-8])([A-Za-z])([1-8])";
-            Regex regex = new Regex(pattern);
-            Match match = regex.Match(text);
+        //    string pattern = @"([A-Za-z])([A-Za-z])([1-8])([A-Za-z])([1-8])";
+        //    Regex regex = new Regex(pattern);
+        //    Match match = regex.Match(text);
 
-            char symbol = char.Parse(match.Groups[1].ToString().ToUpper());
-            int startX = char.Parse(match.Groups[2].ToString().ToUpper()) - 65;
-            int startY = Math.Abs(int.Parse(match.Groups[3].ToString()) - 8);
-            int endX = char.Parse(match.Groups[4].ToString().ToUpper()) - 65;
-            int endY = Math.Abs(int.Parse(match.Groups[5].ToString()) - 8);
+        //    char symbol = char.Parse(match.Groups[1].ToString().ToUpper());
+        //    int startX = char.Parse(match.Groups[2].ToString().ToUpper()) - 65;
+        //    int startY = Math.Abs(int.Parse(match.Groups[3].ToString()) - 8);
+        //    int endX = char.Parse(match.Groups[4].ToString().ToUpper()) - 65;
+        //    int endY = Math.Abs(int.Parse(match.Groups[5].ToString()) - 8);
 
-            this.Move.Symbol = symbol;
-            this.Move.Start = this.Matrix[startY][startX];
-            this.Move.End = this.Matrix[endY][endX];
-        }
+        //    this.Move.Symbol = symbol;
+        //    this.Move.Start = this.Matrix[startY][startX];
+        //    this.Move.End = this.Matrix[endY][endX];
+        //}
 
         private bool MovePiece(Player movingPlayer, Player opponent)
         {
@@ -203,7 +203,7 @@
 
         private bool EnPassantTake(Player movingPlayer, Player opponent)
         {
-            if (EnPassant.Turn == Globals.TurnCounter &&
+            if (EnPassant.Turn == GlobalConstants.TurnCounter &&
                 this.Move.End.Position.X == EnPassant.Position.X &&
                 this.Move.End.Position.Y == EnPassant.Position.Y &&
                 this.Move.Start.Piece is Pawn)
@@ -221,16 +221,16 @@
                     this.RemovePiece(this.Move.End);
                     this.Matrix[this.Move.Start.Position.Y][this.Move.Start.Position.X + x].Piece = piece;
                     this.CalculateAttackedSquares();
-                    this.printer.KingIsCheck(movingPlayer);
+                    //this.printer.KingIsCheck(movingPlayer);
                     movingPlayer.IsCheck = true;
                     return true;
                 }
 
                 movingPlayer.IsCheck = false;
 
-                this.drawer.Piece(this.Move.End.Position.Y, this.Move.End.Position.X, this.Move.End.Piece);
-                this.drawer.EmptySquare(this.Move.Start.Position.Y, this.Move.Start.Position.X);
-                this.drawer.EmptySquare(this.Move.Start.Position.Y, this.Move.Start.Position.X + x);
+                //this.drawer.Piece(this.Move.End.Position.Y, this.Move.End.Position.X, this.Move.End.Piece);
+                //this.drawer.EmptySquare(this.Move.Start.Position.Y, this.Move.Start.Position.X);
+                //this.drawer.EmptySquare(this.Move.Start.Position.Y, this.Move.Start.Position.X + x);
 
                 return true;
             }
@@ -249,16 +249,16 @@
                 this.ReversePiece(this.Move);
                 this.RemovePiece(this.Move.End);
                 this.CalculateAttackedSquares();
-                this.printer.KingIsCheck(movingPlayer);
+                //this.printer.KingIsCheck(movingPlayer);
                 return false;
             }
 
-            this.drawer.NewPiece(this.Move);
-            this.printer.EmptyCheckScreen(opponent);
+            //this.drawer.NewPiece(this.Move);
+            //this.printer.EmptyCheckScreen(opponent);
 
             if (this.Move.End.Piece is Pawn && this.Move.End.Piece.IsLastMove)
             {
-                this.Move.End.Piece = this.drawer.PawnPromotion(this.Move.End);
+                //this.Move.End.Piece = this.drawer.PawnPromotion(this.Move.End);
                 this.CalculateAttackedSquares();
             }
 
@@ -302,15 +302,15 @@
                 !this.AttackingPieceCanBeTaken(attackingSquare, opponent) &&
                 !this.OtherPieceCanBlockTheCheck(king, attackingSquare, opponent))
             {
-                Globals.GameOver = GameOver.Checkmate;
+                GlobalConstants.GameOver = GameOver.Checkmate;
             }
         }
 
         private void IsGameStalemate(Player player)
         {
-            for (int y = 0; y < Globals.BoardRows; y++)
+            for (int y = 0; y < GlobalConstants.BoardRows; y++)
             {
-                for (int x = 0; x < Globals.BoardCols; x++)
+                for (int x = 0; x < GlobalConstants.BoardCols; x++)
                 {
                     var currentFigure = this.Matrix[y][x].Piece;
 
@@ -325,7 +325,7 @@
                 }
             }
 
-            Globals.GameOver = GameOver.Stalemate;
+            GlobalConstants.GameOver = GameOver.Stalemate;
         }
 
         private void IsGameRepetitionDraw()
@@ -368,7 +368,7 @@
                 array[1].End.Position.X == this.Move.End.Position.X &&
                 array[1].End.Position.Y == this.Move.End.Position.Y)
             {
-                Globals.GameOver = GameOver.Repetition;
+                GlobalConstants.GameOver = GameOver.Repetition;
                 return;
             }
 
@@ -382,9 +382,9 @@
         {
             int counter = 0;
 
-            for (int y = 0; y < Globals.BoardRows; y++)
+            for (int y = 0; y < GlobalConstants.BoardRows; y++)
             {
-                for (int x = 0; x < Globals.BoardCols; x++)
+                for (int x = 0; x < GlobalConstants.BoardCols; x++)
                 {
                     var currentFigure = this.Matrix[y][x].Piece;
 
@@ -400,22 +400,22 @@
                 }
             }
 
-            Globals.GameOver = GameOver.Draw;
+            GlobalConstants.GameOver = GameOver.Draw;
         }
 
         private void CalculateAttackedSquares()
         {
-            for (int y = 0; y < Globals.BoardRows; y++)
+            for (int y = 0; y < GlobalConstants.BoardRows; y++)
             {
-                for (int x = 0; x < Globals.BoardCols; x++)
+                for (int x = 0; x < GlobalConstants.BoardCols; x++)
                 {
                     this.Matrix[y][x].IsAttacked.Clear();
                 }
             }
 
-            for (int y = 0; y < Globals.BoardRows; y++)
+            for (int y = 0; y < GlobalConstants.BoardRows; y++)
             {
-                for (int x = 0; x < Globals.BoardCols; x++)
+                for (int x = 0; x < GlobalConstants.BoardCols; x++)
                 {
                     if (this.Matrix[y][x].IsOccupied == true)
                     {
@@ -427,7 +427,7 @@
 
         private Square GetKingSquare(Color color)
         {
-            for (int y = 0; y < Globals.BoardRows; y++)
+            for (int y = 0; y < GlobalConstants.BoardRows; y++)
             {
                 var kingSquare = this.Matrix[y].FirstOrDefault(x => x.Piece is King && x.Piece.Color == color);
 

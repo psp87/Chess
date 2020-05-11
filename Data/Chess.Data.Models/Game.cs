@@ -1,20 +1,20 @@
 ﻿namespace Chess.Models
 {
     using System;
-
+    using Chess.Common;
     using Enums;
     using EventArgs;
-    using View;
+    //using View;
 
     public class Game
     {
-        private Print printer;
-        private Draw drawer;
+        //private Print printer;
+        //private Draw drawer;
 
         public Game()
         {
-            this.printer = Factory.GetPrint();
-            this.drawer = Factory.GetDraw();
+            //this.printer = Factory.GetPrint();
+            //this.drawer = Factory.GetDraw();
 
             this.ChessBoard = Factory.GetBoard();
         }
@@ -33,10 +33,10 @@
 
         public void GetPlayers()
         {
-            this.printer.PlayersMenu(Color.Light);
-            var namePlayer1 = Console.ReadLine();
-            this.printer.PlayersMenu(Color.Dark);
-            var namePlayer2 = Console.ReadLine();
+            //this.printer.PlayersMenu(Color.Light);
+            //var namePlayer1 = Console.ReadLine();
+            //this.printer.PlayersMenu(Color.Dark);
+            //var namePlayer2 = Console.ReadLine();
 
             Player player1 = Factory.GetPlayer(namePlayer1.ToUpper(), Color.Light);
             Player player2 = Factory.GetPlayer(namePlayer2.ToUpper(), Color.Dark);
@@ -49,37 +49,37 @@
         {
             this.ChessBoard.Initialize();
 
-            this.printer.Stats(this.MovingPlayer, this.Opponent);
-            this.printer.ExampleText();
-            this.printer.GameMenu();
-            this.drawer.BoardOrientate(this.ChessBoard.Matrix, this.MovingPlayer.Color);
+            //this.printer.Stats(this.MovingPlayer, this.Opponent);
+            //this.printer.ExampleText();
+            //this.printer.GameMenu();
+            //this.drawer.BoardOrientate(this.ChessBoard.Matrix, this.MovingPlayer.Color);
         }
 
         public void End()
         {
-            Console.ReadLine();
-            Console.Clear();
-            this.drawer.BoardEmpty(Color.Light);
+            //Console.ReadLine();
+            //Console.Clear();
+            //this.drawer.BoardEmpty(Color.Light);
         }
 
         public void Start()
         {
-            while (Globals.GameOver.ToString() == GameOver.None.ToString())
+            while (GlobalConstants.GameOver.ToString() == GameOver.None.ToString())
             {
-                Globals.TurnCounter++;
+                GlobalConstants.TurnCounter++;
 
-                this.printer.Turn(this.MovingPlayer);
+                //this.printer.Turn(this.MovingPlayer);
                 this.ChessBoard.MakeMove(this.MovingPlayer, this.Opponent);
 
-                if (Globals.GameOver.ToString() != GameOver.None.ToString())
+                if (GlobalConstants.GameOver.ToString() != GameOver.None.ToString())
                 {
-                    this.OnGameOver?.Invoke(this.MovingPlayer, new GameOverEventArgs(Globals.GameOver));
+                    this.OnGameOver?.Invoke(this.MovingPlayer, new GameOverEventArgs(GlobalConstants.GameOver));
                 }
 
-                this.printer.Stats(this.Player1, this.Player2);
+                //this.printer.Stats(this.Player1, this.Player2);
                 this.ChangeTurns();
 
-                this.drawer.BoardOrientate(this.ChessBoard.Matrix, this.MovingPlayer.Color);
+                //this.drawer.BoardOrientate(this.ChessBoard.Matrix, this.MovingPlayer.Color);
             }
         }
 

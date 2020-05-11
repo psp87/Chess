@@ -11,22 +11,6 @@
 
         public override char Symbol => 'N';
 
-        public override bool[,] FigureMatrix 
-        { 
-            get => new bool[Globals.CellRows, Globals.CellCols]
-            {
-                { false, false, false, false, false, false, false, false, false },
-                { false, false, false, true, true, true, false, false, false },
-                { false, false, true, false, true, true, true, false, false },
-                { false, true, true, true, true, true, true, false, false },
-                { false, true, true, false, false, true, true, false, false },
-                { false, false, false, false, true, true, true, false, false },
-                { false, false, false, true, true, true, false, false, false },
-                { false, false, true, true, true, true, true, false, false },
-                { false, false, false, false, false, false, false, false, false }
-            };
-        }
-
         public override void IsMoveAvailable(Square[][] matrix)
         {
             if (this.MoveCheck(-1, -2, matrix) ||
