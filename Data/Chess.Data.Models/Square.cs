@@ -1,11 +1,11 @@
-﻿namespace Chess.Models
+﻿namespace Chess.Data.Models
 {
     using System;
     using System.Collections.Generic;
 
-    using Enums;
-    using Pieces;
-    using Pieces.Contracts;
+    using Chess.Common.Enums;
+    using Chess.Data.Models.Pieces;
+    using Chess.Data.Models.Pieces.Contracts;
 
     public class Square : ICloneable
     {
@@ -17,7 +17,8 @@
             this.Position = Factory.GetPosition();
         }
 
-        public Square(int posY, int posX) : this()
+        public Square(int posY, int posX)
+            : this()
         {
             this.Position = Factory.GetPosition(posX, posY);
         }

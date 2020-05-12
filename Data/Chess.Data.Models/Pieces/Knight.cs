@@ -1,6 +1,6 @@
-﻿namespace Chess.Models.Pieces
+﻿namespace Chess.Data.Models.Pieces
 {
-    using Enums;
+    using Chess.Common.Enums;
 
     public class Knight : Piece
     {

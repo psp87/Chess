@@ -1,8 +1,8 @@
-﻿namespace Chess.Models.Pieces.Contracts
+﻿namespace Chess.Data.Models.Pieces.Contracts
 {
     using System;
 
-    using Enums;
+    using Chess.Common.Enums;
 
     public interface IPiece : ICloneable
     {

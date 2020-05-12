@@ -1,15 +1,12 @@
-﻿namespace Chess.Models.Pieces
+﻿namespace Chess.Data.Models.Pieces
 {
     using System;
     using System.Linq;
 
-    using Enums;
-    //using View;
+    using Chess.Common.Enums;
 
     public class King : Piece
     {
-        //private Draw drawer = Factory.GetDraw();
-
         public King(Color color)
             : base(color)
         {
@@ -88,7 +85,7 @@
                     }
                 }
 
-                if (this.IsFirstMove && to.Y == this.Position.Y && 
+                if (this.IsFirstMove && to.Y == this.Position.Y &&
                     (to.X == this.Position.X + 2 || to.X == this.Position.X - 2))
                 {
                     int sign = to.X == this.Position.X + 2 ? -1 : 1;
@@ -98,10 +95,10 @@
                     var secondSquareOnWay = matrix[this.Position.Y][to.X];
                     var lastPiece = matrix[this.Position.Y][lastPiecePosition].Piece;
 
-                    if (this.OccupiedSquaresCheck(to, matrix) && 
-                        lastPiece is Rook && 
-                        lastPiece.IsFirstMove && 
-                        !firstSquareOnWay.IsAttacked.Where(x => x.Color != this.Color).Any() && 
+                    if (this.OccupiedSquaresCheck(to, matrix) &&
+                        lastPiece is Rook &&
+                        lastPiece.IsFirstMove &&
+                        !firstSquareOnWay.IsAttacked.Where(x => x.Color != this.Color).Any() &&
                         !secondSquareOnWay.IsAttacked.Where(x => x.Color != this.Color).Any())
                     {
                         this.IsFirstMove = false;
@@ -109,9 +106,8 @@
                         matrix[this.Position.Y][to.X + sign].Piece = matrix[this.Position.Y][lastPiecePosition].Piece;
                         matrix[this.Position.Y][lastPiecePosition].Piece = Factory.GetEmpty();
 
-                        //this.drawer.EmptySquare(this.Position.Y, lastPiecePosition);
-                        //this.drawer.Piece(this.Position.Y, to.X + sign, matrix[this.Position.Y][to.X + sign].Piece);
-
+                        // this.drawer.EmptySquare(this.Position.Y, lastPiecePosition);
+                        // this.drawer.Piece(this.Position.Y, to.X + sign, matrix[this.Position.Y][to.X + sign].Piece);
                         return true;
                     }
                 }

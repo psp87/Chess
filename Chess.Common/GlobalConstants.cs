@@ -1,5 +1,7 @@
 ﻿namespace Chess.Common
 {
+    using Chess.Common.Enums;
+
     public static class GlobalConstants
     {
         public const string SystemName = "Chess";
@@ -10,7 +12,7 @@
 
         public const int BoardCols = 8;
 
-        public static int TurnCounter = 0;
+        public static int TurnCounter { get; set; }
 
         public static GameOver GameOver { get; set; }
     }

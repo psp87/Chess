@@ -1,7 +1,7 @@
-﻿namespace Chess.Models.Pieces
+﻿namespace Chess.Data.Models.Pieces
 {
-    using Enums;
-    using Helpers;
+    using Chess.Common.Enums;
+    using Chess.Data.Models.Pieces.Helpers;
 
     public class Rook : Piece
     {

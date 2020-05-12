@@ -1,20 +1,18 @@
-﻿namespace Chess.Models
+﻿namespace Chess.Data.Models
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
+
     using Chess.Common;
-    using Enums;
-    using Pieces;
-    using Pieces.Contracts;
-    using Pieces.Helpers;
-    //using View;
+    using Chess.Common.Enums;
+    using Chess.Data.Models.Pieces;
+    using Chess.Data.Models.Pieces.Contracts;
+    using Chess.Data.Models.Pieces.Helpers;
 
     public class Board : ICloneable
     {
-        //private Print printer;
-        //private Draw drawer;
         private Queue<Move> movesQueue;
 
         private string[] letters = new string[] { "A", "B", "C", "D", "E", "F", "G", "H" };
@@ -34,8 +32,8 @@
 
         public Board()
         {
-            //this.printer = Factory.GetPrint();
-            //this.drawer = Factory.GetDraw();
+            // this.printer = Factory.GetPrint();
+            // this.drawer = Factory.GetDraw();
             this.movesQueue = new Queue<Move>();
 
             this.Matrix = Factory.GetMatrix();
@@ -53,8 +51,7 @@
             {
                 try
                 {
-                    //this.GetCommand();
-
+                    // this.GetCommand();
                     if (this.MovePiece(movingPlayer, opponent) ||
                         this.TakePiece(movingPlayer, opponent) ||
                         this.EnPassantTake(movingPlayer, opponent))
@@ -67,7 +64,7 @@
 
                         if (this.IsPlayerChecked(opponent))
                         {
-                            //this.printer.Check(movingPlayer);
+                            // this.printer.Check(movingPlayer);
                             this.IsOpponentCheckmate(movingPlayer, opponent, this.Move.End);
                         }
 
@@ -76,12 +73,12 @@
 
                     if (!success)
                     {
-                        //this.printer.Invalid(movingPlayer);
+                        // this.printer.Invalid(movingPlayer);
                     }
                 }
                 catch (Exception)
                 {
-                    //this.printer.Exception(movingPlayer);
+                    // this.printer.Exception(movingPlayer);
                     continue;
                 }
             }
@@ -90,7 +87,7 @@
             this.IsGameDraw();
             this.IsGameStalemate(opponent);
 
-            //this.printer.EmptyMessageScreen(movingPlayer);
+            // this.printer.EmptyMessageScreen(movingPlayer);
         }
 
         public void Initialize()
@@ -140,25 +137,6 @@
 
             return board;
         }
-
-        //private void GetCommand()
-        //{
-        //    string text = Console.ReadLine();
-
-        //    string pattern = @"([A-Za-z])([A-Za-z])([1-8])([A-Za-z])([1-8])";
-        //    Regex regex = new Regex(pattern);
-        //    Match match = regex.Match(text);
-
-        //    char symbol = char.Parse(match.Groups[1].ToString().ToUpper());
-        //    int startX = char.Parse(match.Groups[2].ToString().ToUpper()) - 65;
-        //    int startY = Math.Abs(int.Parse(match.Groups[3].ToString()) - 8);
-        //    int endX = char.Parse(match.Groups[4].ToString().ToUpper()) - 65;
-        //    int endY = Math.Abs(int.Parse(match.Groups[5].ToString()) - 8);
-
-        //    this.Move.Symbol = symbol;
-        //    this.Move.Start = this.Matrix[startY][startX];
-        //    this.Move.End = this.Matrix[endY][endX];
-        //}
 
         private bool MovePiece(Player movingPlayer, Player opponent)
         {
@@ -221,17 +199,17 @@
                     this.RemovePiece(this.Move.End);
                     this.Matrix[this.Move.Start.Position.Y][this.Move.Start.Position.X + x].Piece = piece;
                     this.CalculateAttackedSquares();
-                    //this.printer.KingIsCheck(movingPlayer);
+
+                    // this.printer.KingIsCheck(movingPlayer);
                     movingPlayer.IsCheck = true;
                     return true;
                 }
 
                 movingPlayer.IsCheck = false;
 
-                //this.drawer.Piece(this.Move.End.Position.Y, this.Move.End.Position.X, this.Move.End.Piece);
-                //this.drawer.EmptySquare(this.Move.Start.Position.Y, this.Move.Start.Position.X);
-                //this.drawer.EmptySquare(this.Move.Start.Position.Y, this.Move.Start.Position.X + x);
-
+                // this.drawer.Piece(this.Move.End.Position.Y, this.Move.End.Position.X, this.Move.End.Piece);
+                // this.drawer.EmptySquare(this.Move.Start.Position.Y, this.Move.Start.Position.X);
+                // this.drawer.EmptySquare(this.Move.Start.Position.Y, this.Move.Start.Position.X + x);
                 return true;
             }
 
@@ -249,16 +227,16 @@
                 this.ReversePiece(this.Move);
                 this.RemovePiece(this.Move.End);
                 this.CalculateAttackedSquares();
-                //this.printer.KingIsCheck(movingPlayer);
+
+                // this.printer.KingIsCheck(movingPlayer);
                 return false;
             }
 
-            //this.drawer.NewPiece(this.Move);
-            //this.printer.EmptyCheckScreen(opponent);
-
+            // this.drawer.NewPiece(this.Move);
+            // this.printer.EmptyCheckScreen(opponent);
             if (this.Move.End.Piece is Pawn && this.Move.End.Piece.IsLastMove)
             {
-                //this.Move.End.Piece = this.drawer.PawnPromotion(this.Move.End);
+                // this.Move.End.Piece = this.drawer.PawnPromotion(this.Move.End);
                 this.CalculateAttackedSquares();
             }
 
@@ -343,7 +321,6 @@
             {
                 return;
             }
-
             else if (this.movesQueue.Count == 4 &&
                 array[1].Start.Position.X == this.Move.End.Position.X &&
                 array[1].Start.Position.Y == this.Move.End.Position.Y &&
@@ -352,7 +329,6 @@
             {
                 return;
             }
-
             else if (this.movesQueue.Count == 5 &&
                 array[0].Start.Position.X == this.Move.Start.Position.X &&
                 array[0].Start.Position.Y == this.Move.Start.Position.Y &&
@@ -361,7 +337,6 @@
             {
                 return;
             }
-
             else if (this.movesQueue.Count == 6 &&
                 array[1].Start.Position.X == this.Move.Start.Position.X &&
                 array[1].Start.Position.Y == this.Move.Start.Position.Y &&
@@ -371,7 +346,6 @@
                 GlobalConstants.GameOver = GameOver.Repetition;
                 return;
             }
-
             else if (this.movesQueue.Count > 2)
             {
                 this.movesQueue.Dequeue();

@@ -1,6 +1,12 @@
 ﻿namespace Chess.Services.Data
 {
     using System;
+
+    using Chess.Common.Enums;
+    using Chess.Data.Models;
+    using Chess.Data.Models.EventArgs;
+
+    using Microsoft.AspNetCore.
     using Microsoft.AspNetCore.SignalR;
 
     using Chess.Data.Models;
@@ -9,6 +15,21 @@
 
     public class ChessEngine : Hub, IChessEngine
     {
+        public void Clear()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Load()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Save()
+        {
+            throw new NotImplementedException();
+        }
+
         public void Start()
         {
             string name1 = "Get Name 1";
@@ -23,25 +44,10 @@
             {
             }
         }
-    }
 
-    private void Game_OnGameOver(object sender, GameOverEventArgs e)
-    {
-        Clients.All.SendAsync("GameOver", e.GameOver, sender as Player);
-    }
-
-    public void Clear()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Load()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Save()
-    {
-        throw new NotImplementedException();
+        private void Game_OnGameOver(object sender, GameOverEventArgs e)
+        {
+            Clients.All.SendAsync("GameOver", e.GameOver, sender as Player);
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Chess.Models.Enums
+﻿namespace Chess.Common.Enums
 {
     public enum GameOver
     {

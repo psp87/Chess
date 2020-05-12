@@ -1,8 +1,8 @@
-﻿namespace Chess.Models.Pieces.Helpers
+﻿namespace Chess.Data.Models.Pieces.Helpers
 {
     using System;
 
-    using Pieces.Contracts;
+    using Chess.Data.Models.Pieces.Contracts;
 
     public class BishopBahaviour
     {

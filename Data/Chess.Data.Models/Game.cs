@@ -1,21 +1,21 @@
-﻿namespace Chess.Models
+﻿namespace Chess.Data.Models
 {
     using System;
+
     using Chess.Common;
-    using Enums;
-    using EventArgs;
-    //using View;
+    using Chess.Common.Enums;
+    using Chess.Data.Models.EventArgs;
+    // using View;
 
     public class Game
     {
-        //private Print printer;
-        //private Draw drawer;
+        // private Print printer;
+        // private Draw drawer;
 
         public Game()
         {
-            //this.printer = Factory.GetPrint();
-            //this.drawer = Factory.GetDraw();
-
+            // this.printer = Factory.GetPrint();
+            // this.drawer = Factory.GetDraw();
             this.ChessBoard = Factory.GetBoard();
         }
 
@@ -33,13 +33,8 @@
 
         public void GetPlayers()
         {
-            //this.printer.PlayersMenu(Color.Light);
-            //var namePlayer1 = Console.ReadLine();
-            //this.printer.PlayersMenu(Color.Dark);
-            //var namePlayer2 = Console.ReadLine();
-
-            Player player1 = Factory.GetPlayer(namePlayer1.ToUpper(), Color.Light);
-            Player player2 = Factory.GetPlayer(namePlayer2.ToUpper(), Color.Dark);
+            Player player1 = Factory.GetPlayer("Player1".ToUpper(), Color.Light);
+            Player player2 = Factory.GetPlayer("Player2".ToUpper(), Color.Dark);
 
             this.Player1 = player1;
             this.Player2 = player2;
@@ -71,7 +66,7 @@
                 //this.printer.Turn(this.MovingPlayer);
                 this.ChessBoard.MakeMove(this.MovingPlayer, this.Opponent);
 
-                if (GlobalConstants.GameOver.ToString() != GameOver.None.ToString())
+                if (GlobalConstants.GameOver.ToString() != Enums.GameOver.None.ToString())
                 {
                     this.OnGameOver?.Invoke(this.MovingPlayer, new GameOverEventArgs(GlobalConstants.GameOver));
                 }

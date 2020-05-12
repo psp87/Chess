@@ -1,10 +1,10 @@
-﻿namespace Chess.Models
+﻿namespace Chess.Data.Models
 {
-    using Chess.View;
-    using Enums;
-    using Pieces;
-    using Pieces.Contracts;
-    using Pieces.Helpers;
+    using Chess.Common;
+    using Chess.Common.Enums;
+    using Chess.Data.Models.Pieces;
+    using Chess.Data.Models.Pieces.Contracts;
+    using Chess.Data.Models.Pieces.Helpers;
 
     public class Factory
     {
@@ -75,11 +75,11 @@
 
         public static Square[][] GetMatrix()
         {
-            Square[][] matrix = new Square[Globals.BoardRows][];
+            Square[][] matrix = new Square[GlobalConstants.BoardRows][];
 
-            for (int row = 0; row < Globals.BoardRows; row++)
+            for (int row = 0; row < GlobalConstants.BoardRows; row++)
             {
-                matrix[row] = new Square[Globals.BoardCols];
+                matrix[row] = new Square[GlobalConstants.BoardCols];
             }
 
             return matrix;
@@ -98,16 +98,6 @@
         public static Game GetGame()
         {
             return new Game();
-        }
-
-        public static Print GetPrint()
-        {
-            return new Print();
-        }
-
-        public static Draw GetDraw()
-        {
-            return new Draw();
         }
 
         public static Move GetMove()

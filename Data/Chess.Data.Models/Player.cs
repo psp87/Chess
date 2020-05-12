@@ -1,9 +1,9 @@
-﻿namespace Chess.Models
+﻿namespace Chess.Data.Models
 {
     using System.Collections.Generic;
 
-    using Enums;
-    using Pieces;
+    using Chess.Common.Enums;
+    using Chess.Data.Models.Pieces;
 
     public class Player
     {

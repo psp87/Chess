@@ -1,7 +1,8 @@
-﻿namespace Chess.Models.Pieces
+﻿namespace Chess.Data.Models.Pieces
 {
-    using Enums;
-    using Helpers;
+    using Chess.Common;
+    using Chess.Common.Enums;
+    using Chess.Data.Models.Pieces.Helpers;
 
     public class Pawn : Piece
     {
@@ -91,7 +92,7 @@
 
                 if (number == sign * 2)
                 {
-                    EnPassant.Turn = Globals.TurnCounter + 1;
+                    EnPassant.Turn = GlobalConstants.TurnCounter + 1;
                     EnPassant.Position = Factory.GetPosition(this.Position.Y + (sign * 1), this.Position.X);
                 }
 

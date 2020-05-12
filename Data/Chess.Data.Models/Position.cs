@@ -1,10 +1,11 @@
-﻿namespace Chess.Models
+﻿namespace Chess.Data.Models
 {
     using System;
 
     public class Position : ICloneable
     {
-        public Position() : this(-1, -1)
+        public Position()
+            : this(-1, -1)
         {
         }
 

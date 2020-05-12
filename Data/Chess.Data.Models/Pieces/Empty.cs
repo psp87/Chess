@@ -1,8 +1,8 @@
-﻿namespace Chess.Models.Pieces
+﻿namespace Chess.Data.Models.Pieces
 {
     using System;
 
-    using Enums;
+    using Chess.Common.Enums;
 
     public class Empty : Piece
     {
