@@ -18,6 +18,11 @@
             return new Player(name, color);
         }
 
+        public static Player GetPlayer(string name, string connectionId)
+        {
+            return new Player(name, connectionId);
+        }
+
         public static IPiece GetPawn(Color color)
         {
             return new Pawn(color);
@@ -95,9 +100,9 @@
             return new BishopBahaviour();
         }
 
-        public static Game GetGame()
+        public static Game GetGame(Player player1, Player player2)
         {
-            return new Game();
+            return new Game(player1, player2);
         }
 
         public static Move GetMove()

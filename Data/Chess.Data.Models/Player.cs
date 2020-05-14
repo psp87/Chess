@@ -24,9 +24,27 @@
             this.IsMoveAvailable = true;
         }
 
+        public Player(string username, string connectionId)
+        {
+            this.takenFigures = new Dictionary<string, int>()
+            {
+                { nameof(Pawn), 0 },
+                { nameof(Knight), 0 },
+                { nameof(Bishop), 0 },
+                { nameof(Rook), 0 },
+                { nameof(Queen), 0 },
+            };
+            this.Name = username;
+            this.Id = connectionId;
+        }
+
+        public string Id { get; set; }
+
         public string Name { get; }
 
-        public Color Color { get; }
+        public Color Color { get; set; }
+
+        public string GameId { get; set; }
 
         public bool HasToMove { get; set; }
 

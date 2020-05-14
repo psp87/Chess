@@ -8,12 +8,22 @@
 
     public class Game
     {
-        public Game()
+        public Game(Player player1, Player player2)
         {
             this.ChessBoard = Factory.GetBoard();
+            this.ChessBoard.Initialize();
+
+            this.Player1 = player1;
+            this.Player2 = player2;
+
+            this.Id = Guid.NewGuid().ToString();
+            this.Player1.GameId = this.Id;
+            this.Player2.GameId = this.Id;
         }
 
         public event EventHandler OnGameOver;
+
+        public string Id { get; set; }
 
         public Board ChessBoard { get; set; }
 
@@ -24,20 +34,6 @@
         public Player MovingPlayer => this.Player1?.HasToMove ?? false ? this.Player2 : this.Player1;
 
         public Player Opponent => this.Player1?.HasToMove ?? false ? this.Player1 : this.Player2;
-
-        public void GetPlayers()
-        {
-            Player player1 = Factory.GetPlayer("Player1".ToUpper(), Color.Light);
-            Player player2 = Factory.GetPlayer("Player2".ToUpper(), Color.Dark);
-
-            this.Player1 = player1;
-            this.Player2 = player2;
-        }
-
-        public void New()
-        {
-            this.ChessBoard.Initialize();
-        }
 
         public void Start()
         {
