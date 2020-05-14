@@ -2,19 +2,23 @@
 {
     using System;
 
-    using Chess.Common.Enums;
     using Chess.Data.Models;
     using Chess.Data.Models.EventArgs;
 
-    using Microsoft.AspNetCore.
     using Microsoft.AspNetCore.SignalR;
-
-    using Chess.Data.Models;
-    using Chess.Data.Models.Enums;
-    using Chess.Data.Models.EventArgs;
 
     public class ChessEngine : Hub, IChessEngine
     {
+        public void Start()
+        {
+            Game game = Factory.GetGame();
+
+            game.GetPlayers();
+            game.New();
+            game.OnGameOver += this.Game_OnGameOver;
+            game.Start();
+        }
+
         public void Clear()
         {
             throw new NotImplementedException();
@@ -30,24 +34,12 @@
             throw new NotImplementedException();
         }
 
-        public void Start()
+        private void Game_OnGameOver(object sender, EventArgs e)
         {
-            string name1 = "Get Name 1";
-            string name2 = "Get Name 2";
+            var player = sender as Player;
+            var gameOver = e as GameOverEventArgs;
 
-            Player player1 = Factory.GetPlayer(name1.ToUpper(), Color.Light);
-            Player player2 = Factory.GetPlayer(name2.ToUpper(), Color.Dark);
-
-            Game game = Factory.GetGame(player1, player2);
-
-            while (!checkmate && !stalemate)
-            {
-            }
-        }
-
-        private void Game_OnGameOver(object sender, GameOverEventArgs e)
-        {
-            Clients.All.SendAsync("GameOver", e.GameOver, sender as Player);
+            this.Clients.All.SendAsync("GameOver", gameOver.GameOver, player);
         }
     }
 }

@@ -5,6 +5,7 @@
 
     using Chess.Data.Common.Repositories;
     using Chess.Data.Models;
+    using Chess.Services.Data.Contracts;
     using Chess.Services.Mapping;
 
     public class SettingsService : ISettingsService

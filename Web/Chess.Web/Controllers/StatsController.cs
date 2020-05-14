@@ -1,6 +1,6 @@
 ﻿namespace Chess.Web.Controllers
 {
-    using Chess.Services.Data;
+    using Chess.Services.Data.Contracts;
     using Microsoft.AspNetCore.Mvc;
 
     public class StatsController : BaseController

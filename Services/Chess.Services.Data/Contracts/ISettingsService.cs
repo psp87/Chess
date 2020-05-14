@@ -1,4 +1,4 @@
-﻿namespace Chess.Services.Data
+﻿namespace Chess.Services.Data.Contracts
 {
     using System.Collections.Generic;
 

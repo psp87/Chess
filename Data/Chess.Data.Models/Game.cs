@@ -5,17 +5,11 @@
     using Chess.Common;
     using Chess.Common.Enums;
     using Chess.Data.Models.EventArgs;
-    // using View;
 
     public class Game
     {
-        // private Print printer;
-        // private Draw drawer;
-
         public Game()
         {
-            // this.printer = Factory.GetPrint();
-            // this.drawer = Factory.GetDraw();
             this.ChessBoard = Factory.GetBoard();
         }
 
@@ -43,18 +37,6 @@
         public void New()
         {
             this.ChessBoard.Initialize();
-
-            //this.printer.Stats(this.MovingPlayer, this.Opponent);
-            //this.printer.ExampleText();
-            //this.printer.GameMenu();
-            //this.drawer.BoardOrientate(this.ChessBoard.Matrix, this.MovingPlayer.Color);
-        }
-
-        public void End()
-        {
-            //Console.ReadLine();
-            //Console.Clear();
-            //this.drawer.BoardEmpty(Color.Light);
         }
 
         public void Start()
@@ -63,18 +45,14 @@
             {
                 GlobalConstants.TurnCounter++;
 
-                //this.printer.Turn(this.MovingPlayer);
                 this.ChessBoard.MakeMove(this.MovingPlayer, this.Opponent);
 
-                if (GlobalConstants.GameOver.ToString() != Enums.GameOver.None.ToString())
+                if (GlobalConstants.GameOver.ToString() != GameOver.None.ToString())
                 {
                     this.OnGameOver?.Invoke(this.MovingPlayer, new GameOverEventArgs(GlobalConstants.GameOver));
                 }
 
-                //this.printer.Stats(this.Player1, this.Player2);
                 this.ChangeTurns();
-
-                //this.drawer.BoardOrientate(this.ChessBoard.Matrix, this.MovingPlayer.Color);
             }
         }
 

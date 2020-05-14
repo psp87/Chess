@@ -1,8 +1,8 @@
 ﻿namespace Chess.Web.Controllers
 {
-    using Microsoft.AspNetCore.Mvc;
+    using Chess.Services.Data.Contracts;
 
-    using Chess.Services.Data;
+    using Microsoft.AspNetCore.Mvc;
 
     public class GameController : BaseController
     {

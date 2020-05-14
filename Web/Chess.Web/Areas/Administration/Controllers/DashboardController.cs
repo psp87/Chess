@@ -1,6 +1,6 @@
 ﻿namespace Chess.Web.Areas.Administration.Controllers
 {
-    using Chess.Services.Data;
+    using Chess.Services.Data.Contracts;
     using Chess.Web.ViewModels.Administration.Dashboard;
 
     using Microsoft.AspNetCore.Mvc;
