@@ -32,8 +32,6 @@
 
         public Board()
         {
-            // this.printer = Factory.GetPrint();
-            // this.drawer = Factory.GetDraw();
             this.movesQueue = new Queue<Move>();
 
             this.Matrix = Factory.GetMatrix();
@@ -413,6 +411,11 @@
 
             return null;
         }
+
+        // private Square GetSquare(string a, string b)
+        // {
+        //     return this.Matrix[a][b];
+        // }
 
         #region IsOpponentCheckmate Methods
         private bool IsKingAbleToMove(Square king, Player movingPlayer)

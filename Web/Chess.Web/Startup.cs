@@ -12,6 +12,7 @@
     using Chess.Services.Data.Contracts;
     using Chess.Services.Mapping;
     using Chess.Services.Messaging;
+    using Chess.Web.Hubs;
     using Chess.Web.ViewModels;
 
     using Microsoft.AspNetCore.Builder;
@@ -49,8 +50,8 @@
 
             services.AddControllersWithViews();
             services.AddRazorPages();
-
-            services.AddSingleton(this.configuration);
+            services.AddSignalR();
+            services.AddSingleton<ChessHub>();
 
             // Data repositories
             services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(EfDeletableEntityRepository<>));
@@ -107,6 +108,7 @@
                         endpoints.MapControllerRoute("areaRoute", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
                         endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
                         endpoints.MapRazorPages();
+                        endpoints.MapHub<ChessHub>("/hub");
                     });
         }
     }

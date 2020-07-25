@@ -51,32 +51,35 @@
             }
         }
 
-        public async Task MoveSelected(string a, string b)
-        {
-            var player = this.players[Context.ConnectionId];
-            if (!player.HasToMove)
-                return;
+        //public async Task MoveSelected(Square a, Square b)
+        //{
+        //    var player = this.players[this.Context.ConnectionId];
+        //    if (!player.HasToMove)
+        //    {
+        //        return;
+        //    }
 
-            var game = GetGame(player, out Player opponent);
-            var start = game.ChessBoard.GetSquareAtPosition(a);
-            var end = game.ChessBoard.GetSquareAtPosition(b);
-            var move = game.MoveSelected(start, end);
-            await Clients.All.SendAsync("MoveDone", game, move);
-        }
+        //    var game = this.GetGame(player, out Player opponent);
+        //    var start = game.ChessBoard.Matrix[a.Position.Y][a.Position.X];
+        //    var end = game.ChessBoard.Matrix[b.Position.Y][b.Position.X];
+        //    var move = game.MoveSelected(start, end);
 
-        public async Task PieceSelected(int x, int y)
-        {
-            var player = this.players[Context.ConnectionId];
-            if (!player.HasToMove)
-                return;
+        //    await this.Clients.All.SendAsync("MoveDone", game, move);
+        //}
 
-            var game = GetGame(player, out Player opponent);
-            var square = game.ChessBoard.GetSquareAtPosition(new Position(x, y));
-            game.ChessBoard.ClearBoardSelections();
-            game.ChessBoard.CalculatePossibleMovesForPiece(square.Piece);
-            square.IsSelected = true;
-            await Clients.All.SendAsync("ShowPossibleMoves", game);
-        }
+        //public async Task PieceSelected(int x, int y)
+        //{
+        //    var player = this.players[Context.ConnectionId];
+        //    if (!player.HasToMove)
+        //        return;
+
+        //    var game = GetGame(player, out Player opponent);
+        //    var square = game.ChessBoard.GetSquareAtPosition(new Position(x, y));
+        //    game.ChessBoard.ClearBoardSelections();
+        //    game.ChessBoard.CalculatePossibleMovesForPiece(square.Piece);
+        //    square.IsSelected = true;
+        //    await Clients.All.SendAsync("ShowPossibleMoves", game);
+        //}
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
