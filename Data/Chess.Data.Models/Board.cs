@@ -42,50 +42,35 @@
 
         public Move Move { get; set; }
 
-        public void MakeMove(Player movingPlayer, Player opponent)
+        public Move MakeMove(string source, string target, Player movingPlayer, Player opponent)
         {
-            bool success = false;
-            while (!success)
+            this.Move.Start = this.GetSquare(source);
+            this.Move.End = this.GetSquare(target);
+
+            if (this.MovePiece(movingPlayer, opponent) ||
+                this.TakePiece(movingPlayer, opponent) ||
+                this.EnPassantTake(movingPlayer, opponent))
             {
-                try
+                if (movingPlayer.IsCheck)
                 {
-                    // this.GetCommand();
-                    if (this.MovePiece(movingPlayer, opponent) ||
-                        this.TakePiece(movingPlayer, opponent) ||
-                        this.EnPassantTake(movingPlayer, opponent))
-                    {
-                        if (movingPlayer.IsCheck)
-                        {
-                            movingPlayer.IsCheck = false;
-                            continue;
-                        }
-
-                        if (this.IsPlayerChecked(opponent))
-                        {
-                            // this.printer.Check(movingPlayer);
-                            this.IsOpponentCheckmate(movingPlayer, opponent, this.Move.End);
-                        }
-
-                        success = true;
-                    }
-
-                    if (!success)
-                    {
-                        // this.printer.Invalid(movingPlayer);
-                    }
+                    movingPlayer.IsCheck = false;
+                    return null;
                 }
-                catch (Exception)
+
+                if (this.IsPlayerChecked(opponent))
                 {
-                    // this.printer.Exception(movingPlayer);
-                    continue;
+                    // this.printer.Check(movingPlayer);
+                    this.IsOpponentCheckmate(movingPlayer, opponent, this.Move.End);
                 }
+
+                return this.Move;
             }
 
             this.IsGameRepetitionDraw();
             this.IsGameDraw();
             this.IsGameStalemate(opponent);
 
-            // this.printer.EmptyMessageScreen(movingPlayer);
+            return null;
         }
 
         public void Initialize()
@@ -397,6 +382,14 @@
             }
         }
 
+        private Square GetSquare(string position)
+        {
+            int col = char.Parse(position[0].ToString().ToUpper()) - 65;
+            int row = Math.Abs(int.Parse(position[1].ToString()) - 8);
+
+            return this.Matrix[row][col];
+        }
+
         private Square GetKingSquare(Color color)
         {
             for (int y = 0; y < GlobalConstants.BoardRows; y++)
@@ -411,11 +404,6 @@
 
             return null;
         }
-
-        // private Square GetSquare(string a, string b)
-        // {
-        //     return this.Matrix[a][b];
-        // }
 
         #region IsOpponentCheckmate Methods
         private bool IsKingAbleToMove(Square king, Player movingPlayer)

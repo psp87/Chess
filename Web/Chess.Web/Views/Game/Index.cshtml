@@ -17,13 +17,6 @@
         console.log('Old position: ' + Chessboard.objToFen(oldPos))
         console.log('Orientation: ' + orientation)
         console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-
-        @{
-            var player1 = Factory.GetPlayer("Test Player 1", Chess.Common.Enums.Color.Light);
-            var player2 = Factory.GetPlayer("Test Player 2", Chess.Common.Enums.Color.Dark);
-            var game = Factory.GetGame(player1, player2);
-            //game.Start();
-        }
     }
 
     var config = {
