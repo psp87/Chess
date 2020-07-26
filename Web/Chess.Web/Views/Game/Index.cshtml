@@ -1,22 +1,33 @@
-﻿@{
-    this.ViewData["Title"] = "New Game";
+﻿@using Chess.Data.Models;
+
+@{
+    this.ViewData["Title"] = "Game Room";
 }
 
-@using Chess.Data.Models;
-
 <link rel="stylesheet" href="css/chessboard-1.0.0.min.css">
-<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+
 <script src="js/chessboard-1.0.0.min.js"></script>
+<script type="text/javascript" src="~/js/signalr/signalr.min.js" asp-append-version="true"></script>
+
 <div id="board1" style="width: 600px"></div>
+
 <script>
-    function onDrop(source, target, piece, newPos, oldPos, orientation) {
+
+    $(function () {
+        var connection = new signalR.HubConnectionBuilder().withUrl("/hub").build();
+        var playerId;
+        var playerColor;
+        var playerName;
+        var gameOver;
+
+
+
+    }
+
+    function onDrop(source, target, piece) {
         console.log('Source: ' + source)
         console.log('Target: ' + target)
         console.log('Piece: ' + piece)
-        console.log('New position: ' + Chessboard.objToFen(newPos))
-        console.log('Old position: ' + Chessboard.objToFen(oldPos))
-        console.log('Orientation: ' + orientation)
-        console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     }
 
     var config = {
