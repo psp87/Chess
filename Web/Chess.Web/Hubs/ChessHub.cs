@@ -62,10 +62,10 @@
             //    return;
             //}
 
-            //var game = this.GetGame(player, out Player opponent);
+            var game = this.GetGame(player, out Player opponent);
 
             //var move = game.MoveSelected(source, target, player, opponent);
-            await this.Clients.All.SendAsync("MoveDone", source, target);
+            await this.Clients.All.SendAsync("MoveDone", source, target, game);
         }
 
         private Game GetGame(Player player, out Player opponent)
