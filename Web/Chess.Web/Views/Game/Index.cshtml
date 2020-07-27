@@ -4,9 +4,10 @@
     this.ViewData["Title"] = "Game Room";
 }
 
-<link rel="stylesheet" href="css/chessboard-1.0.0.min.css">
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+<script src="~/js/chessboard-1.0.0.min.js"></script>
 
-<script src="js/chessboard-1.0.0.min.js"></script>
+<link rel="stylesheet" href="~/css/chessboard-1.0.0.min.css">
 
 <main id="main" class="container-fluid text-center">
     <div id="timeView" class="row" style="display:none;">
@@ -40,49 +41,57 @@
 <script>
     $(function () {
         var connection = new signalR.HubConnectionBuilder().withUrl("/hub").build();
+        connection.start();
+
         var playerId;
         var playerColor;
         var playerName;
         var gameOver;
 
-        connection.start().then(function () {
-            document.getElementById("findGame").disabled = false;
-        });
-
-        connection.on("TestJS", function (text) {
-            console.log(text);
-        })
-
-
         $('#findGame').click(function () {
             var name = $('#username').val();
-            //connection.invoke("FindGame", name);
-
-            connection.invoke("Test", name);
+            connection.invoke("FindGame", name);
             document.getElementById("findGame").disabled = true;
-
-            //console.log(name);
-            //console.log("OK");
         })
+
+        connection.on("PlayerJoined", function (player) {
+            playerId = player.id;
+            console.log(playerId)
+        })
+
+        connection.on("WaitingList", function () {
+            $('#status').html("Waiting for an opponent");
+        })
+
+        connection.on("Start", function (game) {
+            if (game.id != "") {
+                document.getElementById('findOpponent').style.display = "none";
+                
+                var board1 = ChessBoard('board1', config);
+            }
+        })
+
+        connection.on("MoveDone", function (move) {
+            board1.move('a2-a4');
+        })
+
+        // Board config/functions
+        var config = {
+            pieceTheme: 'img/chesspieces/wikipedia/{piece}.png',
+            draggable: true,
+            dropOffBoard: 'snapback', // this is the default
+            showNotation: true,
+            orientation: 'white',
+            onDrop: onDrop,
+            position: 'start'
+        }
+
+        function onDrop(source, target, piece) {
+            connection.invoke("MoveSelected", source, target, piece);
+
+            console.log('Source: ' + source)
+            console.log('Target: ' + target)
+            console.log('Piece: ' + piece)
+        }
     })
-
-
-
-    function onDrop(source, target, piece) {
-        console.log('Source: ' + source)
-        console.log('Target: ' + target)
-        console.log('Piece: ' + piece)
-    }
-
-    var config = {
-        pieceTheme: 'img/chesspieces/wikipedia/{piece}.png',
-        draggable: true,
-        dropOffBoard: 'snapback', // this is the default
-        showNotation: true,
-        orientation: 'white',
-        onDrop: onDrop,
-        position: 'start'
-    }
-
-    var board1 = ChessBoard('board1', config);
 </script>

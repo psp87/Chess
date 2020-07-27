@@ -65,15 +65,8 @@
             var game = this.GetGame(player, out Player opponent);
 
             var move = game.MoveSelected(source, target, player, opponent);
-            await this.Clients.All.SendAsync("MoveDone", game, move);
+            await this.Clients.All.SendAsync("MoveDone", source, target);
         }
-
-        public async Task Test(string text)
-        {
-            await this.Clients.Caller.SendAsync("TestJS", text);
-        }
-
-
 
         private Game GetGame(Player player, out Player opponent)
         {
