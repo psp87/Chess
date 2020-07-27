@@ -36,7 +36,7 @@
     </div>
 </main>
 
-<div id="board1" style="width: 600px"></div>
+<div id="board1" style="width: 600px; visibility: hidden"></div>
 
 <script>
     $(function () {
@@ -66,16 +66,18 @@
         connection.on("Start", function (game) {
             if (game.id != "") {
                 document.getElementById('findOpponent').style.display = "none";
-                
-                var board1 = ChessBoard('board1', config);
+                document.getElementById('board1').style.visibility = "visible";
             }
         })
 
-        connection.on("MoveDone", function (move) {
-            board1.move('a2-a4');
+        connection.on("MoveDone", function (source, target) {
+            board1.move(`${source}-${target}`);
         })
 
-        // Board config/functions
+        function onDrop(source, target) {
+            connection.invoke("MoveSelected", source, target);
+        }
+
         var config = {
             pieceTheme: 'img/chesspieces/wikipedia/{piece}.png',
             draggable: true,
@@ -86,12 +88,6 @@
             position: 'start'
         }
 
-        function onDrop(source, target, piece) {
-            connection.invoke("MoveSelected", source, target, piece);
-
-            console.log('Source: ' + source)
-            console.log('Target: ' + target)
-            console.log('Piece: ' + piece)
-        }
+        var board1 = ChessBoard('board1', config);
     })
 </script>

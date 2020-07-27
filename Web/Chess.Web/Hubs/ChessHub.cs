@@ -57,14 +57,14 @@
         public async Task MoveSelected(string source, string target)
         {
             var player = this.players[this.Context.ConnectionId];
-            if (!player.HasToMove)
-            {
-                return;
-            }
+            //if (!player.HasToMove)
+            //{
+            //    return;
+            //}
 
-            var game = this.GetGame(player, out Player opponent);
+            //var game = this.GetGame(player, out Player opponent);
 
-            var move = game.MoveSelected(source, target, player, opponent);
+            //var move = game.MoveSelected(source, target, player, opponent);
             await this.Clients.All.SendAsync("MoveDone", source, target);
         }
 
