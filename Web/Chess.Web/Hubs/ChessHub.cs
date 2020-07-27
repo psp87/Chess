@@ -68,6 +68,13 @@
             await this.Clients.All.SendAsync("MoveDone", game, move);
         }
 
+        public async Task Test(string text)
+        {
+            await this.Clients.Caller.SendAsync("TestJS", text);
+        }
+
+
+
         private Game GetGame(Player player, out Player opponent)
         {
             opponent = null;

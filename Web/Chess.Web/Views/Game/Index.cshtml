@@ -7,12 +7,37 @@
 <link rel="stylesheet" href="css/chessboard-1.0.0.min.css">
 
 <script src="js/chessboard-1.0.0.min.js"></script>
-<script type="text/javascript" src="~/js/signalr/signalr.min.js" asp-append-version="true"></script>
+
+<main id="main" class="container-fluid text-center">
+    <div id="timeView" class="row" style="display:none;">
+        <h4 id="timeName"></h4>
+        <p id="timeStatus"></p>
+        <div class="timeO">
+
+        </div>
+        <div class="timeE">
+
+        </div>
+    </div>
+
+    <div id="findOpponent" class="row m-5">
+        <div class="mx-auto my-auto text-center">
+            <p id="status" class="row help-block m-3 text-center">Please enter your desired username.</p>
+            <div class="form-inline">
+                <div class="form-group mr-2" id="usernameGroup">
+                    <label class="sr-only control-label" for="username">Username</label>
+                    <input type="text" class="form-control" id="username" placeholder="Username" autofocus />
+                </div>
+                <button type="submit" id="findGame" class="btn btn-primary">Find Game</button>
+                <p id="hidden" class="help-block" style="visibility:hidden"></p>
+            </div>
+        </div>
+    </div>
+</main>
 
 <div id="board1" style="width: 600px"></div>
 
 <script>
-
     $(function () {
         var connection = new signalR.HubConnectionBuilder().withUrl("/hub").build();
         var playerId;
@@ -20,9 +45,28 @@
         var playerName;
         var gameOver;
 
+        connection.start().then(function () {
+            document.getElementById("findGame").disabled = false;
+        });
+
+        connection.on("TestJS", function (text) {
+            console.log(text);
+        })
 
 
-    }
+        $('#findGame').click(function () {
+            var name = $('#username').val();
+            //connection.invoke("FindGame", name);
+
+            connection.invoke("Test", name);
+            document.getElementById("findGame").disabled = true;
+
+            //console.log(name);
+            //console.log("OK");
+        })
+    })
+
+
 
     function onDrop(source, target, piece) {
         console.log('Source: ' + source)
@@ -39,5 +83,6 @@
         onDrop: onDrop,
         position: 'start'
     }
+
     var board1 = ChessBoard('board1', config);
 </script>

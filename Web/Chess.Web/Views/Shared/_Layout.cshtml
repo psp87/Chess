@@ -48,33 +48,6 @@
         </nav>
     </header>
 
-    <main id="main" class="container-fluid text-center">
-        <div id="timeView" class="row" style="display:none;">
-            <h4 id="timeName"></h4>
-            <p id="timeStatus"></p>
-            <div class="timeO">
-
-            </div>
-            <div class="timeE">
-
-            </div>
-        </div>
-
-        <div id="findOpponent" class="row m-5">
-            <div class="mx-auto my-auto text-center">
-                <p id="status" class="row help-block m-3 text-center">Please enter your desired username.</p>
-                <div class="form-inline">
-                    <div class="form-group mr-2" id="usernameGroup">
-                        <label class="sr-only control-label" for="username">Username</label>
-                        <input type="text" class="form-control" id="username" placeholder="Username" autofocus />
-                    </div>
-                    <button type="submit" id="findGame" class="btn btn-primary">Find Game</button>
-                    <p id="hidden" class="help-block" style="visibility:hidden"></p>
-                </div>
-            </div>
-        </div>
-    </main>
-
     <div class="container">
         <partial name="_CookieConsentPartial" />
         <main role="main" class="pb-3">
@@ -92,15 +65,18 @@
         <script src="~/lib/jquery-validation/dist/jquery.validate.js" asp-append-version="true"></script>
         <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js" asp-append-version="true"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js" asp-append-version="true"></script>
+        <script src="~/lib/microsoft/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
     <environment names="Staging,Production">
         <script src="~/lib/jquery-validation/dist/jquery.validate.min.js" asp-append-version="true"></script>
         <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js" asp-append-version="true"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-append-version="true"></script>
+        <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js" asp-append-version="true"></script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
 
     @this.RenderSection("Scripts", required: false)
 </body>
 </html>
+

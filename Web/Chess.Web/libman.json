@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.0",
   "defaultProvider": "jsdelivr",
   "libraries": [
@@ -37,9 +37,13 @@
       ]
     },
     {
-      "provider": "cdnjs",
-      "library": "signalr.js@2.4.1",
-      "destination": "wwwroot/lib/signalr.js/"
+      "provider": "unpkg",
+      "library": "@microsoft/signalr@latest",
+      "destination": "wwwroot/lib/microsoft/signalr/",
+      "files": [
+        "dist/browser/signalr.js",
+        "dist/browser/signalr.min.js"
+      ]
     }
   ]
 }
