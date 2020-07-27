@@ -13,10 +13,10 @@
 <div id="board" style="width: 620px; display: none; margin: auto"></div>
 
 <main id="main" class="container-fluid text-center">
-    <span id="timeView" class="row" style="display: none; margin-top: 15px">
+    <div id="timeView" class="row" style="display: none; margin-top: 15px">
         <h4 id="timeName"></h4>
         <p id="timeStatus"></p>
-    </span>
+    </div>
 
     <div id="findOpponent" class="row m-5">
         <div class="mx-auto my-auto text-center">
@@ -81,10 +81,9 @@
         connection.on("MoveDone", function (source, target, game) {
             board.move(`${source}-${target}`);
 
-            if (!gameOver) {
-                updateStatus(game.movingPlayer.userName);
-            }
-
+            //if (!gameOver) {
+            //    updateStatus(game.movingPlayer.userName);
+            //}
         })
 
         function updateStatus(name) {
@@ -98,8 +97,16 @@
             }
         }
 
-        function onDrop(source, target) {
-            connection.invoke("MoveSelected", source, target);
+        function onDrop(source, target, piece) {
+            console.log(source);
+            console.log(target);
+            console.log(piece);
+
+            var move = connection.invoke("MoveSelected", source, target, piece);
+            //move = " ";
+            //if (move == null) {
+            //    return 'snapback'
+            //}
         }
 
         var config = {

@@ -46,6 +46,7 @@
         {
             this.Move.Start = this.GetSquare(source);
             this.Move.End = this.GetSquare(target);
+            this.Move.Symbol = this.Move.Start.Piece.Symbol;
 
             if (this.MovePiece(movingPlayer, opponent) ||
                 this.TakePiece(movingPlayer, opponent) ||

@@ -52,7 +52,7 @@
         //    }
         //}
 
-        public Move MoveSelected(string source, string target, Player movingPlayer, Player opponent)
+        public Move MoveSelected(string source, string target, string piece, Player movingPlayer, Player opponent)
         {
             var move = this.ChessBoard.MakeMove(source, target, movingPlayer, opponent);
 
