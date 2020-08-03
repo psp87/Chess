@@ -57,19 +57,29 @@
         public async Task MoveSelected(string source, string target, string piece)
         {
             var player = this.players[this.Context.ConnectionId];
-            //if (!player.HasToMove)
-            //{
-            //    return;
-            //}
-
             var game = this.GetGame(player, out Player opponent);
-            //var move = game.MoveSelected(source, target, piece, player, opponent);
-            //if (move == null)
+
+            game.MoveSelected(source, target, piece, player, opponent);
+            ///if (move == null)
             //{
             //    return;
             //}
 
             await this.Clients.All.SendAsync("MoveDone", source, target, game);
+        }
+
+        public async Task CheckTurn(string piece)
+        {
+            var isYourTurn = false;
+            var player = this.players[this.Context.ConnectionId];
+            var game = this.GetGame(player, out Player opponent);
+
+            if (game.MovingPlayer == player)
+            {
+                isYourTurn = true;
+            }
+
+            await this.Clients.Caller.SendAsync("ReturnedTurn", isYourTurn);
         }
 
         private Game GetGame(Player player, out Player opponent)

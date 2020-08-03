@@ -10,7 +10,7 @@
 
 <link rel="stylesheet" href="~/css/chessboard-1.0.0.min.css">
 
-<div id="board" style="width: 620px; display: none; margin: auto"></div>
+<div id="board"></div>
 
 <main id="main" class="container-fluid text-center">
     <div id="timeView" class="row" style="display: none; margin-top: 15px">
@@ -42,6 +42,7 @@
         var playerColor;
         var playerName;
         var gameOver;
+        var movingPlayer;
 
         $('#findGame').click(function() {
             var name = $('#username').val();
@@ -64,6 +65,7 @@
 
                 playerColor = (playerId == game.player1.id) ? game.player1.color : game.player2.color;
                 playerName = (playerId == game.player1.id) ? game.player1.name : game.player2.name;
+                movingPlayer = game.movingPlayer;
 
                 if (playerColor == @((int)Color.Light)) {
                     board.orientation('white');
@@ -84,6 +86,7 @@
             //if (!gameOver) {
             //    updateStatus(game.movingPlayer.userName);
             //}
+            movingPlayer = game.movingPlayer;
         })
 
         function updateStatus(name) {
@@ -98,15 +101,11 @@
         }
 
         function onDrop(source, target, piece) {
-            console.log(source);
-            console.log(target);
-            console.log(piece);
+            if (playerColor != movingPlayer.color) {
+                return 'snapback'
+            }
 
-            var move = connection.invoke("MoveSelected", source, target, piece);
-            //move = " ";
-            //if (move == null) {
-            //    return 'snapback'
-            //}
+            connection.invoke("MoveSelected", source, target, piece);
         }
 
         var config = {

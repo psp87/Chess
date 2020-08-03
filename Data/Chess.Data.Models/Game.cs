@@ -52,16 +52,15 @@
         //    }
         //}
 
-        public Move MoveSelected(string source, string target, string piece, Player movingPlayer, Player opponent)
+        public void MoveSelected(string source, string target, string piece, Player movingPlayer, Player opponent)
         {
-            var move = this.ChessBoard.MakeMove(source, target, movingPlayer, opponent);
+            //var move = this.ChessBoard.MakeMove(source, target, movingPlayer, opponent);
+            var move = true;
 
-            if (move != null)
+            if (move)
             {
                 this.ChangeTurns();
             }
-
-            return move;
         }
 
         private void ChangeTurns()
