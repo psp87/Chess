@@ -41,6 +41,7 @@
             {
                 joiningPlayer.Color = Color.Dark;
                 opponent.Color = Color.Light;
+                opponent.HasToMove = true;
 
                 Game game = Factory.GetGame(opponent, joiningPlayer);
                 this.games[game.Id] = game;
@@ -54,18 +55,24 @@
             }
         }
 
-        public async Task MoveSelected(string source, string target)
+        public async Task MoveSelected(string source, string target, string fen)
         {
             var player = this.players[this.Context.ConnectionId];
             var game = this.GetGame(player, out Player opponent);
 
-            if (!game.MoveSelected(source, target, player, opponent))
+            if (!player.HasToMove)
             {
-                await this.Clients.Caller.SendAsync("Illigal move", source, target);
+                await this.Clients.Caller.SendAsync("Illigal Move", fen);
                 return;
             }
 
-            await this.Clients.All.SendAsync("MoveDone", source, target, game);
+            if (!game.MoveSelected(source, target, player, opponent))
+            {
+                await this.Clients.Caller.SendAsync("Illigal Move", fen);
+                return;
+            }
+
+            await this.Clients.Others.SendAsync("MoveDone", source, target, game);
         }
 
         private Game GetGame(Player player, out Player opponent)

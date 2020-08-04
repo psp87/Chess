@@ -84,16 +84,15 @@
         connection.on("MoveDone", function (source, target, game) {
             console.log('Legal Move');
             board.move(`${source}-${target}`);
-
+            
             //if (!gameOver) {
             //    updateStatus(game.movingPlayer.userName);
             //}
-            movingPlayer = game.movingPlayer;
         })
 
-        connection.on("Illigal Move", function (source, target) {
+        connection.on("Illigal Move", function (fen) {
             console.log("Illigal");
-            board.move(`${target}-${source}`);
+            board.position(fen);
         })
 
         function updateStatus(name) {
@@ -107,18 +106,8 @@
             }
         }
 
-        function onDrop(source, target, piece) {
-            if (piece[0] === 'w') {
-                pieceColor = 0;
-            } else {
-                pieceColor = 1;
-            }
-
-            if (playerColor != movingPlayer.color || pieceColor != movingPlayer.color) {
-                return 'snapback'
-            }
-
-            connection.invoke("MoveSelected", source, target);
+        function onDrop(source, target, piece, newPos, oldPos) {
+            connection.invoke("MoveSelected", source, target, Chessboard.objToFen(oldPos));
         }
 
         var config = {
