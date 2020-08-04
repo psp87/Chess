@@ -54,32 +54,18 @@
             }
         }
 
-        public async Task MoveSelected(string source, string target, string piece)
+        public async Task MoveSelected(string source, string target)
         {
             var player = this.players[this.Context.ConnectionId];
             var game = this.GetGame(player, out Player opponent);
 
-            game.MoveSelected(source, target, piece, player, opponent);
-            ///if (move == null)
-            //{
-            //    return;
-            //}
-
-            await this.Clients.All.SendAsync("MoveDone", source, target, game);
-        }
-
-        public async Task CheckTurn(string piece)
-        {
-            var isYourTurn = false;
-            var player = this.players[this.Context.ConnectionId];
-            var game = this.GetGame(player, out Player opponent);
-
-            if (game.MovingPlayer == player)
+            if (!game.MoveSelected(source, target, player, opponent))
             {
-                isYourTurn = true;
+                await this.Clients.Caller.SendAsync("Illigal move", source, target);
+                return;
             }
 
-            await this.Clients.Caller.SendAsync("ReturnedTurn", isYourTurn);
+            await this.Clients.All.SendAsync("MoveDone", source, target, game);
         }
 
         private Game GetGame(Player player, out Player opponent)

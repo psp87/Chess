@@ -43,6 +43,7 @@
         var playerName;
         var gameOver;
         var movingPlayer;
+        var pieceColor;
 
         $('#findGame').click(function() {
             var name = $('#username').val();
@@ -81,12 +82,18 @@
         })
 
         connection.on("MoveDone", function (source, target, game) {
+            console.log('Legal Move');
             board.move(`${source}-${target}`);
 
             //if (!gameOver) {
             //    updateStatus(game.movingPlayer.userName);
             //}
             movingPlayer = game.movingPlayer;
+        })
+
+        connection.on("Illigal Move", function (source, target) {
+            console.log("Illigal");
+            board.move(`${target}-${source}`);
         })
 
         function updateStatus(name) {
@@ -101,11 +108,17 @@
         }
 
         function onDrop(source, target, piece) {
-            if (playerColor != movingPlayer.color) {
+            if (piece[0] === 'w') {
+                pieceColor = 0;
+            } else {
+                pieceColor = 1;
+            }
+
+            if (playerColor != movingPlayer.color || pieceColor != movingPlayer.color) {
                 return 'snapback'
             }
 
-            connection.invoke("MoveSelected", source, target, piece);
+            connection.invoke("MoveSelected", source, target);
         }
 
         var config = {

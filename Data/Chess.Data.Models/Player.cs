@@ -9,21 +9,6 @@
     {
         private Dictionary<string, int> takenFigures;
 
-        public Player(string name, Color color)
-        {
-            this.takenFigures = new Dictionary<string, int>()
-            {
-                { nameof(Pawn), 0 },
-                { nameof(Knight), 0 },
-                { nameof(Bishop), 0 },
-                { nameof(Rook), 0 },
-                { nameof(Queen), 0 },
-            };
-            this.Name = name;
-            this.Color = color;
-            this.IsMoveAvailable = true;
-        }
-
         public Player(string username, string connectionId)
         {
             this.takenFigures = new Dictionary<string, int>()

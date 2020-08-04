@@ -35,32 +35,23 @@
 
         public Player Opponent => this.Player1?.HasToMove ?? false ? this.Player1 : this.Player2;
 
-        //public void Start()
-        //{
-        //    while (GlobalConstants.GameOver.ToString() == GameOver.None.ToString())
-        //    {
-        //        GlobalConstants.TurnCounter++;
-
-        //        this.ChessBoard.MakeMove(this.MovingPlayer, this.Opponent);
-
-        //        if (GlobalConstants.GameOver.ToString() != GameOver.None.ToString())
-        //        {
-        //            this.OnGameOver?.Invoke(this.MovingPlayer, new GameOverEventArgs(GlobalConstants.GameOver));
-        //        }
-
-        //        this.ChangeTurns();
-        //    }
-        //}
-
-        public void MoveSelected(string source, string target, string piece, Player movingPlayer, Player opponent)
+        public bool MoveSelected(string source, string target, Player movingPlayer, Player opponent)
         {
-            //var move = this.ChessBoard.MakeMove(source, target, movingPlayer, opponent);
-            var move = true;
-
-            if (move)
+            if (this.ChessBoard.MakeMove(source, target, movingPlayer, opponent))
             {
+                GlobalConstants.TurnCounter++;
+
+                if (GlobalConstants.GameOver.ToString() != GameOver.None.ToString())
+                {
+                    this.OnGameOver?.Invoke(this.MovingPlayer, new GameOverEventArgs(GlobalConstants.GameOver));
+                }
+
                 this.ChangeTurns();
+
+                return true;
             }
+
+            return false;
         }
 
         private void ChangeTurns()

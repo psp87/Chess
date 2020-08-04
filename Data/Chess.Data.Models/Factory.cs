@@ -13,11 +13,6 @@
             return new Board();
         }
 
-        //public static Player GetPlayer(string name, Color color)
-        //{
-        //    return new Player(name, color);
-        //}
-
         public static Player GetPlayer(string name, string connectionId)
         {
             return new Player(name, connectionId);

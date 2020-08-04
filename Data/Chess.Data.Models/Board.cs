@@ -42,36 +42,34 @@
 
         public Move Move { get; set; }
 
-        public Move MakeMove(string source, string target, Player movingPlayer, Player opponent)
+        public bool MakeMove(string source, string target, Player movingPlayer, Player opponent)
         {
             this.Move.Start = this.GetSquare(source);
             this.Move.End = this.GetSquare(target);
             this.Move.Symbol = this.Move.Start.Piece.Symbol;
 
             if (this.MovePiece(movingPlayer, opponent) ||
-                this.TakePiece(movingPlayer, opponent) ||
-                this.EnPassantTake(movingPlayer, opponent))
+                this.TakePiece(movingPlayer, opponent))
             {
                 if (movingPlayer.IsCheck)
                 {
                     movingPlayer.IsCheck = false;
-                    return null;
+                    return false;
                 }
 
                 if (this.IsPlayerChecked(opponent))
                 {
-                    // this.printer.Check(movingPlayer);
                     this.IsOpponentCheckmate(movingPlayer, opponent, this.Move.End);
                 }
 
-                return this.Move;
+                return true;
             }
 
             this.IsGameRepetitionDraw();
             this.IsGameDraw();
             this.IsGameStalemate(opponent);
 
-            return null;
+            return false;
         }
 
         public void Initialize()
