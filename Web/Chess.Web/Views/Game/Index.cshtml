@@ -77,21 +77,17 @@
                 document.getElementById('timeView').style.display = "block";
                 document.getElementById('timeName').innerText = "Player Name: " + playerName;
 
-                updateStatus(game.movingPlayer.name);
+                updateStatus(game.opponent.name);
             }
         })
 
-        connection.on("MoveDone", function (source, target, game) {
-            console.log('Legal Move');
+        connection.on("MoveDone", function(source, target, game) {
             board.move(`${source}-${target}`);
-            
-            //if (!gameOver) {
-            //    updateStatus(game.movingPlayer.userName);
-            //}
+
+            updateStatus(game.opponent.name);
         })
 
-        connection.on("Illigal Move", function (fen) {
-            console.log("Illigal");
+        connection.on("InvalidMove", function(fen) {
             board.position(fen);
         })
 
@@ -107,7 +103,11 @@
         }
 
         function onDrop(source, target, piece, newPos, oldPos) {
-            connection.invoke("MoveSelected", source, target, Chessboard.objToFen(oldPos));
+            if (target.length === 2) {
+                let sourceFen = Chessboard.objToFen(oldPos);
+
+                connection.invoke("MoveSelected", source, target, sourceFen);
+            }
         }
 
         var config = {

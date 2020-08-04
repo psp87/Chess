@@ -62,17 +62,17 @@
 
             if (!player.HasToMove)
             {
-                await this.Clients.Caller.SendAsync("Illigal Move", fen);
+                await this.Clients.Caller.SendAsync("InvalidMove", fen);
                 return;
             }
 
             if (!game.MoveSelected(source, target, player, opponent))
             {
-                await this.Clients.Caller.SendAsync("Illigal Move", fen);
+                await this.Clients.Caller.SendAsync("InvalidMove", fen);
                 return;
             }
 
-            await this.Clients.Others.SendAsync("MoveDone", source, target, game);
+            await this.Clients.All.SendAsync("MoveDone", source, target, game);
         }
 
         private Game GetGame(Player player, out Player opponent)
