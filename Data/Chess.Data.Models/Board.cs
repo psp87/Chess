@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text.RegularExpressions;
 
     using Chess.Common;
     using Chess.Common.Enums;
@@ -46,7 +45,6 @@
         {
             this.Move.Start = this.GetSquare(source);
             this.Move.End = this.GetSquare(target);
-            this.Move.Symbol = this.Move.Start.Piece.Symbol;
 
             if (this.MovePiece(movingPlayer, opponent) ||
                 this.TakePiece(movingPlayer, opponent))
@@ -124,7 +122,6 @@
         {
             if (!this.Move.End.IsOccupied &&
                 movingPlayer.Color == this.Move.Start.Piece.Color &&
-                this.Move.Symbol == this.Move.Start.Piece.Symbol &&
                 this.Move.Start.Piece.Move(this.Move.End.Position, this.Matrix))
             {
                 if (!this.TryMove(movingPlayer, opponent))
@@ -143,7 +140,6 @@
             if (this.Move.End.IsOccupied &&
                 this.Move.End.Piece.Color != this.Move.Start.Piece.Color &&
                 movingPlayer.Color == this.Move.Start.Piece.Color &&
-                this.Move.Symbol == this.Move.Start.Piece.Symbol &&
                 this.Move.Start.Piece.Take(this.Move.End.Position, this.Matrix))
             {
                 string pieceName = this.Move.End.Piece.Name;
