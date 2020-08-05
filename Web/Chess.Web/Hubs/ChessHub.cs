@@ -52,6 +52,8 @@
                     this.Groups.AddToGroupAsync(game.Player1.Id, groupName: game.Id),
                     this.Groups.AddToGroupAsync(game.Player2.Id, groupName: game.Id),
                     this.Clients.Group(game.Id).SendAsync("Start", game));
+
+                await this.Clients.Caller.SendAsync("ChangeOrientation");
             }
         }
 
