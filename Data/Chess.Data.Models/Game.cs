@@ -31,13 +31,13 @@
 
         public Player Player2 { get; set; }
 
-        public Player MovingPlayer => this.Player1?.HasToMove ?? false ? this.Player2 : this.Player1;
+        public Player MovingPlayer => this.Player1?.HasToMove ?? false ? this.Player1 : this.Player2;
 
-        public Player Opponent => this.Player1?.HasToMove ?? false ? this.Player1 : this.Player2;
+        public Player Opponent => this.Player1?.HasToMove ?? false ? this.Player2 : this.Player1;
 
-        public bool MoveSelected(string source, string target, Player movingPlayer, Player opponent)
+        public bool MoveSelected(string source, string target)
         {
-            if (this.ChessBoard.MakeMove(source, target, movingPlayer, opponent))
+            if (this.ChessBoard.MakeMove(source, target, this.MovingPlayer, this.Opponent))
             {
                 GlobalConstants.TurnCounter++;
 

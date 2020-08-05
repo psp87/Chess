@@ -57,24 +57,19 @@
             }
         }
 
-        public async Task MoveSelected(string source, string target, string fen)
+        public async Task MoveSelected(string source, string target, string sourceFen)
         {
-            var player = this.players[this.Context.ConnectionId];
-            var game = this.GetGame(player, out Player opponent);
+            var movingPlayer = this.players[this.Context.ConnectionId];
+            var game = this.GetGame(movingPlayer, out Player opponent);
 
-            if (!player.HasToMove)
+            if (!movingPlayer.HasToMove ||
+                !game.MoveSelected(source, target))
             {
-                await this.Clients.Caller.SendAsync("InvalidMove", fen);
+                await this.Clients.Caller.SendAsync("InvalidMove", sourceFen);
                 return;
             }
 
-            if (!game.MoveSelected(source, target, player, opponent))
-            {
-                await this.Clients.Caller.SendAsync("InvalidMove", fen);
-                return;
-            }
-
-            await this.Clients.All.SendAsync("MoveDone", source, target, game);
+            await this.Clients.All.SendAsync("BoardMove", source, target, game);
         }
 
         private Game GetGame(Player player, out Player opponent)

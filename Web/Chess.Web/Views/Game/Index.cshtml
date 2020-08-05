@@ -68,7 +68,7 @@
                 document.getElementById('nameView').style.display = "block";
                 document.getElementById('name').innerText = `PLAYER NAME: ${playerName}`;
 
-                updateStatus(game.opponent.name);
+                updateStatus(game.movingPlayer.name);
             }
         })
 
@@ -80,10 +80,9 @@
             board.position(fen);
         })
 
-        connection.on("MoveDone", function (source, target, game) {
+        connection.on("BoardMove", function (source, target, game) {
             board.move(`${source}-${target}`);
-
-            updateStatus(game.opponent.name);
+            updateStatus(game.movingPlayer.name);
         })
 
         function updateStatus(name) {
