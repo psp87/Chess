@@ -57,16 +57,16 @@
 
         public async Task MoveSelected(string source, string target, string sourceFen)
         {
-            var movingPlayer = this.players[this.Context.ConnectionId];
+            var player = this.players[this.Context.ConnectionId];
 
-            if (!movingPlayer.HasToMove ||
+            if (!player.HasToMove ||
                 !this.Game.MoveSelected(source, target))
             {
                 await this.Clients.Caller.SendAsync("InvalidMove", sourceFen);
                 return;
             }
 
-            await this.Clients.All.SendAsync("BoardMove", source, target, this.Game);
+            await this.Clients.All.SendAsync("BoardMove", source, target, this.Game.MovingPlayer.Name);
         }
 
         private void Game_OnGameOver(object sender, EventArgs e)

@@ -62,12 +62,12 @@
                     this.IsOpponentCheckmate(movingPlayer, opponent, this.Move.End);
                 }
 
+                this.IsGameRepetitionDraw();
+                this.IsGameDraw();
+                this.IsGameStalemate(opponent);
+
                 return true;
             }
-
-            this.IsGameRepetitionDraw();
-            this.IsGameDraw();
-            this.IsGameStalemate(opponent);
 
             return false;
         }

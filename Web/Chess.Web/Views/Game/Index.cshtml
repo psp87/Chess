@@ -80,9 +80,9 @@
             board.position(fen);
         })
 
-        connection.on("BoardMove", function (source, target, game) {
+        connection.on("BoardMove", function (source, target, movingPlayerName) {
             board.move(`${source}-${target}`);
-            updateStatus(game.movingPlayer.name);
+            updateStatus(movingPlayerName);
         })
 
         function updateStatus(name) {
