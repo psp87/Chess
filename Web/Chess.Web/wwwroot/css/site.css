@@ -8,6 +8,12 @@ for details on configuring this project to bundle and minify static web assets. 
     margin: auto;
 }
 
+#statusView, #nameView {
+    display: none;
+    margin-top: 15px;
+    margin-bottom: 15px
+}
+
 
 
 a.navbar-brand {
