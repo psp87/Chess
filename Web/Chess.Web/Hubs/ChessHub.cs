@@ -17,12 +17,11 @@
         private readonly ConcurrentDictionary<string, Player> players =
             new ConcurrentDictionary<string, Player>(StringComparer.OrdinalIgnoreCase);
 
-        private readonly ConcurrentDictionary<string, Game> games =
-            new ConcurrentDictionary<string, Game>(StringComparer.OrdinalIgnoreCase);
-
         private readonly ConcurrentQueue<Player> waitingPlayers =
             new ConcurrentQueue<Player>();
         #endregion
+
+        public Game Game { get; set; }
 
         public async Task FindGame(string username)
         {
@@ -43,15 +42,14 @@
                 opponent.Color = Color.Light;
                 opponent.HasToMove = true;
 
-                Game game = Factory.GetGame(opponent, joiningPlayer);
-                this.games[game.Id] = game;
+                this.Game = Factory.GetGame(opponent, joiningPlayer);
 
-                game.OnGameOver += this.Game_OnGameOver;
+                this.Game.OnGameOver += this.Game_OnGameOver;
 
                 await Task.WhenAll(
-                    this.Groups.AddToGroupAsync(game.Player1.Id, groupName: game.Id),
-                    this.Groups.AddToGroupAsync(game.Player2.Id, groupName: game.Id),
-                    this.Clients.Group(game.Id).SendAsync("Start", game));
+                    this.Groups.AddToGroupAsync(this.Game.Player1.Id, groupName: this.Game.Id),
+                    this.Groups.AddToGroupAsync(this.Game.Player2.Id, groupName: this.Game.Id),
+                    this.Clients.Group(this.Game.Id).SendAsync("Start", this.Game));
 
                 await this.Clients.Caller.SendAsync("ChangeOrientation");
             }
@@ -60,30 +58,15 @@
         public async Task MoveSelected(string source, string target, string sourceFen)
         {
             var movingPlayer = this.players[this.Context.ConnectionId];
-            var game = this.GetGame(movingPlayer, out Player opponent);
 
             if (!movingPlayer.HasToMove ||
-                !game.MoveSelected(source, target))
+                !this.Game.MoveSelected(source, target))
             {
                 await this.Clients.Caller.SendAsync("InvalidMove", sourceFen);
                 return;
             }
 
-            await this.Clients.All.SendAsync("BoardMove", source, target, game);
-        }
-
-        private Game GetGame(Player player, out Player opponent)
-        {
-            opponent = null;
-            Game foundGame = this.games.Values.FirstOrDefault(g => g.Id == player.GameId);
-
-            if (foundGame == null)
-            {
-                return null;
-            }
-
-            opponent = (player.Id == foundGame.Player1.Id) ? foundGame.Player2 : foundGame.Player1;
-            return foundGame;
+            await this.Clients.All.SendAsync("BoardMove", source, target, this.Game);
         }
 
         private void Game_OnGameOver(object sender, EventArgs e)
