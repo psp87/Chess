@@ -35,15 +35,6 @@
         "dist/jquery.validate.unobtrusive.js",
         "dist/jquery.validate.unobtrusive.min.js"
       ]
-    },
-    {
-      "provider": "unpkg",
-      "library": "@microsoft/signalr@latest",
-      "destination": "wwwroot/lib/microsoft/signalr/",
-      "files": [
-        "dist/browser/signalr.js",
-        "dist/browser/signalr.min.js"
-      ]
     }
   ]
 }

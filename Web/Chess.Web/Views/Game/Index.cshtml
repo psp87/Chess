@@ -9,7 +9,7 @@
 
 <main id="main" class="container-fluid text-center">
     <div id="statusView" class="row">
-        <h6 id="status"></h6>
+        <h6 id="status">STATUS: <span id="statusText"></span></h6>
     </div>
     <div id="board"></div>
     <div id="nameView" class="row">
@@ -76,8 +76,9 @@
             board.orientation('black');
         })
 
-        connection.on("InvalidMove", function (fen) {
+        connection.on("InvalidMove", function (fen, movingPlayerName) {
             board.position(fen);
+            invalidMessage(movingPlayerName);
         })
 
         connection.on("BoardMove", function (source, target, movingPlayerName) {
@@ -85,15 +86,40 @@
             updateStatus(movingPlayerName);
         })
 
-        function updateStatus(name) {
-            var status = document.getElementById('status');
+        function invalidMessage(name) {
+            var statusText = document.getElementById('statusText');
+
             if (name == playerName) {
-                status.innerText = "STATUS: Your turn!";
-                status.style.color = "green";
-            } else {
-                status.innerText = `STATUS: ${name} turn!`;
-                status.style.color = "red";
+                statusText.innerText = "INVALID MOVE!";
+                statusText.style.color = "red";
+                sleep(1000).then(() => {
+                    statusText.innerText = "YOUR TURN!";
+                    statusText.style.color = "green";
+                })
             }
+            else {
+                statusText.innerText = "IT'S NOT YOUR TURN!";
+                statusText.style.color = "red";
+                sleep(1000).then(() => {
+                    statusText.innerText = `${name} TURN!`;
+                    statusText.style.color = "red";
+                })
+            }
+        }
+
+        function updateStatus(name) {
+            var statusText = document.getElementById('statusText');
+            if (name == playerName) {
+                statusText.innerText = "YOUR TURN!";
+                statusText.style.color = "green";
+            } else {
+                statusText.innerText = `${name} TURN!`;
+                statusText.style.color = "red";
+            }
+        }
+
+        function sleep (time) {
+            return new Promise((resolve) => setTimeout(resolve, time));
         }
 
         function onDrop(source, target, piece, newPos, oldPos) {

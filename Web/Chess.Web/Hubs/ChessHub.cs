@@ -62,7 +62,7 @@
             if (!player.HasToMove ||
                 !this.Game.MoveSelected(source, target))
             {
-                await this.Clients.Caller.SendAsync("InvalidMove", sourceFen);
+                await this.Clients.Caller.SendAsync("InvalidMove", sourceFen, this.Game.MovingPlayer.Name);
                 return;
             }
 
