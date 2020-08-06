@@ -8,7 +8,6 @@
     using Chess.Common.Enums;
     using Chess.Data.Models;
     using Chess.Data.Models.EventArgs;
-
     using Microsoft.AspNetCore.SignalR;
 
     public class ChessHub : Hub
@@ -68,7 +67,14 @@
 
             if (GlobalConstants.GameOver.ToString() == GameOver.None.ToString())
             {
-                await this.Clients.All.SendAsync("BoardMove", source, target, this.Game.MovingPlayer.Name);
+                await this.Clients.Others.SendAsync("BoardMove", source, target);
+                await this.Clients.All.SendAsync("UpdateStatus", this.Game.MovingPlayer.Name);
+            }
+
+            if (GlobalConstants.EnPassantTake != null)
+            {
+                await this.Clients.All.SendAsync("EnPassantTake", GlobalConstants.EnPassantTake, target);
+                GlobalConstants.EnPassantTake = null;
             }
         }
 

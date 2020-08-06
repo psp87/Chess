@@ -37,10 +37,7 @@
         connection.start();
 
         var playerId;
-        var playerColor;
         var playerName;
-        var gameOver;
-        var pieceColor;
 
         $('#findGame').click(function() {
             var name = $('#username').val();
@@ -81,15 +78,22 @@
             invalidMessage(movingPlayerName);
         })
 
-        connection.on("BoardMove", function (source, target, movingPlayerName) {
+        connection.on("BoardMove", function (source, target) {
             board.move(`${source}-${target}`);
-            updateStatus(movingPlayerName);
         })
 
         connection.on("GameOver", function (winner, gameOver) {
             document.getElementById('statusText').innerText = `${winner.name} wins the game!`;
             document.getElementById('statusText').style.color = "purple";
             document.getElementById('board').style.pointerEvents = "none";
+        })
+
+        connection.on("EnPassantTake", function (pawnPosition, target) {
+            board.move(`${target}-${pawnPosition}`, `${pawnPosition}-${target}`);
+        })
+
+        connection.on("UpdateStatus", function (movingPlayerName) {
+            updateStatus(movingPlayerName);
         })
 
         function invalidMessage(name) {

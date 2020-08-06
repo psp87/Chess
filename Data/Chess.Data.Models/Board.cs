@@ -47,7 +47,8 @@
             this.Move.End = this.GetSquare(target);
 
             if (this.MovePiece(movingPlayer, opponent) ||
-                this.TakePiece(movingPlayer, opponent))
+                this.TakePiece(movingPlayer, opponent) ||
+                this.EnPassantTake(movingPlayer, opponent))
             {
                 if (movingPlayer.IsCheck)
                 {
@@ -160,8 +161,8 @@
         private bool EnPassantTake(Player movingPlayer, Player opponent)
         {
             if (EnPassant.Turn == GlobalConstants.TurnCounter &&
-                this.Move.End.Position.X == EnPassant.Position.X &&
-                this.Move.End.Position.Y == EnPassant.Position.Y &&
+                this.Move.End.Position.X == EnPassant.PositionX &&
+                this.Move.End.Position.Y == EnPassant.PositionY &&
                 this.Move.Start.Piece is Pawn)
             {
                 this.PlacePiece(this.Move);
@@ -177,21 +178,26 @@
                     this.RemovePiece(this.Move.End);
                     this.Matrix[this.Move.Start.Position.Y][this.Move.Start.Position.X + x].Piece = piece;
                     this.CalculateAttackedSquares();
-
-                    // this.printer.KingIsCheck(movingPlayer);
                     movingPlayer.IsCheck = true;
                     return true;
                 }
 
                 movingPlayer.IsCheck = false;
 
-                // this.drawer.Piece(this.Move.End.Position.Y, this.Move.End.Position.X, this.Move.End.Piece);
-                // this.drawer.EmptySquare(this.Move.Start.Position.Y, this.Move.Start.Position.X);
-                // this.drawer.EmptySquare(this.Move.Start.Position.Y, this.Move.Start.Position.X + x);
+                string position = this.GetStringPosition(this.Move.Start.Position.X + x, this.Move.Start.Position.Y);
+                GlobalConstants.EnPassantTake = position;
+
                 return true;
             }
 
             return false;
+        }
+
+        private string GetStringPosition(int x, int y)
+        {
+            char col = (char)(97 + x);
+            int row = Math.Abs(y - 8);
+            return $"{col}{row}";
         }
 
         private bool TryMove(Player movingPlayer, Player opponent)
@@ -205,13 +211,9 @@
                 this.ReversePiece(this.Move);
                 this.RemovePiece(this.Move.End);
                 this.CalculateAttackedSquares();
-
-                // this.printer.KingIsCheck(movingPlayer);
                 return false;
             }
 
-            // this.drawer.NewPiece(this.Move);
-            // this.printer.EmptyCheckScreen(opponent);
             if (this.Move.End.Piece is Pawn && this.Move.End.Piece.IsLastMove)
             {
                 // this.Move.End.Piece = this.drawer.PawnPromotion(this.Move.End);
