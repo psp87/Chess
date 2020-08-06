@@ -527,7 +527,7 @@
                         int signRow = attackingRow - kingY < 0 ? i : -i;
                         int signCol = attackingCol - kingX < 0 ? i : -i;
 
-                        if (this.Matrix[attackingRow + signRow][kingX + signCol].IsAttacked.Where(x => x.Color == opponent.Color).Any())
+                        if (this.Matrix[attackingRow + signRow][attackingCol + signCol].IsAttacked.Where(x => x.Color == opponent.Color).Any())
                         {
                             if (this.Matrix[attackingRow + signRow][attackingCol + signCol].IsAttacked.Count(x => x.Color == opponent.Color) > 1)
                             {

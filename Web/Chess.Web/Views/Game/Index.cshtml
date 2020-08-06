@@ -86,6 +86,12 @@
             updateStatus(movingPlayerName);
         })
 
+        connection.on("GameOver", function (winner, gameOver) {
+            document.getElementById('statusText').innerText = `${winner.name} wins the game!`;
+            document.getElementById('statusText').style.color = "purple";
+            document.getElementById('board').style.pointerEvents = "none";
+        })
+
         function invalidMessage(name) {
             var statusText = document.getElementById('statusText');
 
@@ -125,7 +131,6 @@
         function onDrop(source, target, piece, newPos, oldPos) {
             if (target.length === 2) {
                 let sourceFen = Chessboard.objToFen(oldPos);
-
                 connection.invoke("MoveSelected", source, target, sourceFen);
             }
         }

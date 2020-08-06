@@ -2,9 +2,9 @@
 {
     using System;
     using System.Collections.Concurrent;
-    using System.Linq;
     using System.Threading.Tasks;
 
+    using Chess.Common;
     using Chess.Common.Enums;
     using Chess.Data.Models;
     using Chess.Data.Models.EventArgs;
@@ -66,7 +66,10 @@
                 return;
             }
 
-            await this.Clients.All.SendAsync("BoardMove", source, target, this.Game.MovingPlayer.Name);
+            if (GlobalConstants.GameOver.ToString() == GameOver.None.ToString())
+            {
+                await this.Clients.All.SendAsync("BoardMove", source, target, this.Game.MovingPlayer.Name);
+            }
         }
 
         private void Game_OnGameOver(object sender, EventArgs e)
@@ -74,7 +77,7 @@
             var player = sender as Player;
             var gameOver = e as GameOverEventArgs;
 
-            this.Clients.All.SendAsync("GameOver", gameOver.GameOver, player);
+            this.Clients.All.SendAsync("GameOver", player, gameOver.GameOver);
         }
     }
 }
