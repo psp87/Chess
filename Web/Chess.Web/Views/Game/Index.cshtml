@@ -13,7 +13,7 @@
     </div>
     <div id="board"></div>
     <div id="nameView" class="row">
-        <h6 id="name"></h6>
+        <h6 id="name">PLAYER: <span id="nameValue"></span></h6>
     </div>
 
     <div id="findOpponent" class="row m-5">
@@ -63,7 +63,7 @@
 
                 document.getElementById('statusView').style.display = "block";
                 document.getElementById('nameView').style.display = "block";
-                document.getElementById('name').innerText = `PLAYER NAME: ${playerName}`;
+                document.getElementById('nameValue').innerText = playerName;
 
                 updateStatus(game.movingPlayer.name);
             }
@@ -100,18 +100,18 @@
             var statusText = document.getElementById('statusText');
 
             if (name == playerName) {
-                statusText.innerText = "INVALID MOVE!";
+                statusText.innerText = "Invalid Move!";
                 statusText.style.color = "red";
-                sleep(1000).then(() => {
-                    statusText.innerText = "YOUR TURN!";
+                sleep(1500).then(() => {
+                    statusText.innerText = "Your Turn!";
                     statusText.style.color = "green";
                 })
             }
             else {
-                statusText.innerText = "IT'S NOT YOUR TURN!";
+                statusText.innerText = "It's not your turn!";
                 statusText.style.color = "red";
-                sleep(1000).then(() => {
-                    statusText.innerText = `${name} TURN!`;
+                sleep(1500).then(() => {
+                    statusText.innerText = `${name}'s turn!`;
                     statusText.style.color = "red";
                 })
             }
@@ -120,10 +120,10 @@
         function updateStatus(name) {
             var statusText = document.getElementById('statusText');
             if (name == playerName) {
-                statusText.innerText = "YOUR TURN!";
+                statusText.innerText = "Your turn!";
                 statusText.style.color = "green";
             } else {
-                statusText.innerText = `${name} TURN!`;
+                statusText.innerText = `${name}'s turn!`;
                 statusText.style.color = "red";
             }
         }

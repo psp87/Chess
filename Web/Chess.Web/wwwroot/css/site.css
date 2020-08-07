@@ -11,7 +11,11 @@ for details on configuring this project to bundle and minify static web assets. 
 #statusView, #nameView {
     display: none;
     margin-top: 15px;
-    margin-bottom: 15px
+    margin-bottom: 15px;
+}
+
+#status, #name {
+    color: darkgray;
 }
 
 
