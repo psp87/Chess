@@ -20,7 +20,7 @@
                     {
                         var checkedSquare = matrix[piece.Position.Y + i][piece.Position.X + k];
 
-                        if (checkedSquare.IsOccupied || checkedSquare.Piece.Color != piece.Color)
+                        if (!checkedSquare.IsOccupied || checkedSquare.Piece.Color != piece.Color)
                         {
                             return true;
                         }

@@ -479,20 +479,15 @@
                     for (int i = 1; i <= difference; i++)
                     {
                         int sign = attackingCol - kingX < 0 ? i : -i;
+                        var signPlayer = opponent.Color == Color.Light ? 1 : -1;
 
-                        if (this.Matrix[kingY][attackingCol + sign].IsAttacked.Where(x => x.Color == opponent.Color).Any())
+                        var currentSquare = this.Matrix[kingY][attackingCol + sign];
+                        var neighbourSquare = this.Matrix[kingY][attackingCol + sign + signPlayer];
+
+                        if (currentSquare.IsAttacked.Where(x => x.Color == opponent.Color && !(x is King) && !(x is Pawn)).Any() ||
+                            (neighbourSquare.Piece is Pawn && neighbourSquare.Piece.Color == opponent.Color))
                         {
-                            if (this.Matrix[kingY][attackingCol + sign].IsAttacked.Count(x => x.Color == opponent.Color) > 1)
-                            {
-                                return true;
-                            }
-                            else
-                            {
-                                if (!(this.Matrix[kingY][attackingCol + sign].IsAttacked.Where(x => x.Color == opponent.Color).First() is King))
-                                {
-                                    return true;
-                                }
-                            }
+                            return true;
                         }
                     }
                 }
@@ -505,19 +500,9 @@
                     {
                         int sign = attackingRow - kingY < 0 ? i : -i;
 
-                        if (this.Matrix[attackingRow + sign][kingX].IsAttacked.Where(x => x.Color == opponent.Color).Any())
+                        if (this.Matrix[attackingRow + sign][kingX].IsAttacked.Where(x => x.Color == opponent.Color && !(x is King) && !(x is Pawn)).Any())
                         {
-                            if (this.Matrix[kingY + sign][attackingCol].IsAttacked.Count(x => x.Color == opponent.Color) > 1)
-                            {
-                                return true;
-                            }
-                            else
-                            {
-                                if (!(this.Matrix[kingY + sign][attackingCol].IsAttacked.Where(x => x.Color == opponent.Color).First() is King))
-                                {
-                                    return true;
-                                }
-                            }
+                            return true;
                         }
                     }
                 }
@@ -530,20 +515,15 @@
                     {
                         int signRow = attackingRow - kingY < 0 ? i : -i;
                         int signCol = attackingCol - kingX < 0 ? i : -i;
+                        var signPlayer = opponent.Color == Color.Light ? 1 : -1;
 
-                        if (this.Matrix[attackingRow + signRow][attackingCol + signCol].IsAttacked.Where(x => x.Color == opponent.Color).Any())
+                        var currentSquare = this.Matrix[attackingRow + signRow][attackingCol + signCol];
+                        var neighbourSquare = this.Matrix[attackingRow + signRow + signPlayer][attackingCol + signCol];
+
+                        if (currentSquare.IsAttacked.Where(x => x.Color == opponent.Color && !(x is King) && !(x is Pawn)).Any() ||
+                            (neighbourSquare.Piece is Pawn && neighbourSquare.Piece.Color == opponent.Color))
                         {
-                            if (this.Matrix[attackingRow + signRow][attackingCol + signCol].IsAttacked.Count(x => x.Color == opponent.Color) > 1)
-                            {
-                                return true;
-                            }
-                            else
-                            {
-                                if (!(this.Matrix[attackingRow + signRow][attackingCol + signCol].IsAttacked.Where(x => x.Color == opponent.Color).First() is King))
-                                {
-                                    return true;
-                                }
-                            }
+                            return true;
                         }
                     }
                 }
