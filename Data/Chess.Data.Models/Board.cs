@@ -52,7 +52,6 @@
             {
                 if (movingPlayer.IsCheck)
                 {
-                    movingPlayer.IsCheck = false;
                     return false;
                 }
 
@@ -220,6 +219,7 @@
                 this.CalculateAttackedSquares();
             }
 
+            movingPlayer.IsCheck = false;
             return true;
         }
 
@@ -246,6 +246,7 @@
 
             if (kingSquare.IsAttacked.Where(x => x.Color != kingSquare.Piece.Color).Any())
             {
+                player.IsCheck = true;
                 return true;
             }
 
@@ -425,16 +426,17 @@
                         {
                             var currentFigure = this.Matrix[kingY][kingX].Piece;
                             var empty = Factory.GetEmpty();
+                            var neighbourFigure = this.Matrix[kingY + y][kingX + x].Piece;
 
                             this.AssignNewValuesAndCalculate(kingY, kingX, y, x, currentFigure, empty);
 
                             if (!this.Matrix[kingY + y][kingX + x].IsAttacked.Where(k => k.Color == movingPlayer.Color).Any())
                             {
-                                this.AssignOldValuesAndCalculate(kingY, kingX, y, x, currentFigure, empty);
+                                this.AssignOldValuesAndCalculate(kingY, kingX, y, x, currentFigure, neighbourFigure);
                                 return true;
                             }
 
-                            this.AssignOldValuesAndCalculate(kingY, kingX, y, x, currentFigure, empty);
+                            this.AssignOldValuesAndCalculate(kingY, kingX, y, x, currentFigure, neighbourFigure);
                         }
                     }
                 }
@@ -577,12 +579,17 @@
             this.CalculateAttackedSquares();
         }
 
-        private void AssignOldValuesAndCalculate(int kingRow, int kingCol, int i, int k, IPiece currentFigure, IPiece empty)
+        private void AssignOldValuesAndCalculate(int kingRow, int kingCol, int i, int k, IPiece currentFigure, IPiece neighbourFigure)
         {
             this.Matrix[kingRow][kingCol].Piece = currentFigure;
             this.Matrix[kingRow][kingCol].IsOccupied = true;
-            this.Matrix[kingRow + i][kingCol + k].Piece = empty;
-            this.Matrix[kingRow + i][kingCol + k].IsOccupied = false;
+            this.Matrix[kingRow + i][kingCol + k].Piece = neighbourFigure;
+            this.Matrix[kingRow + i][kingCol + k].IsOccupied = true;
+            if (neighbourFigure is Empty)
+            {
+                this.Matrix[kingRow + i][kingCol + k].IsOccupied = false;
+            }
+
             this.CalculateAttackedSquares();
         }
         #endregion
