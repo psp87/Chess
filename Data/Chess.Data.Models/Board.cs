@@ -335,7 +335,8 @@
 
         private void IsGameDraw()
         {
-            int counter = 0;
+            int counterBishopKnightWhite = 0;
+            int counterBishopKnightBlack = 0;
 
             for (int y = 0; y < GlobalConstants.BoardRows; y++)
             {
@@ -343,13 +344,24 @@
                 {
                     var currentFigure = this.Matrix[y][x].Piece;
 
-                    if (!(currentFigure is Empty))
+                    if (!(currentFigure is Empty || currentFigure is King))
                     {
-                        counter++;
-
-                        if (counter > 2)
+                        if (currentFigure is Pawn ||
+                            currentFigure is Rook ||
+                            currentFigure is Queen ||
+                            counterBishopKnightWhite > 1 ||
+                            counterBishopKnightBlack > 1)
                         {
                             return;
+                        }
+
+                        if (currentFigure.Color == Color.Light)
+                        {
+                            counterBishopKnightWhite++;
+                        }
+                        else
+                        {
+                            counterBishopKnightBlack++;
                         }
                     }
                 }
