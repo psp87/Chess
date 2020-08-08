@@ -84,9 +84,22 @@
         })
 
         connection.on("GameOver", function (winner, gameOver) {
-            document.getElementById('statusText').innerText = `${winner.name} wins the game!`;
-            document.getElementById('statusText').style.color = "purple";
-            document.getElementById('board').style.pointerEvents = "none";
+            var $statusText = document.getElementById('statusText');
+            var $board = document.getElementById('board');
+            
+            $statusText.style.color = "purple";
+            $board.style.pointerEvents = "none";
+
+            switch (gameOver) {
+                case 1: $statusText.innerText = `CHECKMATE! ${winner.name.toUpperCase()} WON THE GAME!`;
+                    break;
+                case 2: $statusText.innerText = `THE GAME IS STALEMATE!`;
+                    break;
+                case 3: $statusText.innerText = `THE GAME IS DRAW!`;
+                    break;
+                case 4: $statusText.innerText = `THE GAME IS DRAW BY REPETITION!`;
+                    break;
+            }
         })
 
         connection.on("EnPassantTake", function (pawnPosition, target) {
