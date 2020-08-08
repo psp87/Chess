@@ -10,6 +10,7 @@
 <main id="main" class="container-fluid text-center">
     <div id="statusView" class="row">
         <h6 id="status">STATUS: <span id="statusText"></span></h6>
+        <h6 id="check"></h6>
     </div>
     <div id="board"></div>
     <div id="nameView" class="row">
@@ -106,9 +107,18 @@
             board.move(`${target}-${pawnPosition}`, `${pawnPosition}-${target}`);
         })
 
+        connection.on("Check", function () {
+            checkMessage();
+        })
+
         connection.on("UpdateStatus", function (movingPlayerName) {
             updateStatus(movingPlayerName);
         })
+
+        function checkMessage() {
+            var check = document.getElementById('check');
+            check.innerText = "Check!";
+        }
 
         function invalidMessage(name) {
             var statusText = document.getElementById('statusText');

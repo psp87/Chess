@@ -37,6 +37,8 @@
             this.Move = Factory.GetMove();
         }
 
+        public event EventHandler OnCheck;
+
         public Square[][] Matrix { get; set; }
 
         public Move Move { get; set; }
@@ -57,6 +59,7 @@
 
                 if (this.IsPlayerChecked(opponent))
                 {
+                    this.OnCheck?.Invoke(null, null);
                     this.IsOpponentCheckmate(movingPlayer, opponent, this.Move.End);
                 }
 

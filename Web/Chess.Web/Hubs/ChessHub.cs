@@ -44,6 +44,7 @@
                 this.Game = Factory.GetGame(opponent, joiningPlayer);
 
                 this.Game.OnGameOver += this.Game_OnGameOver;
+                this.Game.ChessBoard.OnCheck += this.Board_OnCheck;
 
                 await Task.WhenAll(
                     this.Groups.AddToGroupAsync(this.Game.Player1.Id, groupName: this.Game.Id),
@@ -85,6 +86,11 @@
             var gameOver = e as GameOverEventArgs;
 
             this.Clients.All.SendAsync("GameOver", player, gameOver.GameOver);
+        }
+
+        private void Board_OnCheck(object sender, EventArgs e)
+        {
+            this.Clients.All.SendAsync("Check");
         }
     }
 }
