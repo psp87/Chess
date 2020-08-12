@@ -10,7 +10,7 @@
 <main id="main" class="container-fluid text-center">
     <div id="statusView" class="row">
         <h6 id="status">STATUS: <span id="statusText"></span></h6>
-        <h6 id="check"></h6>
+        <h6 id="statusCheck"></h6>
     </div>
     <div id="board"></div>
     <div id="nameView" class="row">
@@ -107,18 +107,26 @@
             board.move(`${target}-${pawnPosition}`, `${pawnPosition}-${target}`);
         })
 
-        connection.on("Check", function () {
-            checkMessage();
+        connection.on("CheckOpponent", function () {
+            var $status = document.getElementById('statusCheck');
+            $status.style.display = "block";
+            $status.innerText = "Check!";
+        })
+
+        connection.on("CheckSelf", function () {
+            var $status = document.getElementById('statusCheck');
+            $status.style.display = "block";
+            $status.innerText = "King is checked!";
+        })
+
+        connection.on("EmptyCheckStatus", function () {
+            var $status = document.getElementById('statusCheck');
+            $status.style.display = "none";
         })
 
         connection.on("UpdateStatus", function (movingPlayerName) {
             updateStatus(movingPlayerName);
         })
-
-        function checkMessage() {
-            var check = document.getElementById('check');
-            check.innerText = "Check!";
-        }
 
         function invalidMessage(name) {
             var statusText = document.getElementById('statusText');
@@ -132,7 +140,7 @@
                 })
             }
             else {
-                statusText.innerText = "It's not your turn!";
+                statusText.innerText = "Not your turn!";
                 statusText.style.color = "red";
                 sleep(1500).then(() => {
                     statusText.innerText = `${name}'s turn!`;

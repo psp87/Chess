@@ -6,6 +6,7 @@
 
     using Chess.Common;
     using Chess.Common.Enums;
+    using Chess.Data.Models.EventArgs;
     using Chess.Data.Models.Pieces;
     using Chess.Data.Models.Pieces.Contracts;
     using Chess.Data.Models.Pieces.Helpers;
@@ -54,13 +55,20 @@
             {
                 if (movingPlayer.IsCheck)
                 {
+                    this.OnCheck?.Invoke(null, new CheckEventArgs(Check.Self));
+                    movingPlayer.IsCheck = false;
                     return false;
                 }
 
                 if (this.IsPlayerChecked(opponent))
                 {
-                    this.OnCheck?.Invoke(null, null);
+                    this.OnCheck?.Invoke(null, new CheckEventArgs(Check.Opponent));
                     this.IsOpponentCheckmate(movingPlayer, opponent, this.Move.End);
+                }
+
+                if (!movingPlayer.IsCheck && !opponent.IsCheck)
+                {
+                    this.OnCheck?.Invoke(null, new CheckEventArgs(Check.None));
                 }
 
                 this.IsGameRepetitionDraw();

@@ -90,7 +90,17 @@
 
         private void Board_OnCheck(object sender, EventArgs e)
         {
-            this.Clients.All.SendAsync("Check");
+            var type = e as CheckEventArgs;
+
+            switch (type.Check)
+            {
+                case Check.None: this.Clients.All.SendAsync("EmptyCheckStatus");
+                    break;
+                case Check.Opponent: this.Clients.All.SendAsync("CheckOpponent");
+                    break;
+                case Check.Self: this.Clients.Caller.SendAsync("CheckSelf");
+                    break;
+            }
         }
     }
 }
