@@ -13,7 +13,11 @@
 
     public class Board : ICloneable
     {
-        private Queue<string> moves;
+        private Queue<string> movesThreefold;
+        private Queue<string> movesFivefold;
+
+        private string[] arrayThreefold;
+        private string[] arrayFivefold;
 
         private string[] letters = new string[] { "A", "B", "C", "D", "E", "F", "G", "H" };
 
@@ -32,7 +36,11 @@
 
         public Board()
         {
-            this.moves = new Queue<string>();
+            this.movesThreefold = new Queue<string>();
+            this.movesFivefold = new Queue<string>();
+
+            this.arrayThreefold = new string[9];
+            this.arrayFivefold = new string[17];
 
             this.Matrix = Factory.GetMatrix();
             this.Move = Factory.GetMove();
@@ -72,6 +80,7 @@
                 }
 
                 this.IsThreefoldRepetionDraw(targetFen);
+                this.IsFivefoldRepetitionDraw(targetFen);
                 this.IsDraw();
                 this.IsStalemate(opponent);
 
@@ -300,28 +309,46 @@
 
         private void IsThreefoldRepetionDraw(string fen)
         {
-            this.moves.Enqueue(fen);
+            this.movesThreefold.Enqueue(fen);
 
             GlobalConstants.IsThreefoldDraw = false;
 
-            if (this.moves.Count == 9)
+            if (this.movesThreefold.Count == 9)
             {
-                var isFirstFenSame = string.Compare(fen, this.moves.Peek()) == 0;
+                this.arrayThreefold = this.movesThreefold.ToArray();
 
-                if (isFirstFenSame)
+                var isFirstFenSame = string.Compare(fen, this.arrayThreefold[0]) == 0;
+                var isFiveFenSame = string.Compare(fen, this.arrayThreefold[4]) == 0;
+
+                if (isFirstFenSame && isFiveFenSame)
                 {
-                    string[] array = this.moves.ToArray();
-                    var isFiveFenSame = string.Compare(fen, array[4]) == 0;
+                    GlobalConstants.IsThreefoldDraw = true;
+                }
 
-                    if (isFiveFenSame)
-                    {
-                        GlobalConstants.IsThreefoldDraw = true;
-                        this.moves.Dequeue();
-                    }
+                this.movesThreefold.Dequeue();
+            }
+        }
+
+        private void IsFivefoldRepetitionDraw(string fen)
+        {
+            this.movesFivefold.Enqueue(fen);
+
+            if (this.movesFivefold.Count == 17)
+            {
+                this.arrayFivefold = this.movesFivefold.ToArray();
+
+                var isFirstFenSame = string.Compare(fen, this.arrayFivefold[0]) == 0;
+                var isFiveFenSame = string.Compare(fen, this.arrayFivefold[4]) == 0;
+                var isNineFenSame = string.Compare(fen, this.arrayFivefold[8]) == 0;
+                var isThirteenFenSame = string.Compare(fen, this.arrayFivefold[12]) == 0;
+
+                if (isFirstFenSame && isFiveFenSame && isNineFenSame && isThirteenFenSame)
+                {
+                    GlobalConstants.GameOver = GameOver.FivefoldDraw;
                 }
                 else
                 {
-                    this.moves.Dequeue();
+                    this.movesFivefold.Dequeue();
                 }
             }
         }

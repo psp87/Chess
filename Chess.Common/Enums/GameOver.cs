@@ -6,7 +6,8 @@
         Checkmate = 1,
         Stalemate = 2,
         Draw = 3,
-        Repetition = 4,
-        Resigning = 5,
+        ThreefoldDraw = 4,
+        FivefoldDraw = 5,
+        Resigning = 6,
     }
 }

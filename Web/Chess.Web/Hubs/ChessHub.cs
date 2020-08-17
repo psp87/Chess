@@ -86,7 +86,7 @@
 
             if (GlobalConstants.IsThreefoldDraw && player.HasToMove)
             {
-                await this.Clients.All.SendAsync("GameOver", player, GameOver.Repetition);
+                await this.Clients.All.SendAsync("GameOver", player, GameOver.ThreefoldDraw);
             }
         }
 
