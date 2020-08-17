@@ -167,7 +167,8 @@
         function onDrop(source, target, piece, newPos, oldPos) {
             if (target.length === 2) {
                 let sourceFen = Chessboard.objToFen(oldPos);
-                connection.invoke("MoveSelected", source, target, sourceFen);
+                let targetFen = Chessboard.objToFen(newPos);
+                connection.invoke("MoveSelected", source, target, sourceFen, targetFen);
             }
         }
 

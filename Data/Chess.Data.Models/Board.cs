@@ -13,7 +13,7 @@
 
     public class Board : ICloneable
     {
-        private Queue<Move> movesQueue;
+        private Queue<string> moves;
 
         private string[] letters = new string[] { "A", "B", "C", "D", "E", "F", "G", "H" };
 
@@ -32,7 +32,7 @@
 
         public Board()
         {
-            this.movesQueue = new Queue<Move>();
+            this.moves = new Queue<string>();
 
             this.Matrix = Factory.GetMatrix();
             this.Move = Factory.GetMove();
@@ -44,7 +44,7 @@
 
         public Move Move { get; set; }
 
-        public bool MakeMove(string source, string target, Player movingPlayer, Player opponent)
+        public bool MakeMove(string source, string target, string sourceFen, string targetFen, Player movingPlayer, Player opponent)
         {
             this.Move.Start = this.GetSquare(source);
             this.Move.End = this.GetSquare(target);
@@ -71,9 +71,9 @@
                     this.OnCheck?.Invoke(null, new CheckEventArgs(Check.None));
                 }
 
-                this.IsGameRepetitionDraw();
-                this.IsGameDraw();
-                this.IsGameStalemate(opponent);
+                this.IsThreefoldRepetionDraw(targetFen);
+                this.IsDraw();
+                this.IsStalemate(opponent);
 
                 return true;
             }
@@ -276,7 +276,7 @@
             }
         }
 
-        private void IsGameStalemate(Player player)
+        private void IsStalemate(Player player)
         {
             for (int y = 0; y < GlobalConstants.BoardRows; y++)
             {
@@ -298,53 +298,32 @@
             GlobalConstants.GameOver = GameOver.Stalemate;
         }
 
-        private void IsGameRepetitionDraw()
+        private void IsThreefoldRepetionDraw(string fen)
         {
-            var move = Factory.GetMove(this.Move);
-            this.movesQueue.Enqueue(move);
+            this.moves.Enqueue(fen);
 
-            Move[] array = this.movesQueue.ToArray();
+            if (this.moves.Count == 9)
+            {
+                var isFirstFenSame = string.Compare(fen, this.moves.Peek()) == 0;
 
-            if (this.movesQueue.Count == 3 &&
-                array[0].Start.Position.X == this.Move.End.Position.X &&
-                array[0].Start.Position.Y == this.Move.End.Position.Y &&
-                array[0].End.Position.X == this.Move.Start.Position.X &&
-                array[0].End.Position.Y == this.Move.Start.Position.Y)
-            {
-                return;
-            }
-            else if (this.movesQueue.Count == 4 &&
-                array[1].Start.Position.X == this.Move.End.Position.X &&
-                array[1].Start.Position.Y == this.Move.End.Position.Y &&
-                array[1].End.Position.X == this.Move.Start.Position.X &&
-                array[1].End.Position.Y == this.Move.Start.Position.Y)
-            {
-                return;
-            }
-            else if (this.movesQueue.Count == 5 &&
-                array[0].Start.Position.X == this.Move.Start.Position.X &&
-                array[0].Start.Position.Y == this.Move.Start.Position.Y &&
-                array[0].End.Position.X == this.Move.End.Position.X &&
-                array[0].End.Position.Y == this.Move.End.Position.Y)
-            {
-                return;
-            }
-            else if (this.movesQueue.Count == 6 &&
-                array[1].Start.Position.X == this.Move.Start.Position.X &&
-                array[1].Start.Position.Y == this.Move.Start.Position.Y &&
-                array[1].End.Position.X == this.Move.End.Position.X &&
-                array[1].End.Position.Y == this.Move.End.Position.Y)
-            {
-                GlobalConstants.GameOver = GameOver.Repetition;
-                return;
-            }
-            else if (this.movesQueue.Count > 2)
-            {
-                this.movesQueue.Dequeue();
+                if (isFirstFenSame)
+                {
+                    string[] array = this.moves.ToArray();
+                    var isFiveFenSame = string.Compare(fen, array[4]) == 0;
+
+                    if (isFiveFenSame)
+                    {
+                        GlobalConstants.GameOver = GameOver.Repetition;
+                    }
+                }
+                else
+                {
+                    this.moves.Dequeue();
+                }
             }
         }
 
-        private void IsGameDraw()
+        private void IsDraw()
         {
             int counterBishopKnightWhite = 0;
             int counterBishopKnightBlack = 0;

@@ -55,12 +55,12 @@
             }
         }
 
-        public async Task MoveSelected(string source, string target, string sourceFen)
+        public async Task MoveSelected(string source, string target, string sourceFen, string targetFen)
         {
             var player = this.players[this.Context.ConnectionId];
 
             if (!player.HasToMove ||
-                !this.Game.MoveSelected(source, target))
+                !this.Game.MoveSelected(source, target, sourceFen, targetFen))
             {
                 await this.Clients.Caller.SendAsync("InvalidMove", sourceFen, this.Game.MovingPlayer.Name);
                 return;

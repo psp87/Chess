@@ -35,9 +35,9 @@
 
         public Player Opponent => this.Player1?.HasToMove ?? false ? this.Player2 : this.Player1;
 
-        public bool MoveSelected(string source, string target)
+        public bool MoveSelected(string source, string target, string sourceFen, string targetFen)
         {
-            if (this.ChessBoard.MakeMove(source, target, this.MovingPlayer, this.Opponent))
+            if (this.ChessBoard.MakeMove(source, target, sourceFen, targetFen, this.MovingPlayer, this.Opponent))
             {
                 GlobalConstants.TurnCounter++;
 
