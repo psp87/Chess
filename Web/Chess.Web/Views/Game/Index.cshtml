@@ -9,12 +9,15 @@
 
 <main id="main" class="container-fluid text-center">
     <div id="statusView" class="row">
-        <h6 id="status">STATUS: <span id="statusText"></span></h6>
-        <h6 id="statusCheck"></h6>
+         <h6 id="status">STATUS: <span id="statusText"></span></h6>
+         <h6 id="statusCheck"></h6>
     </div>
     <div id="board"></div>
     <div id="nameView" class="row">
-        <h6 id="name">PLAYER: <span id="nameValue"></span></h6>
+         <h6 id="name">PLAYER: <span id="nameValue"></span></h6>
+    </div>
+        <div id="gameOptions" class="row">
+        <button type="submit" id="threefoldDraw" class="btn btn-primary" style="text-align: center">Declare Draw</button>
     </div>
 
     <div id="findOpponent" class="row m-5">
@@ -46,6 +49,10 @@
             document.getElementById("findGame").disabled = true;
         })
 
+        $('#threefoldDraw').click(function() {
+            connection.invoke("IsThreefoldDraw");
+        })
+
         connection.on("PlayerJoined", function (player) {
             playerId = player.id;
         })
@@ -57,6 +64,7 @@
         connection.on("Start", function (game) {
             if (game.id != "") {
                 document.getElementById('findOpponent').style.display = "none";
+
                 document.getElementById('board').style.display = "block";
 
                 playerColor = (playerId == game.player1.id) ? game.player1.color : game.player2.color;
@@ -64,6 +72,7 @@
 
                 document.getElementById('statusView').style.display = "block";
                 document.getElementById('nameView').style.display = "block";
+                document.getElementById('gameOptions').style.display = "block";
                 document.getElementById('nameValue').innerText = playerName;
                 document.getElementById('nameValue').style.color = "black";
 
@@ -98,7 +107,7 @@
                     break;
                 case 3: $statusText.innerText = `THE GAME IS DRAW!`;
                     break;
-                case 4: $statusText.innerText = `THE GAME IS DRAW BY REPETITION!`;
+                case 4: $statusText.innerText = `DECLARED THREEFOLD REPETITION DRAW BY ${winner.name.toUpperCase()}!`;
                     break;
             }
         })

@@ -17,5 +17,7 @@
         public static GameOver GameOver { get; set; }
 
         public static string EnPassantTake { get; set; }
+
+        public static bool IsThreefoldDraw { get; set; }
     }
 }

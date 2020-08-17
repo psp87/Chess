@@ -80,6 +80,16 @@
             }
         }
 
+        public async Task IsThreefoldDraw()
+        {
+            var player = this.players[this.Context.ConnectionId];
+
+            if (GlobalConstants.IsThreefoldDraw && player.HasToMove)
+            {
+                await this.Clients.All.SendAsync("GameOver", player, GameOver.Repetition);
+            }
+        }
+
         private void Game_OnGameOver(object sender, EventArgs e)
         {
             var player = sender as Player;

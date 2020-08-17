@@ -302,6 +302,8 @@
         {
             this.moves.Enqueue(fen);
 
+            GlobalConstants.IsThreefoldDraw = false;
+
             if (this.moves.Count == 9)
             {
                 var isFirstFenSame = string.Compare(fen, this.moves.Peek()) == 0;
@@ -313,7 +315,8 @@
 
                     if (isFiveFenSame)
                     {
-                        GlobalConstants.GameOver = GameOver.Repetition;
+                        GlobalConstants.IsThreefoldDraw = true;
+                        this.moves.Dequeue();
                     }
                 }
                 else
