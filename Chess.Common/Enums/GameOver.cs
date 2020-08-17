@@ -8,6 +8,6 @@
         Draw = 3,
         ThreefoldDraw = 4,
         FivefoldDraw = 5,
-        Resigning = 6,
+        Resign = 6,
     }
 }

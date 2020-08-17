@@ -90,6 +90,13 @@
             }
         }
 
+        public async Task Resign()
+        {
+            var player = this.players[this.Context.ConnectionId];
+
+            await this.Clients.All.SendAsync("GameOver", player, GameOver.Resign);
+        }
+
         private void Game_OnGameOver(object sender, EventArgs e)
         {
             var player = sender as Player;
@@ -104,11 +111,14 @@
 
             switch (type.Check)
             {
-                case Check.None: this.Clients.All.SendAsync("EmptyCheckStatus");
+                case Check.None:
+                    this.Clients.All.SendAsync("EmptyCheckStatus");
                     break;
-                case Check.Opponent: this.Clients.All.SendAsync("CheckOpponent");
+                case Check.Opponent:
+                    this.Clients.All.SendAsync("CheckOpponent");
                     break;
-                case Check.Self: this.Clients.Caller.SendAsync("CheckSelf");
+                case Check.Self:
+                    this.Clients.Caller.SendAsync("CheckSelf");
                     break;
             }
         }

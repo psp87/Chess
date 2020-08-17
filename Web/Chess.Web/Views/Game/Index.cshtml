@@ -16,8 +16,9 @@
     <div id="nameView" class="row">
          <h6 id="name">PLAYER: <span id="nameValue"></span></h6>
     </div>
-        <div id="gameOptions" class="row">
+    <div id="gameOptions" class="row">
         <button type="submit" id="threefoldDraw" class="btn btn-primary" style="text-align: center">Declare Draw</button>
+        <button type="submit" id="resign" class="btn btn-primary" style="text-align: center">Resign</button>
     </div>
 
     <div id="findOpponent" class="row m-5">
@@ -51,6 +52,10 @@
 
         $('#threefoldDraw').click(function() {
             connection.invoke("IsThreefoldDraw");
+        })
+
+        $('#resign').click(function() {
+            connection.invoke("Resign");
         })
 
         connection.on("PlayerJoined", function (player) {
@@ -110,6 +115,8 @@
                 case 4: $statusText.innerText = `DECLARED THREEFOLD REPETITION DRAW BY ${winner.name.toUpperCase()}!`;
                     break;
                 case 5: $statusText.innerText = `FIVEFOLD REPETITION DRAW!`;
+                    break;
+                case 6: $statusText.innerText = `${winner.name.toUpperCase()} RESIGNED!`;
                     break;
             }
         })
