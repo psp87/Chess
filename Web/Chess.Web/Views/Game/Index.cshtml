@@ -17,7 +17,8 @@
          <h6 id="name">PLAYER: <span id="nameValue"></span></h6>
     </div>
     <div id="gameOptions" class="row">
-        <button type="submit" id="threefoldDraw" class="btn btn-primary" style="text-align: center">Declare Draw</button>
+        <button type="submit" id="threefoldDraw" class="btn btn-primary" style="text-align: center">Declare Threefold Draw</button>
+        <button type="submit" id="offerDraw" class="btn btn-primary" style="text-align: center">Offer Draw</button>
         <button type="submit" id="resign" class="btn btn-primary" style="text-align: center">Resign</button>
     </div>
 
@@ -56,6 +57,16 @@
 
         $('#resign').click(function() {
             connection.invoke("Resign");
+        })
+
+        $('#offerDraw').click(function () {
+            var statusText = document.getElementById('statusText');
+            var oldText = statusText.innerText;
+            statusText.innerText = `You requested a draw!`;
+            sleep(1500).then(() => {
+                    statusText.innerText = oldText;
+            })
+            connection.invoke("OfferDrawRequest");
         })
 
         connection.on("PlayerJoined", function (player) {
@@ -140,6 +151,21 @@
         connection.on("EmptyCheckStatus", function () {
             var $status = document.getElementById('statusCheck');
             $status.style.display = "none";
+        })
+
+        connection.on("DrawOffered", function (player) {
+            var isAccepted = confirm(`${player.name} offered draw! Do you accept?`);
+
+            connection.invoke("OfferDrawAnswer", isAccepted);
+        })
+
+        connection.on("DrawOfferRejected", function (player) {
+            var statusText = document.getElementById('statusText');
+            var oldText = statusText.innerText;
+            statusText.innerText = `Draw offer rejected by ${player.name}!`;
+            sleep(1500).then(() => {
+                    statusText.innerText = oldText;
+            })
         })
 
         connection.on("UpdateStatus", function (movingPlayerName) {

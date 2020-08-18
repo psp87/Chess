@@ -104,6 +104,27 @@
             await this.Clients.All.SendAsync("GameOver", player, GameOver.Resign);
         }
 
+        public async Task OfferDrawRequest()
+        {
+            var player = this.players[this.Context.ConnectionId];
+
+            await this.Clients.Others.SendAsync("DrawOffered", player);
+        }
+
+        public async Task OfferDrawAnswer(bool isAccepted)
+        {
+            var player = this.players[this.Context.ConnectionId];
+
+            if (isAccepted)
+            {
+                await this.Clients.All.SendAsync("GameOver", null, GameOver.Draw);
+            }
+            else
+            {
+                await this.Clients.Others.SendAsync("DrawOfferRejected", player);
+            }
+        }
+
         private void Game_OnGameOver(object sender, EventArgs e)
         {
             var player = sender as Player;

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+
     using Chess.Common;
     using Chess.Common.Enums;
     using Chess.Data.Models.Pieces.Helpers;
