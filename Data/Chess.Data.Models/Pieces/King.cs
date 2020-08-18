@@ -2,8 +2,9 @@
 {
     using System;
     using System.Linq;
-
+    using Chess.Common;
     using Chess.Common.Enums;
+    using Chess.Data.Models.Pieces.Helpers;
 
     public class King : Piece
     {
@@ -106,8 +107,9 @@
                         matrix[this.Position.Y][to.X + sign].Piece = matrix[this.Position.Y][lastPiecePosition].Piece;
                         matrix[this.Position.Y][lastPiecePosition].Piece = Factory.GetEmpty();
 
-                        // this.drawer.EmptySquare(this.Position.Y, lastPiecePosition);
-                        // this.drawer.Piece(this.Position.Y, to.X + sign, matrix[this.Position.Y][to.X + sign].Piece);
+                        GlobalConstants.CastlingMove = true;
+                        Castling.RookSource = matrix[this.Position.Y][lastPiecePosition].ToString();
+                        Castling.RookTarget = matrix[this.Position.Y][to.X + sign].ToString();
                         return true;
                     }
                 }

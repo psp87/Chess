@@ -8,6 +8,7 @@
     using Chess.Common.Enums;
     using Chess.Data.Models;
     using Chess.Data.Models.EventArgs;
+    using Chess.Data.Models.Pieces.Helpers;
     using Microsoft.AspNetCore.SignalR;
 
     public class ChessHub : Hub
@@ -77,6 +78,12 @@
             {
                 await this.Clients.All.SendAsync("EnPassantTake", GlobalConstants.EnPassantTake, target);
                 GlobalConstants.EnPassantTake = null;
+            }
+
+            if (GlobalConstants.CastlingMove)
+            {
+                await this.Clients.All.SendAsync("BoardMove", Castling.RookSource, Castling.RookTarget);
+                GlobalConstants.CastlingMove = false;
             }
         }
 

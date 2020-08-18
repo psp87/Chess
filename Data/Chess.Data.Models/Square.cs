@@ -52,7 +52,7 @@
 
         public override string ToString()
         {
-            return this.Piece?.Symbol + this.Name;
+            return this.Name.ToLower();
         }
 
         public object Clone()

@@ -19,5 +19,7 @@
         public static string EnPassantTake { get; set; }
 
         public static bool IsThreefoldDraw { get; set; }
+
+        public static bool CastlingMove { get; set; }
     }
 }
