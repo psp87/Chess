@@ -236,7 +236,9 @@
             if (this.Move.End.Piece is Pawn && this.Move.End.Piece.IsLastMove)
             {
                 this.Move.End.Piece = Factory.GetQueen(this.Move.End.Piece.Color);
-                this.GetPawnPromotionFen(this.Move.End.Piece.Color, targetFen);
+                var isWhite = this.Move.End.Piece.Color == Color.Light ? true : false;
+
+                this.GetPawnPromotionFenString(targetFen, isWhite);
 
                 this.CalculateAttackedSquares();
             }
@@ -245,55 +247,43 @@
             return true;
         }
 
-        private void GetPawnPromotionFen(Color color, string targetFen)
+        private void GetPawnPromotionFenString(string targetFen, bool isWhite)
         {
             var sb = new StringBuilder();
             string[] rows = targetFen.Split('/');
+
+            var lastRow = isWhite ? 0 : 7;
+            var pawn = isWhite ? "P" : "p";
+            var queen = isWhite ? "Q" : "q";
 
             for (int i = 0; i < rows.Length; i++)
             {
                 var currentRow = rows[i];
 
-                if (color == Color.Light)
+                if (i == lastRow)
                 {
-                    if (i == 0)
+                    for (int k = 0; k < currentRow.Length; k++)
                     {
-                        for (int k = 0; k < currentRow.Length; k++)
-                        {
-                            if (string.Compare(currentRow[k].ToString(), "P") == 0)
-                            {
-                                sb.Append("Q");
-                                continue;
-                            }
+                        var currentSymbol = currentRow[k].ToString();
 
-                            sb.Append(currentRow[k]);
+                        if (string.Compare(currentSymbol, pawn) == 0)
+                        {
+                            sb.Append(queen);
+                            continue;
                         }
-                    }
-                    else
-                    {
-                        sb.Append("/");
-                        sb.Append(currentRow);
+
+                        sb.Append(currentSymbol);
                     }
                 }
                 else
                 {
-                    if (i == 7)
+                    if (isWhite)
                     {
-                        for (int k = 0; k < currentRow.Length; k++)
-                        {
-                            if (string.Compare(currentRow[k].ToString(), "p") == 0)
-                            {
-                                sb.Append("q");
-                                continue;
-                            }
-
-                            sb.Append(currentRow[k]);
-                        }
+                        sb.Append("/" + currentRow);
                     }
                     else
                     {
-                        sb.Append(currentRow);
-                        sb.Append("/");
+                        sb.Append(currentRow + "/");
                     }
                 }
             }
