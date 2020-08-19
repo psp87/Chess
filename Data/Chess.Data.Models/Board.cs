@@ -109,6 +109,15 @@
                 this.TakePiece(movingPlayer, targetFen) ||
                 this.EnPassantTake(movingPlayer))
             {
+                if (this.Target.Piece is Pawn && this.Target.Piece.IsLastMove)
+                {
+                    this.Target.Piece = Factory.GetQueen(movingPlayer.Color);
+                    var isWhite = movingPlayer.Color == Color.Light ? true : false;
+
+                    this.GetPawnPromotionFenString(targetFen, isWhite);
+                    this.CalculateAttackedSquares();
+                }
+
                 return true;
             }
 
@@ -251,7 +260,7 @@
                 movingPlayer.Color == this.Source.Piece.Color &&
                 this.Source.Piece.Move(this.Target.Position, this.Matrix))
             {
-                if (!this.TryMove(movingPlayer, targetFen))
+                if (!this.TryMove(movingPlayer))
                 {
                     movingPlayer.IsCheck = true;
                 }
@@ -271,7 +280,7 @@
             {
                 string pieceName = this.Target.Piece.Name;
 
-                if (!this.TryMove(movingPlayer, targetFen))
+                if (!this.TryMove(movingPlayer))
                 {
                     movingPlayer.IsCheck = true;
                     return true;
@@ -319,7 +328,7 @@
             return false;
         }
 
-        private bool TryMove(Player movingPlayer, string targetFen)
+        private bool TryMove(Player movingPlayer)
         {
             this.PlacePiece(this.Source, this.Target);
             this.RemovePiece(this.Source);
@@ -331,16 +340,6 @@
                 this.RemovePiece(this.Target);
                 this.CalculateAttackedSquares();
                 return false;
-            }
-
-            if (this.Target.Piece is Pawn && this.Target.Piece.IsLastMove)
-            {
-                this.Target.Piece = Factory.GetQueen(this.Target.Piece.Color);
-                var isWhite = this.Target.Piece.Color == Color.Light ? true : false;
-
-                this.GetPawnPromotionFenString(targetFen, isWhite);
-
-                this.CalculateAttackedSquares();
             }
 
             movingPlayer.IsCheck = false;
