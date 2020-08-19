@@ -14,12 +14,6 @@
 
     public class Board : ICloneable
     {
-        private Queue<string> movesThreefold;
-        private Queue<string> movesFivefold;
-
-        private string[] arrayThreefold;
-        private string[] arrayFivefold;
-
         private string[] letters = new string[] { "A", "B", "C", "D", "E", "F", "G", "H" };
 
         private Dictionary<string, Piece> setup = new Dictionary<string, Piece>()
@@ -36,12 +30,6 @@
 
         public Board()
         {
-            this.movesThreefold = new Queue<string>();
-            this.movesFivefold = new Queue<string>();
-
-            this.arrayThreefold = new string[9];
-            this.arrayFivefold = new string[17];
-
             this.Matrix = Factory.GetMatrix();
             this.Move = Factory.GetMove();
         }
@@ -78,11 +66,6 @@
                 {
                     this.OnCheck?.Invoke(null, new CheckEventArgs(Check.None));
                 }
-
-                this.IsThreefoldRepetionDraw(targetFen);
-                this.IsFivefoldRepetitionDraw(targetFen);
-                this.IsDraw();
-                this.IsStalemate(opponent);
 
                 return true;
             }
@@ -331,111 +314,6 @@
             {
                 GlobalConstants.GameOver = GameOver.Checkmate;
             }
-        }
-
-        private void IsStalemate(Player player)
-        {
-            for (int y = 0; y < GlobalConstants.BoardRows; y++)
-            {
-                for (int x = 0; x < GlobalConstants.BoardCols; x++)
-                {
-                    var currentFigure = this.Matrix[y][x].Piece;
-
-                    if (currentFigure.Color == player.Color)
-                    {
-                        currentFigure.IsMoveAvailable(this.Matrix);
-                        if (currentFigure.IsMovable)
-                        {
-                            return;
-                        }
-                    }
-                }
-            }
-
-            GlobalConstants.GameOver = GameOver.Stalemate;
-        }
-
-        private void IsThreefoldRepetionDraw(string fen)
-        {
-            this.movesThreefold.Enqueue(fen);
-
-            GlobalConstants.IsThreefoldDraw = false;
-
-            if (this.movesThreefold.Count == 9)
-            {
-                this.arrayThreefold = this.movesThreefold.ToArray();
-
-                var isFirstFenSame = string.Compare(fen, this.arrayThreefold[0]) == 0;
-                var isFiveFenSame = string.Compare(fen, this.arrayThreefold[4]) == 0;
-
-                if (isFirstFenSame && isFiveFenSame)
-                {
-                    GlobalConstants.IsThreefoldDraw = true;
-                }
-
-                this.movesThreefold.Dequeue();
-            }
-        }
-
-        private void IsFivefoldRepetitionDraw(string fen)
-        {
-            this.movesFivefold.Enqueue(fen);
-
-            if (this.movesFivefold.Count == 17)
-            {
-                this.arrayFivefold = this.movesFivefold.ToArray();
-
-                var isFirstFenSame = string.Compare(fen, this.arrayFivefold[0]) == 0;
-                var isFiveFenSame = string.Compare(fen, this.arrayFivefold[4]) == 0;
-                var isNineFenSame = string.Compare(fen, this.arrayFivefold[8]) == 0;
-                var isThirteenFenSame = string.Compare(fen, this.arrayFivefold[12]) == 0;
-
-                if (isFirstFenSame && isFiveFenSame && isNineFenSame && isThirteenFenSame)
-                {
-                    GlobalConstants.GameOver = GameOver.FivefoldDraw;
-                }
-                else
-                {
-                    this.movesFivefold.Dequeue();
-                }
-            }
-        }
-
-        private void IsDraw()
-        {
-            int counterBishopKnightWhite = 0;
-            int counterBishopKnightBlack = 0;
-
-            for (int y = 0; y < GlobalConstants.BoardRows; y++)
-            {
-                for (int x = 0; x < GlobalConstants.BoardCols; x++)
-                {
-                    var currentFigure = this.Matrix[y][x].Piece;
-
-                    if (!(currentFigure is Empty || currentFigure is King))
-                    {
-                        if (currentFigure is Pawn ||
-                            currentFigure is Rook ||
-                            currentFigure is Queen ||
-                            counterBishopKnightWhite > 1 ||
-                            counterBishopKnightBlack > 1)
-                        {
-                            return;
-                        }
-
-                        if (currentFigure.Color == Color.Light)
-                        {
-                            counterBishopKnightWhite++;
-                        }
-                        else
-                        {
-                            counterBishopKnightBlack++;
-                        }
-                    }
-                }
-            }
-
-            GlobalConstants.GameOver = GameOver.Draw;
         }
 
         private void CalculateAttackedSquares()
