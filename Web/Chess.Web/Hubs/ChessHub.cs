@@ -45,7 +45,7 @@
                 this.Game = Factory.GetGame(opponent, joiningPlayer);
 
                 this.Game.OnGameOver += this.Game_OnGameOver;
-                this.Game.ChessBoard.OnCheck += this.Board_OnCheck;
+                this.Game.OnCheck += this.Game_OnCheck;
 
                 await Task.WhenAll(
                     this.Groups.AddToGroupAsync(this.Game.Player1.Id, groupName: this.Game.Id),
@@ -61,7 +61,7 @@
             var player = this.players[this.Context.ConnectionId];
 
             if (!player.HasToMove ||
-                !this.Game.MoveSelected(source, target, sourceFen, targetFen))
+                !this.Game.MoveSelected(source, target, targetFen))
             {
                 await this.Clients.Caller.SendAsync("InvalidMove", sourceFen, this.Game.MovingPlayer.Name);
                 return;
@@ -139,7 +139,7 @@
             this.Clients.All.SendAsync("GameOver", player, gameOver.GameOver);
         }
 
-        private void Board_OnCheck(object sender, EventArgs e)
+        private void Game_OnCheck(object sender, EventArgs e)
         {
             var type = e as CheckEventArgs;
 

@@ -14,6 +14,12 @@
 
     public class Board : ICloneable
     {
+        private Queue<string> movesThreefold;
+        private Queue<string> movesFivefold;
+
+        private string[] arrayThreefold;
+        private string[] arrayFivefold;
+
         private string[] letters = new string[] { "A", "B", "C", "D", "E", "F", "G", "H" };
 
         private Dictionary<string, Piece> setup = new Dictionary<string, Piece>()
@@ -30,43 +36,33 @@
 
         public Board()
         {
-            this.Matrix = Factory.GetMatrix();
-            this.Move = Factory.GetMove();
-        }
+            this.movesThreefold = new Queue<string>();
+            this.movesFivefold = new Queue<string>();
 
-        public event EventHandler OnCheck;
+            this.arrayThreefold = new string[9];
+            this.arrayFivefold = new string[17];
+
+            this.Matrix = Factory.GetMatrix();
+
+            this.Source = Factory.GetSquare();
+            this.Target = Factory.GetSquare();
+        }
 
         public Square[][] Matrix { get; set; }
 
-        public Move Move { get; set; }
+        public Square Source { get; set; }
 
-        public bool MakeMove(string source, string target, string sourceFen, string targetFen, Player movingPlayer, Player opponent)
+        public Square Target { get; set; }
+
+        public bool MakeMove(string source, string target, string targetFen, Player movingPlayer)
         {
-            this.Move.Start = this.GetSquare(source);
-            this.Move.End = this.GetSquare(target);
+            this.Source = this.GetSquare(source);
+            this.Target = this.GetSquare(target);
 
             if (this.MovePiece(movingPlayer, targetFen) ||
                 this.TakePiece(movingPlayer, targetFen) ||
                 this.EnPassantTake(movingPlayer))
             {
-                if (movingPlayer.IsCheck)
-                {
-                    this.OnCheck?.Invoke(null, new CheckEventArgs(Check.Self));
-                    movingPlayer.IsCheck = false;
-                    return false;
-                }
-
-                if (this.IsPlayerChecked(opponent))
-                {
-                    this.OnCheck?.Invoke(null, new CheckEventArgs(Check.Opponent));
-                    this.IsOpponentCheckmate(movingPlayer, opponent, this.Move.End);
-                }
-
-                if (!movingPlayer.IsCheck && !opponent.IsCheck)
-                {
-                    this.OnCheck?.Invoke(null, new CheckEventArgs(Check.None));
-                }
-
                 return true;
             }
 
@@ -121,11 +117,142 @@
             return board;
         }
 
+        public void IsStalemate(Player player)
+        {
+            for (int y = 0; y < GlobalConstants.BoardRows; y++)
+            {
+                for (int x = 0; x < GlobalConstants.BoardCols; x++)
+                {
+                    var currentFigure = this.Matrix[y][x].Piece;
+
+                    if (currentFigure.Color == player.Color)
+                    {
+                        currentFigure.IsMoveAvailable(this.Matrix);
+                        if (currentFigure.IsMovable)
+                        {
+                            return;
+                        }
+                    }
+                }
+            }
+
+            GlobalConstants.GameOver = GameOver.Stalemate;
+        }
+
+        public void IsThreefoldRepetionDraw(string fen)
+        {
+            this.movesThreefold.Enqueue(fen);
+
+            GlobalConstants.IsThreefoldDraw = false;
+
+            if (this.movesThreefold.Count == 9)
+            {
+                this.arrayThreefold = this.movesThreefold.ToArray();
+
+                var isFirstFenSame = string.Compare(fen, this.arrayThreefold[0]) == 0;
+                var isFiveFenSame = string.Compare(fen, this.arrayThreefold[4]) == 0;
+
+                if (isFirstFenSame && isFiveFenSame)
+                {
+                    GlobalConstants.IsThreefoldDraw = true;
+                }
+
+                this.movesThreefold.Dequeue();
+            }
+        }
+
+        public void IsFivefoldRepetitionDraw(string fen)
+        {
+            this.movesFivefold.Enqueue(fen);
+
+            if (this.movesFivefold.Count == 17)
+            {
+                this.arrayFivefold = this.movesFivefold.ToArray();
+
+                var isFirstFenSame = string.Compare(fen, this.arrayFivefold[0]) == 0;
+                var isFiveFenSame = string.Compare(fen, this.arrayFivefold[4]) == 0;
+                var isNineFenSame = string.Compare(fen, this.arrayFivefold[8]) == 0;
+                var isThirteenFenSame = string.Compare(fen, this.arrayFivefold[12]) == 0;
+
+                if (isFirstFenSame && isFiveFenSame && isNineFenSame && isThirteenFenSame)
+                {
+                    GlobalConstants.GameOver = GameOver.FivefoldDraw;
+                }
+                else
+                {
+                    this.movesFivefold.Dequeue();
+                }
+            }
+        }
+
+        public void IsDraw()
+        {
+            int counterBishopKnightWhite = 0;
+            int counterBishopKnightBlack = 0;
+
+            for (int y = 0; y < GlobalConstants.BoardRows; y++)
+            {
+                for (int x = 0; x < GlobalConstants.BoardCols; x++)
+                {
+                    var currentFigure = this.Matrix[y][x].Piece;
+
+                    if (!(currentFigure is Empty || currentFigure is King))
+                    {
+                        if (currentFigure is Pawn ||
+                            currentFigure is Rook ||
+                            currentFigure is Queen ||
+                            counterBishopKnightWhite > 1 ||
+                            counterBishopKnightBlack > 1)
+                        {
+                            return;
+                        }
+
+                        if (currentFigure.Color == Color.Light)
+                        {
+                            counterBishopKnightWhite++;
+                        }
+                        else
+                        {
+                            counterBishopKnightBlack++;
+                        }
+                    }
+                }
+            }
+
+            GlobalConstants.GameOver = GameOver.Draw;
+        }
+
+        public void IsOpponentCheckmate(Player movingPlayer, Player opponent)
+        {
+            var king = this.GetKingSquare(opponent.Color);
+            var attackingSquare = this.Target;
+
+            if (!this.IsKingAbleToMove(king, movingPlayer) &&
+                !this.AttackingPieceCanBeTaken(attackingSquare, movingPlayer) &&
+                !this.OtherPieceCanBlockTheCheck(king, attackingSquare, opponent))
+            {
+                GlobalConstants.GameOver = GameOver.Checkmate;
+            }
+        }
+
+        public bool IsPlayerChecked(Player player)
+        {
+            var kingSquare = this.GetKingSquare(player.Color);
+
+            if (kingSquare.IsAttacked.Where(x => x.Color != kingSquare.Piece.Color).Any())
+            {
+                player.IsCheck = true;
+                return true;
+            }
+
+            return false;
+        }
+
         private bool MovePiece(Player movingPlayer, string targetFen)
         {
-            if (!this.Move.End.IsOccupied &&
-                movingPlayer.Color == this.Move.Start.Piece.Color &&
-                this.Move.Start.Piece.Move(this.Move.End.Position, this.Matrix))
+            if (!this.Target.IsOccupied &&
+                movingPlayer.Color == this.Source.Piece.Color &&
+                this.Source.Piece.Move(this.Target.Position, this.Matrix))
             {
                 if (!this.TryMove(movingPlayer, targetFen))
                 {
@@ -140,12 +267,12 @@
 
         private bool TakePiece(Player movingPlayer, string targetFen)
         {
-            if (this.Move.End.IsOccupied &&
-                this.Move.End.Piece.Color != this.Move.Start.Piece.Color &&
-                movingPlayer.Color == this.Move.Start.Piece.Color &&
-                this.Move.Start.Piece.Take(this.Move.End.Position, this.Matrix))
+            if (this.Target.IsOccupied &&
+                this.Target.Piece.Color != this.Source.Piece.Color &&
+                movingPlayer.Color == this.Source.Piece.Color &&
+                this.Source.Piece.Take(this.Target.Position, this.Matrix))
             {
-                string pieceName = this.Move.End.Piece.Name;
+                string pieceName = this.Target.Piece.Name;
 
                 if (!this.TryMove(movingPlayer, targetFen))
                 {
@@ -163,22 +290,22 @@
         private bool EnPassantTake(Player movingPlayer)
         {
             if (EnPassant.Turn == GlobalConstants.TurnCounter &&
-                this.Move.End.Position.X == EnPassant.PositionX &&
-                this.Move.End.Position.Y == EnPassant.PositionY &&
-                this.Move.Start.Piece is Pawn)
+                this.Target.Position.X == EnPassant.PositionX &&
+                this.Target.Position.Y == EnPassant.PositionY &&
+                this.Source.Piece is Pawn)
             {
-                this.PlacePiece(this.Move);
-                this.RemovePiece(this.Move.Start);
-                int x = this.Move.End.Position.X > this.Move.Start.Position.X ? 1 : -1;
-                IPiece piece = this.Matrix[this.Move.Start.Position.Y][this.Move.Start.Position.X + x].Piece;
-                this.RemovePiece(this.Matrix[this.Move.Start.Position.Y][this.Move.Start.Position.X + x]);
+                this.PlacePiece(this.Source, this.Target);
+                this.RemovePiece(this.Source);
+                int x = this.Target.Position.X > this.Source.Position.X ? 1 : -1;
+                IPiece piece = this.Matrix[this.Source.Position.Y][this.Source.Position.X + x].Piece;
+                this.RemovePiece(this.Matrix[this.Source.Position.Y][this.Source.Position.X + x]);
                 this.CalculateAttackedSquares();
 
                 if (this.IsPlayerChecked(movingPlayer))
                 {
-                    this.ReversePiece(this.Move);
-                    this.RemovePiece(this.Move.End);
-                    this.Matrix[this.Move.Start.Position.Y][this.Move.Start.Position.X + x].Piece = piece;
+                    this.ReversePiece(this.Source, this.Target);
+                    this.RemovePiece(this.Target);
+                    this.Matrix[this.Source.Position.Y][this.Source.Position.X + x].Piece = piece;
                     this.CalculateAttackedSquares();
                     movingPlayer.IsCheck = true;
                     return true;
@@ -186,7 +313,7 @@
 
                 movingPlayer.IsCheck = false;
 
-                string position = this.GetStringPosition(this.Move.Start.Position.X + x, this.Move.Start.Position.Y);
+                string position = this.GetStringPosition(this.Source.Position.X + x, this.Source.Position.Y);
                 GlobalConstants.EnPassantTake = position;
 
                 return true;
@@ -204,22 +331,22 @@
 
         private bool TryMove(Player movingPlayer, string targetFen)
         {
-            this.PlacePiece(this.Move);
-            this.RemovePiece(this.Move.Start);
+            this.PlacePiece(this.Source, this.Target);
+            this.RemovePiece(this.Source);
             this.CalculateAttackedSquares();
 
             if (this.IsPlayerChecked(movingPlayer))
             {
-                this.ReversePiece(this.Move);
-                this.RemovePiece(this.Move.End);
+                this.ReversePiece(this.Source, this.Target);
+                this.RemovePiece(this.Target);
                 this.CalculateAttackedSquares();
                 return false;
             }
 
-            if (this.Move.End.Piece is Pawn && this.Move.End.Piece.IsLastMove)
+            if (this.Target.Piece is Pawn && this.Target.Piece.IsLastMove)
             {
-                this.Move.End.Piece = Factory.GetQueen(this.Move.End.Piece.Color);
-                var isWhite = this.Move.End.Piece.Color == Color.Light ? true : false;
+                this.Target.Piece = Factory.GetQueen(this.Target.Piece.Color);
+                var isWhite = this.Target.Piece.Color == Color.Light ? true : false;
 
                 this.GetPawnPromotionFenString(targetFen, isWhite);
 
@@ -274,9 +401,9 @@
             GlobalConstants.PawnPromotionFen = sb.ToString();
         }
 
-        private void PlacePiece(Move move)
+        private void PlacePiece(Square source, Square target)
         {
-            this.Matrix[move.End.Position.Y][move.End.Position.X].Piece = this.Matrix[move.Start.Position.Y][move.Start.Position.X].Piece;
+            this.Matrix[target.Position.Y][target.Position.X].Piece = this.Matrix[source.Position.Y][source.Position.X].Piece;
         }
 
         private void RemovePiece(Square square)
@@ -286,34 +413,9 @@
             this.Matrix[square.Position.Y][square.Position.X].Piece = empty;
         }
 
-        private void ReversePiece(Move move)
+        private void ReversePiece(Square source, Square target)
         {
-            this.Matrix[move.Start.Position.Y][move.Start.Position.X].Piece = this.Matrix[move.End.Position.Y][move.End.Position.X].Piece;
-        }
-
-        private bool IsPlayerChecked(Player player)
-        {
-            var kingSquare = this.GetKingSquare(player.Color);
-
-            if (kingSquare.IsAttacked.Where(x => x.Color != kingSquare.Piece.Color).Any())
-            {
-                player.IsCheck = true;
-                return true;
-            }
-
-            return false;
-        }
-
-        private void IsOpponentCheckmate(Player movingPlayer, Player opponent, Square attackingSquare)
-        {
-            var king = this.GetKingSquare(opponent.Color);
-
-            if (!this.IsKingAbleToMove(king, movingPlayer) &&
-                !this.AttackingPieceCanBeTaken(attackingSquare, opponent) &&
-                !this.OtherPieceCanBlockTheCheck(king, attackingSquare, opponent))
-            {
-                GlobalConstants.GameOver = GameOver.Checkmate;
-            }
+            this.Matrix[source.Position.Y][source.Position.X].Piece = this.Matrix[target.Position.Y][target.Position.X].Piece;
         }
 
         private void CalculateAttackedSquares()
