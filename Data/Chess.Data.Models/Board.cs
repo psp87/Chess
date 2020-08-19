@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
+    using System.Text;
     using Chess.Common;
     using Chess.Common.Enums;
     using Chess.Data.Models.EventArgs;
@@ -57,8 +57,8 @@
             this.Move.Start = this.GetSquare(source);
             this.Move.End = this.GetSquare(target);
 
-            if (this.MovePiece(movingPlayer, opponent) ||
-                this.TakePiece(movingPlayer, opponent) ||
+            if (this.MovePiece(movingPlayer, opponent, targetFen) ||
+                this.TakePiece(movingPlayer, opponent, targetFen) ||
                 this.EnPassantTake(movingPlayer, opponent))
             {
                 if (movingPlayer.IsCheck)
@@ -138,13 +138,13 @@
             return board;
         }
 
-        private bool MovePiece(Player movingPlayer, Player opponent)
+        private bool MovePiece(Player movingPlayer, Player opponent, string targetFen)
         {
             if (!this.Move.End.IsOccupied &&
                 movingPlayer.Color == this.Move.Start.Piece.Color &&
                 this.Move.Start.Piece.Move(this.Move.End.Position, this.Matrix))
             {
-                if (!this.TryMove(movingPlayer, opponent))
+                if (!this.TryMove(movingPlayer, opponent, targetFen))
                 {
                     movingPlayer.IsCheck = true;
                 }
@@ -155,7 +155,7 @@
             return false;
         }
 
-        private bool TakePiece(Player movingPlayer, Player opponent)
+        private bool TakePiece(Player movingPlayer, Player opponent, string targetFen)
         {
             if (this.Move.End.IsOccupied &&
                 this.Move.End.Piece.Color != this.Move.Start.Piece.Color &&
@@ -164,7 +164,7 @@
             {
                 string pieceName = this.Move.End.Piece.Name;
 
-                if (!this.TryMove(movingPlayer, opponent))
+                if (!this.TryMove(movingPlayer, opponent, targetFen))
                 {
                     movingPlayer.IsCheck = true;
                     return true;
@@ -219,7 +219,7 @@
             return $"{col}{row}";
         }
 
-        private bool TryMove(Player movingPlayer, Player opponent)
+        private bool TryMove(Player movingPlayer, Player opponent, string targetFen)
         {
             this.PlacePiece(this.Move);
             this.RemovePiece(this.Move.Start);
@@ -235,12 +235,70 @@
 
             if (this.Move.End.Piece is Pawn && this.Move.End.Piece.IsLastMove)
             {
-                // this.Move.End.Piece = this.drawer.PawnPromotion(this.Move.End);
+                this.Move.End.Piece = Factory.GetQueen(this.Move.End.Piece.Color);
+                this.GetPawnPromotionFen(this.Move.End.Piece.Color, targetFen);
+
                 this.CalculateAttackedSquares();
             }
 
             movingPlayer.IsCheck = false;
             return true;
+        }
+
+        private void GetPawnPromotionFen(Color color, string targetFen)
+        {
+            var sb = new StringBuilder();
+            string[] rows = targetFen.Split('/');
+
+            for (int i = 0; i < rows.Length; i++)
+            {
+                var currentRow = rows[i];
+
+                if (color == Color.Light)
+                {
+                    if (i == 0)
+                    {
+                        for (int k = 0; k < currentRow.Length; k++)
+                        {
+                            if (string.Compare(currentRow[k].ToString(), "P") == 0)
+                            {
+                                sb.Append("Q");
+                                continue;
+                            }
+
+                            sb.Append(currentRow[k]);
+                        }
+                    }
+                    else
+                    {
+                        sb.Append("/");
+                        sb.Append(currentRow);
+                    }
+                }
+                else
+                {
+                    if (i == 7)
+                    {
+                        for (int k = 0; k < currentRow.Length; k++)
+                        {
+                            if (string.Compare(currentRow[k].ToString(), "p") == 0)
+                            {
+                                sb.Append("q");
+                                continue;
+                            }
+
+                            sb.Append(currentRow[k]);
+                        }
+                    }
+                    else
+                    {
+                        sb.Append(currentRow);
+                        sb.Append("/");
+                    }
+                }
+            }
+
+            GlobalConstants.PawnPromotionFen = sb.ToString();
         }
 
         private void PlacePiece(Move move)

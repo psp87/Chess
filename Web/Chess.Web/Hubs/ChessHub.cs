@@ -85,6 +85,12 @@
                 await this.Clients.All.SendAsync("BoardMove", Castling.RookSource, Castling.RookTarget);
                 GlobalConstants.CastlingMove = false;
             }
+
+            if (GlobalConstants.PawnPromotionFen != null)
+            {
+                await this.Clients.All.SendAsync("BoardSetPosition", GlobalConstants.PawnPromotionFen);
+                GlobalConstants.PawnPromotionFen = null;
+            }
         }
 
         public async Task IsThreefoldDraw()

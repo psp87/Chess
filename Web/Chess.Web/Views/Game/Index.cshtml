@@ -168,6 +168,10 @@
             })
         })
 
+        connection.on("BoardSetPosition", function (fen) {
+            board.position(fen);
+        })
+
         connection.on("UpdateStatus", function (movingPlayerName) {
             updateStatus(movingPlayerName);
         })

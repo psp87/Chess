@@ -21,5 +21,7 @@
         public static bool IsThreefoldDraw { get; set; }
 
         public static bool CastlingMove { get; set; }
+
+        public static string PawnPromotionFen { get; set; }
     }
 }
