@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+
     using Chess.Common;
     using Chess.Common.Enums;
     using Chess.Data.Models.EventArgs;
@@ -27,7 +28,6 @@
             { "E1", new King(Color.Light) }, { "F1", new Bishop(Color.Light) }, { "G1", new Knight(Color.Light) }, { "H1", new Rook(Color.Light) },
             { "A2", new Pawn(Color.Light) },  { "B2", new Pawn(Color.Light) },   { "C2", new Pawn(Color.Light) },   { "D2", new Pawn(Color.Light) },
             { "E2", new Pawn(Color.Light) },  { "F2", new Pawn(Color.Light) },   { "G2", new Pawn(Color.Light) },   { "H2", new Pawn(Color.Light) },
-
             { "A7", new Pawn(Color.Dark) },  { "B7", new Pawn(Color.Dark) },   { "C7", new Pawn(Color.Dark) },   { "D7", new Pawn(Color.Dark) },
             { "E7", new Pawn(Color.Dark) },  { "F7", new Pawn(Color.Dark) },   { "G7", new Pawn(Color.Dark) },   { "H7", new Pawn(Color.Dark) },
             { "A8", new Rook(Color.Dark) },  { "B8", new Knight(Color.Dark) }, { "C8", new Bishop(Color.Dark) }, { "D8", new Queen(Color.Dark) },
@@ -57,9 +57,9 @@
             this.Move.Start = this.GetSquare(source);
             this.Move.End = this.GetSquare(target);
 
-            if (this.MovePiece(movingPlayer, opponent, targetFen) ||
-                this.TakePiece(movingPlayer, opponent, targetFen) ||
-                this.EnPassantTake(movingPlayer, opponent))
+            if (this.MovePiece(movingPlayer, targetFen) ||
+                this.TakePiece(movingPlayer, targetFen) ||
+                this.EnPassantTake(movingPlayer))
             {
                 if (movingPlayer.IsCheck)
                 {
@@ -138,13 +138,13 @@
             return board;
         }
 
-        private bool MovePiece(Player movingPlayer, Player opponent, string targetFen)
+        private bool MovePiece(Player movingPlayer, string targetFen)
         {
             if (!this.Move.End.IsOccupied &&
                 movingPlayer.Color == this.Move.Start.Piece.Color &&
                 this.Move.Start.Piece.Move(this.Move.End.Position, this.Matrix))
             {
-                if (!this.TryMove(movingPlayer, opponent, targetFen))
+                if (!this.TryMove(movingPlayer, targetFen))
                 {
                     movingPlayer.IsCheck = true;
                 }
@@ -155,7 +155,7 @@
             return false;
         }
 
-        private bool TakePiece(Player movingPlayer, Player opponent, string targetFen)
+        private bool TakePiece(Player movingPlayer, string targetFen)
         {
             if (this.Move.End.IsOccupied &&
                 this.Move.End.Piece.Color != this.Move.Start.Piece.Color &&
@@ -164,7 +164,7 @@
             {
                 string pieceName = this.Move.End.Piece.Name;
 
-                if (!this.TryMove(movingPlayer, opponent, targetFen))
+                if (!this.TryMove(movingPlayer, targetFen))
                 {
                     movingPlayer.IsCheck = true;
                     return true;
@@ -177,7 +177,7 @@
             return false;
         }
 
-        private bool EnPassantTake(Player movingPlayer, Player opponent)
+        private bool EnPassantTake(Player movingPlayer)
         {
             if (EnPassant.Turn == GlobalConstants.TurnCounter &&
                 this.Move.End.Position.X == EnPassant.PositionX &&
@@ -219,7 +219,7 @@
             return $"{col}{row}";
         }
 
-        private bool TryMove(Player movingPlayer, Player opponent, string targetFen)
+        private bool TryMove(Player movingPlayer, string targetFen)
         {
             this.PlacePiece(this.Move);
             this.RemovePiece(this.Move.Start);

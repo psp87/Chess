@@ -25,7 +25,7 @@
 
         public IPiece Piece
         {
-            get { return this.piece; }
+            get => this.piece;
 
             set
             {
