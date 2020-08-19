@@ -104,10 +104,5 @@
         {
             return new Move();
         }
-
-        public static Move GetMove(Move move)
-        {
-            return new Move(move);
-        }
     }
 }

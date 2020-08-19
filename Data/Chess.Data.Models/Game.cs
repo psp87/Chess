@@ -19,8 +19,6 @@
             this.Id = Guid.NewGuid().ToString();
             this.Player1.GameId = this.Id;
             this.Player2.GameId = this.Id;
-
-            this.Move = Factory.GetMove();
         }
 
         public event EventHandler OnCheck;
@@ -30,8 +28,6 @@
         public string Id { get; set; }
 
         public Board ChessBoard { get; set; }
-
-        public Move Move { get; set; }
 
         public Player Player1 { get; set; }
 
@@ -45,6 +41,7 @@
         {
             if (this.ChessBoard.MakeMove(source, target, targetFen, this.MovingPlayer))
             {
+                // Moving player cannot move bacause it is check!
                 if (this.MovingPlayer.IsCheck)
                 {
                     this.OnCheck?.Invoke(null, new CheckEventArgs(Check.Self));
@@ -52,12 +49,14 @@
                     return false;
                 }
 
+                // Check the opponent for check and checkmate
                 if (this.ChessBoard.IsPlayerChecked(this.Opponent))
                 {
                     this.OnCheck?.Invoke(null, new CheckEventArgs(Check.Opponent));
-                    this.ChessBoard.IsOpponentCheckmate(this.MovingPlayer, this.Opponent);
+                    this.ChessBoard.IsCheckmate(this.MovingPlayer, this.Opponent);
                 }
 
+                // Clear the check notification
                 if (!this.MovingPlayer.IsCheck && !this.Opponent.IsCheck)
                 {
                     this.OnCheck?.Invoke(null, new CheckEventArgs(Check.None));

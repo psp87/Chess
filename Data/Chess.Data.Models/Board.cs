@@ -7,7 +7,6 @@
 
     using Chess.Common;
     using Chess.Common.Enums;
-    using Chess.Data.Models.EventArgs;
     using Chess.Data.Models.Pieces;
     using Chess.Data.Models.Pieces.Contracts;
     using Chess.Data.Models.Pieces.Helpers;
@@ -16,7 +15,6 @@
     {
         private Queue<string> movesThreefold;
         private Queue<string> movesFivefold;
-
         private string[] arrayThreefold;
         private string[] arrayFivefold;
 
@@ -53,21 +51,6 @@
         public Square Source { get; set; }
 
         public Square Target { get; set; }
-
-        public bool MakeMove(string source, string target, string targetFen, Player movingPlayer)
-        {
-            this.Source = this.GetSquare(source);
-            this.Target = this.GetSquare(target);
-
-            if (this.MovePiece(movingPlayer, targetFen) ||
-                this.TakePiece(movingPlayer, targetFen) ||
-                this.EnPassantTake(movingPlayer))
-            {
-                return true;
-            }
-
-            return false;
-        }
 
         public void Initialize()
         {
@@ -117,6 +100,33 @@
             return board;
         }
 
+        public bool MakeMove(string source, string target, string targetFen, Player movingPlayer)
+        {
+            this.Source = this.GetSquare(source);
+            this.Target = this.GetSquare(target);
+
+            if (this.MovePiece(movingPlayer, targetFen) ||
+                this.TakePiece(movingPlayer, targetFen) ||
+                this.EnPassantTake(movingPlayer))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public void IsCheckmate(Player movingPlayer, Player opponent)
+        {
+            var king = this.GetKingSquare(opponent.Color);
+
+            if (!this.IsKingAbleToMove(king, movingPlayer) &&
+                !this.AttackingPieceCanBeTaken(this.Target, movingPlayer) &&
+                !this.OtherPieceCanBlockTheCheck(king, this.Target, opponent))
+            {
+                GlobalConstants.GameOver = GameOver.Checkmate;
+            }
+        }
+
         public void IsStalemate(Player player)
         {
             for (int y = 0; y < GlobalConstants.BoardRows; y++)
@@ -137,6 +147,43 @@
             }
 
             GlobalConstants.GameOver = GameOver.Stalemate;
+        }
+
+        public void IsDraw()
+        {
+            int counterBishopKnightWhite = 0;
+            int counterBishopKnightBlack = 0;
+
+            for (int y = 0; y < GlobalConstants.BoardRows; y++)
+            {
+                for (int x = 0; x < GlobalConstants.BoardCols; x++)
+                {
+                    var currentFigure = this.Matrix[y][x].Piece;
+
+                    if (!(currentFigure is Empty || currentFigure is King))
+                    {
+                        if (currentFigure is Pawn ||
+                            currentFigure is Rook ||
+                            currentFigure is Queen ||
+                            counterBishopKnightWhite > 1 ||
+                            counterBishopKnightBlack > 1)
+                        {
+                            return;
+                        }
+
+                        if (currentFigure.Color == Color.Light)
+                        {
+                            counterBishopKnightWhite++;
+                        }
+                        else
+                        {
+                            counterBishopKnightBlack++;
+                        }
+                    }
+                }
+            }
+
+            GlobalConstants.GameOver = GameOver.Draw;
         }
 
         public void IsThreefoldRepetionDraw(string fen)
@@ -182,56 +229,6 @@
                 {
                     this.movesFivefold.Dequeue();
                 }
-            }
-        }
-
-        public void IsDraw()
-        {
-            int counterBishopKnightWhite = 0;
-            int counterBishopKnightBlack = 0;
-
-            for (int y = 0; y < GlobalConstants.BoardRows; y++)
-            {
-                for (int x = 0; x < GlobalConstants.BoardCols; x++)
-                {
-                    var currentFigure = this.Matrix[y][x].Piece;
-
-                    if (!(currentFigure is Empty || currentFigure is King))
-                    {
-                        if (currentFigure is Pawn ||
-                            currentFigure is Rook ||
-                            currentFigure is Queen ||
-                            counterBishopKnightWhite > 1 ||
-                            counterBishopKnightBlack > 1)
-                        {
-                            return;
-                        }
-
-                        if (currentFigure.Color == Color.Light)
-                        {
-                            counterBishopKnightWhite++;
-                        }
-                        else
-                        {
-                            counterBishopKnightBlack++;
-                        }
-                    }
-                }
-            }
-
-            GlobalConstants.GameOver = GameOver.Draw;
-        }
-
-        public void IsOpponentCheckmate(Player movingPlayer, Player opponent)
-        {
-            var king = this.GetKingSquare(opponent.Color);
-            var attackingSquare = this.Target;
-
-            if (!this.IsKingAbleToMove(king, movingPlayer) &&
-                !this.AttackingPieceCanBeTaken(attackingSquare, movingPlayer) &&
-                !this.OtherPieceCanBlockTheCheck(king, attackingSquare, opponent))
-            {
-                GlobalConstants.GameOver = GameOver.Checkmate;
             }
         }
 
@@ -322,13 +319,6 @@
             return false;
         }
 
-        private string GetStringPosition(int x, int y)
-        {
-            char col = (char)(97 + x);
-            int row = Math.Abs(y - 8);
-            return $"{col}{row}";
-        }
-
         private bool TryMove(Player movingPlayer, string targetFen)
         {
             this.PlacePiece(this.Source, this.Target);
@@ -355,6 +345,28 @@
 
             movingPlayer.IsCheck = false;
             return true;
+        }
+
+        private void CalculateAttackedSquares()
+        {
+            for (int y = 0; y < GlobalConstants.BoardRows; y++)
+            {
+                for (int x = 0; x < GlobalConstants.BoardCols; x++)
+                {
+                    this.Matrix[y][x].IsAttacked.Clear();
+                }
+            }
+
+            for (int y = 0; y < GlobalConstants.BoardRows; y++)
+            {
+                for (int x = 0; x < GlobalConstants.BoardCols; x++)
+                {
+                    if (this.Matrix[y][x].IsOccupied == true)
+                    {
+                        this.Matrix[y][x].Piece.Attacking(this.Matrix);
+                    }
+                }
+            }
         }
 
         private void GetPawnPromotionFenString(string targetFen, bool isWhite)
@@ -401,6 +413,13 @@
             GlobalConstants.PawnPromotionFen = sb.ToString();
         }
 
+        private string GetStringPosition(int x, int y)
+        {
+            char col = (char)(97 + x);
+            int row = Math.Abs(y - 8);
+            return $"{col}{row}";
+        }
+
         private void PlacePiece(Square source, Square target)
         {
             this.Matrix[target.Position.Y][target.Position.X].Piece = this.Matrix[source.Position.Y][source.Position.X].Piece;
@@ -416,28 +435,6 @@
         private void ReversePiece(Square source, Square target)
         {
             this.Matrix[source.Position.Y][source.Position.X].Piece = this.Matrix[target.Position.Y][target.Position.X].Piece;
-        }
-
-        private void CalculateAttackedSquares()
-        {
-            for (int y = 0; y < GlobalConstants.BoardRows; y++)
-            {
-                for (int x = 0; x < GlobalConstants.BoardCols; x++)
-                {
-                    this.Matrix[y][x].IsAttacked.Clear();
-                }
-            }
-
-            for (int y = 0; y < GlobalConstants.BoardRows; y++)
-            {
-                for (int x = 0; x < GlobalConstants.BoardCols; x++)
-                {
-                    if (this.Matrix[y][x].IsOccupied == true)
-                    {
-                        this.Matrix[y][x].Piece.Attacking(this.Matrix);
-                    }
-                }
-            }
         }
 
         private Square GetSquare(string position)
