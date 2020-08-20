@@ -88,8 +88,6 @@
             {
                 int number = to.Y == this.Position.Y + (sign * 1) ? sign * 1 : sign * 2;
 
-                this.IsFirstMove = false;
-
                 if (number == sign * 2)
                 {
                     EnPassant.Turn = GlobalConstants.TurnCounter + 1;

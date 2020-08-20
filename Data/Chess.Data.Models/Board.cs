@@ -262,8 +262,10 @@
                 if (!this.Try(movingPlayer))
                 {
                     movingPlayer.IsCheck = true;
+                    return true;
                 }
 
+                this.Target.Piece.IsFirstMove = false;
                 return true;
             }
 
@@ -285,6 +287,7 @@
                     return true;
                 }
 
+                this.Target.Piece.IsFirstMove = false;
                 movingPlayer.TakeFigure(pieceName);
                 return true;
             }

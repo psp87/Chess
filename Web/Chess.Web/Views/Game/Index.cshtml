@@ -100,9 +100,12 @@
             board.orientation('black');
         })
 
-        connection.on("InvalidMove", function (fen, movingPlayerName) {
+        connection.on("BoardSnapback", function (fen) {
             board.position(fen);
-            invalidMessage(movingPlayerName);
+        })
+
+        connection.on("InvalidMessage", function (movingPlayer) {
+            invalidMessage(movingPlayer);
         })
 
         connection.on("BoardMove", function (source, target) {
@@ -136,16 +139,20 @@
             board.move(`${target}-${pawnPosition}`, `${pawnPosition}-${target}`);
         })
 
-        connection.on("CheckOpponent", function () {
+        connection.on("CheckOpponent", function (player) {
             var $status = document.getElementById('statusCheck');
             $status.style.display = "block";
-            $status.innerText = "Check!";
+            $status.innerText = "CHECK!";
         })
 
-        connection.on("CheckSelf", function () {
-            var $status = document.getElementById('statusCheck');
-            $status.style.display = "block";
-            $status.innerText = "King is checked!";
+        connection.on("CheckSelf", function (player) {
+            var $status = document.getElementById('statusText');
+            $status.style.color = "red";
+            $status.innerText = "Invalid! You are CHECK!";
+            sleep(1500).then(() => {
+                    statusText.innerText = "Your Turn!";
+                    statusText.style.color = "green";
+                })
         })
 
         connection.on("EmptyCheckStatus", function () {
@@ -176,10 +183,10 @@
             updateStatus(movingPlayerName);
         })
 
-        function invalidMessage(name) {
+        function invalidMessage(movingPlayer) {
             var statusText = document.getElementById('statusText');
 
-            if (name == playerName) {
+            if (movingPlayer.name == playerName) {
                 statusText.innerText = "Invalid Move!";
                 statusText.style.color = "red";
                 sleep(1500).then(() => {

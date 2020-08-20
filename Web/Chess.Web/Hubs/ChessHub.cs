@@ -9,6 +9,7 @@
     using Chess.Data.Models;
     using Chess.Data.Models.EventArgs;
     using Chess.Data.Models.Pieces.Helpers;
+
     using Microsoft.AspNetCore.SignalR;
 
     public class ChessHub : Hub
@@ -45,7 +46,7 @@
                 this.Game = Factory.GetGame(opponent, joiningPlayer);
 
                 this.Game.OnGameOver += this.Game_OnGameOver;
-                this.Game.OnCheck += this.Game_OnCheck;
+                this.Game.OnNotification += this.Game_OnNotification;
 
                 await Task.WhenAll(
                     this.Groups.AddToGroupAsync(this.Game.Player1.Id, groupName: this.Game.Id),
@@ -63,7 +64,7 @@
             if (!player.HasToMove ||
                 !this.Game.MakeMove(source, target, targetFen))
             {
-                await this.Clients.Caller.SendAsync("InvalidMove", sourceFen, this.Game.MovingPlayer.Name);
+                await this.Clients.Caller.SendAsync("BoardSnapback", sourceFen);
                 return;
             }
 
@@ -139,20 +140,24 @@
             this.Clients.All.SendAsync("GameOver", player, gameOver.GameOver);
         }
 
-        private void Game_OnCheck(object sender, EventArgs e)
+        private void Game_OnNotification(object sender, EventArgs e)
         {
-            var type = e as CheckEventArgs;
+            var player = sender as Player;
+            var notification = e as NotificationEventArgs;
 
-            switch (type.Check)
+            switch (notification.Type)
             {
-                case Check.None:
+                case Notification.InvalidMove:
+                    this.Clients.Caller.SendAsync("InvalidMessage", player);
+                    break;
+                case Notification.CheckClear:
                     this.Clients.All.SendAsync("EmptyCheckStatus");
                     break;
-                case Check.Opponent:
-                    this.Clients.All.SendAsync("CheckOpponent");
+                case Notification.CheckOpponent:
+                    this.Clients.All.SendAsync("CheckOpponent", player);
                     break;
-                case Check.Self:
-                    this.Clients.Caller.SendAsync("CheckSelf");
+                case Notification.CheckSelf:
+                    this.Clients.Caller.SendAsync("CheckSelf", player);
                     break;
             }
         }

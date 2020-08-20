@@ -81,7 +81,6 @@
 
                         if (to.X == this.Position.X + x && to.Y == this.Position.Y + y)
                         {
-                            this.IsFirstMove = false;
                             return true;
                         }
                     }
@@ -103,8 +102,6 @@
                         !firstSquareOnWay.IsAttacked.Where(x => x.Color != this.Color).Any() &&
                         !secondSquareOnWay.IsAttacked.Where(x => x.Color != this.Color).Any())
                     {
-                        this.IsFirstMove = false;
-
                         matrix[this.Position.Y][to.X + sign].Piece = matrix[this.Position.Y][lastPiecePosition].Piece;
                         matrix[this.Position.Y][lastPiecePosition].Piece = Factory.GetEmpty();
 

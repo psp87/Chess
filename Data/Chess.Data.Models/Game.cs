@@ -21,7 +21,7 @@
             this.Player2.GameId = this.Id;
         }
 
-        public event EventHandler OnCheck;
+        public event EventHandler OnNotification;
 
         public event EventHandler OnGameOver;
 
@@ -44,7 +44,7 @@
                 // Moving player cannot move bacause it is check!
                 if (this.MovingPlayer.IsCheck)
                 {
-                    this.OnCheck?.Invoke(null, new CheckEventArgs(Check.Self));
+                    this.OnNotification?.Invoke(this.MovingPlayer, new NotificationEventArgs(Notification.CheckSelf));
                     this.MovingPlayer.IsCheck = false;
                     return false;
                 }
@@ -52,14 +52,14 @@
                 // Check the opponent for check and checkmate
                 if (this.ChessBoard.IsPlayerChecked(this.Opponent))
                 {
-                    this.OnCheck?.Invoke(null, new CheckEventArgs(Check.Opponent));
+                    this.OnNotification?.Invoke(this.Opponent, new NotificationEventArgs(Notification.CheckOpponent));
                     this.ChessBoard.IsCheckmate(this.MovingPlayer, this.Opponent);
                 }
 
                 // Clear the check notification
                 if (!this.MovingPlayer.IsCheck && !this.Opponent.IsCheck)
                 {
-                    this.OnCheck?.Invoke(null, new CheckEventArgs(Check.None));
+                    this.OnNotification?.Invoke(null, new NotificationEventArgs(Notification.CheckClear));
                 }
 
                 this.ChessBoard.IsThreefoldRepetionDraw(targetFen);
@@ -78,6 +78,7 @@
                 return true;
             }
 
+            this.OnNotification?.Invoke(this.MovingPlayer, new NotificationEventArgs(Notification.InvalidMove));
             return false;
         }
 
