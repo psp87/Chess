@@ -36,7 +36,6 @@
         {
             this.movesThreefold = new Queue<string>();
             this.movesFivefold = new Queue<string>();
-
             this.arrayThreefold = new string[9];
             this.arrayFivefold = new string[17];
 
@@ -105,8 +104,8 @@
             this.Source = this.GetSquare(source);
             this.Target = this.GetSquare(target);
 
-            if (this.MovePiece(movingPlayer, targetFen) ||
-                this.TakePiece(movingPlayer, targetFen) ||
+            if (this.MovePiece(movingPlayer) ||
+                this.TakePiece(movingPlayer) ||
                 this.EnPassantTake(movingPlayer))
             {
                 if (this.Target.Piece is Pawn && this.Target.Piece.IsLastMove)
@@ -254,7 +253,7 @@
             return false;
         }
 
-        private bool MovePiece(Player movingPlayer, string targetFen)
+        private bool MovePiece(Player movingPlayer)
         {
             if (!this.Target.IsOccupied &&
                 movingPlayer.Color == this.Source.Piece.Color &&
@@ -271,7 +270,7 @@
             return false;
         }
 
-        private bool TakePiece(Player movingPlayer, string targetFen)
+        private bool TakePiece(Player movingPlayer)
         {
             if (this.Target.IsOccupied &&
                 this.Target.Piece.Color != this.Source.Piece.Color &&
@@ -295,36 +294,39 @@
 
         private bool EnPassantTake(Player movingPlayer)
         {
-            var positions = this.GetAllowedPositions(movingPlayer);
-
-            var firstPosition = positions[0];
-            var secondPosition = positions[1];
-
-            if (EnPassant.Turn == GlobalConstants.TurnCounter &&
-                EnPassant.Position.Equals(this.Target.Position) &&
-                this.Source.Piece is Pawn &
-                (this.Source.Position.Equals(firstPosition) ||
-                this.Source.Position.Equals(secondPosition)))
+            if (EnPassant.Position != null)
             {
-                int x = this.Target.Position.X > this.Source.Position.X ? 1 : -1;
+                var positions = this.GetAllowedPositions(movingPlayer);
 
-                this.EnPassantMovePiece(x);
-                this.CalculateAttackedSquares();
+                var firstPosition = positions[0];
+                var secondPosition = positions[1];
 
-                if (this.IsPlayerChecked(movingPlayer))
+                if (EnPassant.Turn == GlobalConstants.TurnCounter &&
+                    EnPassant.Position.Equals(this.Target.Position) &&
+                    this.Source.Piece is Pawn &&
+                    (this.Source.Position.Equals(firstPosition) ||
+                    this.Source.Position.Equals(secondPosition)))
                 {
-                    this.EnPassantReversePiece(x);
+                    int x = this.Target.Position.X > this.Source.Position.X ? 1 : -1;
+
+                    this.EnPassantMovePiece(x);
                     this.CalculateAttackedSquares();
 
-                    movingPlayer.IsCheck = true;
+                    if (this.IsPlayerChecked(movingPlayer))
+                    {
+                        this.EnPassantReversePiece(x);
+                        this.CalculateAttackedSquares();
+
+                        movingPlayer.IsCheck = true;
+                        return true;
+                    }
+
+                    string position = this.GetStringPosition(this.Source.Position.X + x, this.Source.Position.Y);
+
+                    GlobalConstants.EnPassantTake = position;
+                    movingPlayer.IsCheck = false;
                     return true;
                 }
-
-                string position = this.GetStringPosition(this.Source.Position.X + x, this.Source.Position.Y);
-
-                GlobalConstants.EnPassantTake = position;
-                movingPlayer.IsCheck = false;
-                return true;
             }
 
             return false;
