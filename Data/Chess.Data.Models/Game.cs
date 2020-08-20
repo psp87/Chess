@@ -37,9 +37,9 @@
 
         public Player Opponent => this.Player1?.HasToMove ?? false ? this.Player2 : this.Player1;
 
-        public bool MoveSelected(string source, string target, string targetFen)
+        public bool MakeMove(string source, string target, string targetFen)
         {
-            if (this.ChessBoard.MakeMove(source, target, targetFen, this.MovingPlayer))
+            if (this.ChessBoard.TryMove(source, target, targetFen, this.MovingPlayer))
             {
                 // Moving player cannot move bacause it is check!
                 if (this.MovingPlayer.IsCheck)

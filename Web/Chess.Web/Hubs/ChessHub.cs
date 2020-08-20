@@ -61,7 +61,7 @@
             var player = this.players[this.Context.ConnectionId];
 
             if (!player.HasToMove ||
-                !this.Game.MoveSelected(source, target, targetFen))
+                !this.Game.MakeMove(source, target, targetFen))
             {
                 await this.Clients.Caller.SendAsync("InvalidMove", sourceFen, this.Game.MovingPlayer.Name);
                 return;

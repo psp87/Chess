@@ -99,7 +99,7 @@
             return board;
         }
 
-        public bool MakeMove(string source, string target, string targetFen, Player movingPlayer)
+        public bool TryMove(string source, string target, string targetFen, Player movingPlayer)
         {
             this.Source = this.GetSquare(source);
             this.Target = this.GetSquare(target);
@@ -259,7 +259,7 @@
                 movingPlayer.Color == this.Source.Piece.Color &&
                 this.Source.Piece.Move(this.Target.Position, this.Matrix))
             {
-                if (!this.TryMove(movingPlayer))
+                if (!this.Try(movingPlayer))
                 {
                     movingPlayer.IsCheck = true;
                 }
@@ -279,7 +279,7 @@
             {
                 string pieceName = this.Target.Piece.Name;
 
-                if (!this.TryMove(movingPlayer))
+                if (!this.Try(movingPlayer))
                 {
                     movingPlayer.IsCheck = true;
                     return true;
@@ -332,7 +332,7 @@
             return false;
         }
 
-        private bool TryMove(Player movingPlayer)
+        private bool Try(Player movingPlayer)
         {
             this.PlacePiece(this.Source, this.Target);
             this.RemovePiece(this.Source);

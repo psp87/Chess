@@ -36,11 +36,6 @@
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
             Position other = (Position)obj;
             return this.X == other.X && this.Y == other.Y;
         }
