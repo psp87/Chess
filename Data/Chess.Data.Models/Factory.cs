@@ -68,9 +68,9 @@
             return new Square();
         }
 
-        public static Square GetSquare(int x, int y)
+        public static Square GetSquare(int y, int x)
         {
-            return new Square(x, y);
+            return new Square(y, x);
         }
 
         public static Square[][] GetMatrix()

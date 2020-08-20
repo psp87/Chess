@@ -20,7 +20,7 @@
         public Square(int posY, int posX)
             : this()
         {
-            this.Position = Factory.GetPosition(posX, posY);
+            this.Position = Factory.GetPosition(posY, posX);
         }
 
         public IPiece Piece

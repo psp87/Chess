@@ -295,33 +295,35 @@
 
         private bool EnPassantTake(Player movingPlayer)
         {
+            var positions = this.GetAllowedPositions(movingPlayer);
+
+            var firstPosition = positions[0];
+            var secondPosition = positions[1];
+
             if (EnPassant.Turn == GlobalConstants.TurnCounter &&
-                this.Target.Position.X == EnPassant.PositionX &&
-                this.Target.Position.Y == EnPassant.PositionY &&
-                this.Source.Piece is Pawn)
+                EnPassant.Position.Equals(this.Target.Position) &&
+                this.Source.Piece is Pawn &
+                (this.Source.Position.Equals(firstPosition) ||
+                this.Source.Position.Equals(secondPosition)))
             {
-                this.PlacePiece(this.Source, this.Target);
-                this.RemovePiece(this.Source);
                 int x = this.Target.Position.X > this.Source.Position.X ? 1 : -1;
-                IPiece piece = this.Matrix[this.Source.Position.Y][this.Source.Position.X + x].Piece;
-                this.RemovePiece(this.Matrix[this.Source.Position.Y][this.Source.Position.X + x]);
+
+                this.EnPassantMovePiece(x);
                 this.CalculateAttackedSquares();
 
                 if (this.IsPlayerChecked(movingPlayer))
                 {
-                    this.ReversePiece(this.Source, this.Target);
-                    this.RemovePiece(this.Target);
-                    this.Matrix[this.Source.Position.Y][this.Source.Position.X + x].Piece = piece;
+                    this.EnPassantReversePiece(x);
                     this.CalculateAttackedSquares();
+
                     movingPlayer.IsCheck = true;
                     return true;
                 }
 
-                movingPlayer.IsCheck = false;
-
                 string position = this.GetStringPosition(this.Source.Position.X + x, this.Source.Position.Y);
-                GlobalConstants.EnPassantTake = position;
 
+                GlobalConstants.EnPassantTake = position;
+                movingPlayer.IsCheck = false;
                 return true;
             }
 
@@ -412,30 +414,6 @@
             GlobalConstants.PawnPromotionFen = sb.ToString();
         }
 
-        private string GetStringPosition(int x, int y)
-        {
-            char col = (char)(97 + x);
-            int row = Math.Abs(y - 8);
-            return $"{col}{row}";
-        }
-
-        private void PlacePiece(Square source, Square target)
-        {
-            this.Matrix[target.Position.Y][target.Position.X].Piece = this.Matrix[source.Position.Y][source.Position.X].Piece;
-        }
-
-        private void RemovePiece(Square square)
-        {
-            IPiece empty = Factory.GetEmpty();
-
-            this.Matrix[square.Position.Y][square.Position.X].Piece = empty;
-        }
-
-        private void ReversePiece(Square source, Square target)
-        {
-            this.Matrix[source.Position.Y][source.Position.X].Piece = this.Matrix[target.Position.Y][target.Position.X].Piece;
-        }
-
         private Square GetSquare(string position)
         {
             int col = char.Parse(position[0].ToString().ToUpper()) - 65;
@@ -459,7 +437,50 @@
             return null;
         }
 
-        #region IsOpponentCheckmate Methods
+        #region EnPassant Internal Methods
+        private void EnPassantMovePiece(int x)
+        {
+            this.PlacePiece(this.Source, this.Target);
+            this.RemovePiece(this.Source);
+            this.RemovePiece(this.Matrix[this.Source.Position.Y][this.Source.Position.X + x]);
+        }
+
+        private void EnPassantReversePiece(int x)
+        {
+            this.ReversePiece(this.Source, this.Target);
+            this.RemovePiece(this.Target);
+            var color = this.Matrix[this.Source.Position.Y][this.Source.Position.X + x].Piece.Color == Color.Light ? Color.Light : Color.Dark;
+            this.Matrix[this.Source.Position.Y][this.Source.Position.X + x].Piece = Factory.GetPawn(color);
+        }
+
+        private List<Position> GetAllowedPositions(Player movingPlayer)
+        {
+            var positions = new List<Position>();
+
+            var sign = movingPlayer.Color == Color.Light ? 1 : -1;
+
+            int row = this.Target.Position.Y + sign;
+            int colFirst = this.Target.Position.X + 1;
+            int colSecond = this.Target.Position.X - 1;
+
+            var firstAllowedPosition = Factory.GetPosition(row, colFirst);
+            var secondAllowedPosition = Factory.GetPosition(row, colSecond);
+
+            positions.Add(firstAllowedPosition);
+            positions.Add(secondAllowedPosition);
+
+            return positions;
+        }
+
+        private string GetStringPosition(int x, int y)
+        {
+            char col = (char)(97 + x);
+            int row = Math.Abs(y - 8);
+            return $"{col}{row}";
+        }
+        #endregion
+
+        #region IsOpponentCheckmate Internal Methods
         private bool IsKingAbleToMove(Square king, Player movingPlayer)
         {
             int kingY = king.Position.Y;
@@ -627,6 +648,25 @@
             }
 
             this.CalculateAttackedSquares();
+        }
+        #endregion
+
+        #region Board Base Methods
+        private void PlacePiece(Square source, Square target)
+        {
+            this.Matrix[target.Position.Y][target.Position.X].Piece = this.Matrix[source.Position.Y][source.Position.X].Piece;
+        }
+
+        private void RemovePiece(Square square)
+        {
+            IPiece empty = Factory.GetEmpty();
+
+            this.Matrix[square.Position.Y][square.Position.X].Piece = empty;
+        }
+
+        private void ReversePiece(Square source, Square target)
+        {
+            this.Matrix[source.Position.Y][source.Position.X].Piece = this.Matrix[target.Position.Y][target.Position.X].Piece;
         }
         #endregion
     }
