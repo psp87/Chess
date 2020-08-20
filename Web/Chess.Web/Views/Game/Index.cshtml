@@ -9,12 +9,12 @@
 
 <main id="main" class="container-fluid text-center">
     <div id="statusView" class="row">
-         <h6 id="status">STATUS: <span id="statusText"></span></h6>
-         <h6 id="statusCheck"></h6>
+        <h6 id="status">STATUS: <span id="statusText"></span></h6>
+        <h6 id="statusCheck"></h6>
     </div>
     <div id="board"></div>
     <div id="nameView" class="row">
-         <h6 id="name">PLAYER: <span id="nameValue"></span></h6>
+        <h6 id="name">PLAYER: <span id="nameValue"></span></h6>
     </div>
     <div id="gameOptions" class="row">
         <button type="submit" id="threefoldDraw" class="btn btn-primary" style="text-align: center">Declare Threefold Draw</button>
@@ -38,33 +38,37 @@
 </main>
 
 <script>
-    $(function() {
+    $(function () {
         var connection = new signalR.HubConnectionBuilder().withUrl("/hub").build();
         connection.start();
 
         var playerId;
         var playerName;
 
-        $('#findGame').click(function() {
+        let $findGame = document.getElementById('findGame');
+        let $statusText = document.getElementById('statusText');
+        let $statusCheck = document.getElementById('statusCheck');
+
+
+        $('#findGame').click(function () {
             var name = $('#username').val();
             connection.invoke("FindGame", name);
-            document.getElementById("findGame").disabled = true;
+            $findGame.disabled = true;
         })
 
-        $('#threefoldDraw').click(function() {
+        $('#threefoldDraw').click(function () {
             connection.invoke("IsThreefoldDraw");
         })
 
-        $('#resign').click(function() {
+        $('#resign').click(function () {
             connection.invoke("Resign");
         })
 
         $('#offerDraw').click(function () {
-            var statusText = document.getElementById('statusText');
-            var oldText = statusText.innerText;
-            statusText.innerText = `You requested a draw!`;
+            var oldText = $statusText.innerText;
+            $statusText.innerText = `You requested a draw!`;
             sleep(1500).then(() => {
-                    statusText.innerText = oldText;
+                $statusText.innerText = oldText;
             })
             connection.invoke("OfferDrawRequest");
         })
@@ -100,22 +104,70 @@
             board.orientation('black');
         })
 
-        connection.on("BoardSnapback", function (fen) {
-            board.position(fen);
-        })
-
-        connection.on("InvalidMessage", function (movingPlayer) {
-            invalidMessage(movingPlayer);
-        })
-
         connection.on("BoardMove", function (source, target) {
             board.move(`${source}-${target}`);
         })
 
+        connection.on("BoardSnapback", function (fen) {
+            board.position(fen);
+        })
+
+        connection.on("EnPassantTake", function (pawnPosition, target) {
+            board.move(`${target}-${pawnPosition}`, `${pawnPosition}-${target}`);
+        })
+
+        connection.on("BoardSetPosition", function (fen) {
+            board.position(fen);
+        })
+
+        connection.on("InvalidMessage", function () {
+            $statusText.innerText = "Invalid Move!";
+            $statusText.style.color = "red";
+            sleep(1500).then(() => {
+                $statusText.innerText = "Your Turn!";
+                $statusText.style.color = "green";
+            })
+        })
+
+        connection.on("CheckOpponent", function () {
+            $statusCheck.style.display = "block";
+            $statusCheck.innerText = "CHECK!";
+        })
+
+        connection.on("CheckSelf", function () {
+            $statusText.style.color = "red";
+            $statusText.innerText = "King is check!";
+            sleep(1500).then(() => {
+                $statusText.innerText = "Your Turn!";
+                $statusText.style.color = "green";
+            })
+        })
+
+        connection.on("EmptyCheckStatus", function () {
+            $statusCheck.style.display = "none";
+        })
+
+        connection.on("DrawOffered", function (player) {
+            var isAccepted = confirm(`${player.name} offered draw! Do you accept?`);
+
+            connection.invoke("OfferDrawAnswer", isAccepted);
+        })
+
+        connection.on("DrawOfferRejected", function (player) {
+            var oldText = $statusText.innerText;
+            $statusText.innerText = `Draw offer rejected by ${player.name}!`;
+            sleep(1500).then(() => {
+                $statusText.innerText = oldText;
+            })
+        })
+
+        connection.on("UpdateStatus", function (movingPlayerName) {
+            updateStatus(movingPlayerName);
+        })
+
         connection.on("GameOver", function (winner, gameOver) {
-            var $statusText = document.getElementById('statusText');
             var $board = document.getElementById('board');
-            
+
             $statusText.style.color = "purple";
             $board.style.pointerEvents = "none";
 
@@ -135,87 +187,17 @@
             }
         })
 
-        connection.on("EnPassantTake", function (pawnPosition, target) {
-            board.move(`${target}-${pawnPosition}`, `${pawnPosition}-${target}`);
-        })
-
-        connection.on("CheckOpponent", function (player) {
-            var $status = document.getElementById('statusCheck');
-            $status.style.display = "block";
-            $status.innerText = "CHECK!";
-        })
-
-        connection.on("CheckSelf", function (player) {
-            var $status = document.getElementById('statusText');
-            $status.style.color = "red";
-            $status.innerText = "Invalid! You are CHECK!";
-            sleep(1500).then(() => {
-                    statusText.innerText = "Your Turn!";
-                    statusText.style.color = "green";
-                })
-        })
-
-        connection.on("EmptyCheckStatus", function () {
-            var $status = document.getElementById('statusCheck');
-            $status.style.display = "none";
-        })
-
-        connection.on("DrawOffered", function (player) {
-            var isAccepted = confirm(`${player.name} offered draw! Do you accept?`);
-
-            connection.invoke("OfferDrawAnswer", isAccepted);
-        })
-
-        connection.on("DrawOfferRejected", function (player) {
-            var statusText = document.getElementById('statusText');
-            var oldText = statusText.innerText;
-            statusText.innerText = `Draw offer rejected by ${player.name}!`;
-            sleep(1500).then(() => {
-                    statusText.innerText = oldText;
-            })
-        })
-
-        connection.on("BoardSetPosition", function (fen) {
-            board.position(fen);
-        })
-
-        connection.on("UpdateStatus", function (movingPlayerName) {
-            updateStatus(movingPlayerName);
-        })
-
-        function invalidMessage(movingPlayer) {
-            var statusText = document.getElementById('statusText');
-
-            if (movingPlayer.name == playerName) {
-                statusText.innerText = "Invalid Move!";
-                statusText.style.color = "red";
-                sleep(1500).then(() => {
-                    statusText.innerText = "Your Turn!";
-                    statusText.style.color = "green";
-                })
-            }
-            else {
-                statusText.innerText = "Not your turn!";
-                statusText.style.color = "red";
-                sleep(1500).then(() => {
-                    statusText.innerText = `${name}'s turn!`;
-                    statusText.style.color = "red";
-                })
-            }
-        }
-
         function updateStatus(name) {
-            var statusText = document.getElementById('statusText');
             if (name == playerName) {
-                statusText.innerText = "Your turn!";
-                statusText.style.color = "green";
+                $statusText.innerText = "Your turn!";
+                $statusText.style.color = "green";
             } else {
-                statusText.innerText = `${name}'s turn!`;
-                statusText.style.color = "red";
+                $statusText.innerText = `${name}'s turn!`;
+                $statusText.style.color = "red";
             }
         }
 
-        function sleep (time) {
+        function sleep(time) {
             return new Promise((resolve) => setTimeout(resolve, time));
         }
 

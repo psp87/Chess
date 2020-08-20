@@ -148,16 +148,16 @@
             switch (notification.Type)
             {
                 case Notification.InvalidMove:
-                    this.Clients.Caller.SendAsync("InvalidMessage", player);
+                    this.Clients.Caller.SendAsync("InvalidMessage");
                     break;
                 case Notification.CheckClear:
                     this.Clients.All.SendAsync("EmptyCheckStatus");
                     break;
                 case Notification.CheckOpponent:
-                    this.Clients.All.SendAsync("CheckOpponent", player);
+                    this.Clients.All.SendAsync("CheckOpponent");
                     break;
                 case Notification.CheckSelf:
-                    this.Clients.Caller.SendAsync("CheckSelf", player);
+                    this.Clients.Caller.SendAsync("CheckSelf");
                     break;
             }
         }
