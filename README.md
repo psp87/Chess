@@ -1,6 +1,6 @@
 # Chess
 Online web-based multiplayer chess
 
-![chess](https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.chess.com%2Farticle%2Fview%2Fhow-to-set-up-a-chess-game&psig=AOvVaw1a43O2hi6dy_19I_imJCJr&ust=1598022700591000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCLi-k86IqusCFQAAAAAdAAAAABAD)
+![chess](https://user-images.githubusercontent.com/53121994/68796222-2de51580-065b-11ea-9a6b-a1cce28177c4.jpg)
 
 C# chess engine on ASP.NET Core and JS chessboard with SignalR.
