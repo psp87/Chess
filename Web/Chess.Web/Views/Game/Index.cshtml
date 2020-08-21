@@ -12,7 +12,7 @@
         <div class="column left">
             <div id="whiteStats">
                 <h1 id="whiteName"></h1>
-                <p id="whitePoints">0 pts</p>
+                <p id="whitePoints"><span id="whitePointsValue">0</span> pts</p>
                 <div id="whiteTakenPieces">
                     <div id="blackPawn" class="pieces"><img src="~/img/chesspieces/wikipedia/bP.png" alt="Pawn: " width="33" height="33" /><span id="blackPawnsTaken">0</span></div>
                     <div id="blackKnight" class="pieces"><img src="~/img/chesspieces/wikipedia/bN.png" alt="Knight: " width="33" height="33" /><span id="blackKnightsTaken">0</span></div>
@@ -36,7 +36,7 @@
         <div class="column right">
             <div id="blackStats">
                 <h1 id="blackName"></h1>
-                <p id="blackPoints">0 pts</p>
+                <p id="blackPoints"><span id="blackPointsValue">0</span> pts</p>
                 <div id="blackTakenPieces">
                     <div id="whitePawn" class="pieces"><img src="~/img/chesspieces/wikipedia/wP.png" alt="Pawn: " width="33" height="33" style="align-content: center" /><span id="whitePawnsTaken">0</span></div>
                     <div id="whiteKnight" class="pieces"><img src="~/img/chesspieces/wikipedia/wN.png" alt="Knight: " width="33" height="33" style="align-content: center" /><span id="whiteKnightsTaken">0</span></div>
@@ -232,8 +232,11 @@
             }
         })
 
-        connection.on("UpdateTakenFigures", function (movingPlayer, pieceName) {
+        connection.on("UpdateTakenFigures", function (movingPlayer, pieceName, points) {
             if (movingPlayer.name == playerOneName) {
+                var $whitePointsValue = document.getElementById('whitePointsValue');
+                $whitePointsValue.innerText = points;
+
                 switch (pieceName) {
                     case "Pawn": $blackPawnsTaken.innerText++;
                         break;
@@ -247,6 +250,9 @@
                         break;
                 }
             } else {
+                var $blackPointsValue = document.getElementById('blackPointsValue');
+                $blackPointsValue.innerText = points;
+
                 switch (pieceName) {
                     case "Pawn": $whitePawnsTaken.innerText++;
                         break;

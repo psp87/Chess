@@ -293,7 +293,7 @@
                 this.Target.Piece.IsFirstMove = false;
                 movingPlayer.TakeFigure(piece.Name);
                 movingPlayer.Points += piece.Points;
-                this.OnTakePiece?.Invoke(movingPlayer, new TakePieceEventArgs(piece.Name));
+                this.OnTakePiece?.Invoke(movingPlayer, new TakePieceEventArgs(piece.Name, movingPlayer.Points));
                 return true;
             }
 

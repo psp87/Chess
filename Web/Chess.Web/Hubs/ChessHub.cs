@@ -166,9 +166,9 @@
         private void Board_OnTakePiece(object sender, EventArgs e)
         {
             var player = sender as Player;
-            var taken = e as TakePieceEventArgs;
+            var args = e as TakePieceEventArgs;
 
-            this.Clients.All.SendAsync("UpdateTakenFigures", player, taken.PieceName);
+            this.Clients.All.SendAsync("UpdateTakenFigures", player, args.PieceName, args.Points);
         }
     }
 }
