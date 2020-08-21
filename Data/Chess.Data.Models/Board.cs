@@ -315,6 +315,7 @@
                     (this.Source.Position.Equals(firstPosition) ||
                     this.Source.Position.Equals(secondPosition)))
                 {
+                    var piece = Factory.GetPawn(movingPlayer.Color);
                     int x = this.Target.Position.X > this.Source.Position.X ? 1 : -1;
 
                     this.EnPassantMovePiece(x);
@@ -330,8 +331,11 @@
                     }
 
                     string position = this.GetStringPosition(this.Source.Position.X + x, this.Source.Position.Y);
-
                     GlobalConstants.EnPassantTake = position;
+
+                    movingPlayer.TakeFigure(piece.Name);
+                    movingPlayer.Points += piece.Points;
+                    this.OnTakePiece?.Invoke(movingPlayer, new TakePieceEventArgs(piece.Name, movingPlayer.Points));
                     movingPlayer.IsCheck = false;
                     return true;
                 }
