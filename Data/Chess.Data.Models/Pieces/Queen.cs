@@ -17,6 +17,8 @@
 
         public override char Symbol => 'Q';
 
+        public override int Points => 9;
+
         public override void IsMoveAvailable(Square[][] matrix)
         {
             if (this.bishop.IsMoveAvailable(this, matrix) ||

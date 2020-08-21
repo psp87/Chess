@@ -279,7 +279,7 @@
                 movingPlayer.Color == this.Source.Piece.Color &&
                 this.Source.Piece.Take(this.Target.Position, this.Matrix))
             {
-                string pieceName = this.Target.Piece.Name;
+                var piece = this.Target.Piece;
 
                 if (!this.Try(movingPlayer))
                 {
@@ -288,7 +288,8 @@
                 }
 
                 this.Target.Piece.IsFirstMove = false;
-                movingPlayer.TakeFigure(pieceName);
+                movingPlayer.TakeFigure(piece.Name);
+                movingPlayer.Points += piece.Points;
                 return true;
             }
 

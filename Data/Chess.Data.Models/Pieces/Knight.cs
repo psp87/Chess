@@ -11,6 +11,8 @@
 
         public override char Symbol => 'N';
 
+        public override int Points => 3;
+
         public override void IsMoveAvailable(Square[][] matrix)
         {
             if (this.MoveCheck(-1, -2, matrix) ||

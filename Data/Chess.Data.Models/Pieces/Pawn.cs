@@ -13,6 +13,8 @@
 
         public override char Symbol => 'P';
 
+        public override int Points => 1;
+
         public override void IsMoveAvailable(Square[][] matrix)
         {
             int sign = this.Color == Color.Light ? -1 : 1;

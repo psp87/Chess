@@ -14,6 +14,8 @@
 
         public override char Symbol => '-';
 
+        public override int Points => 0;
+
         public override void IsMoveAvailable(Square[][] matrix)
         {
             throw new NotImplementedException();

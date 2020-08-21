@@ -16,6 +16,8 @@
 
         public override char Symbol => 'K';
 
+        public override int Points => 0;
+
         public override void IsMoveAvailable(Square[][] matrix)
         {
             for (int x = -1; x <= 1; x++)

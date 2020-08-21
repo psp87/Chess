@@ -20,6 +20,8 @@
 
         bool IsMovable { get; set; }
 
+        public int Points { get; }
+
         void IsMoveAvailable(Square[][] matrix);
 
         void Attacking(Square[][] matrix);

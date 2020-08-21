@@ -15,6 +15,8 @@
 
         public override char Symbol => 'R';
 
+        public override int Points => 5;
+
         public override void IsMoveAvailable(Square[][] matrix)
         {
             this.IsMovable = this.rook.IsMoveAvailable(this, matrix) ? true : false;

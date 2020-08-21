@@ -25,6 +25,8 @@
 
         public abstract char Symbol { get; }
 
+        public abstract int Points { get; }
+
         public Position Position { get; set; }
 
         public bool IsFirstMove { get; set; }

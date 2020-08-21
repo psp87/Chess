@@ -15,6 +15,8 @@
 
         public override char Symbol => 'B';
 
+        public override int Points => 3;
+
         public override void IsMoveAvailable(Square[][] matrix)
         {
             this.IsMovable = this.bishop.IsMoveAvailable(this, matrix) ? true : false;

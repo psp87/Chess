@@ -37,6 +37,8 @@
 
         public bool IsMoveAvailable { get; set; }
 
+        public int Points { get; set; }
+
         public void TakeFigure(string figureName)
         {
             this.takenFigures[figureName]++;
