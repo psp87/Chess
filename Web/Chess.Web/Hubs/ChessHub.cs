@@ -47,6 +47,7 @@
 
                 this.Game.OnGameOver += this.Game_OnGameOver;
                 this.Game.OnNotification += this.Game_OnNotification;
+                this.Game.ChessBoard.OnTakePiece += this.Board_OnTakePiece;
 
                 await Task.WhenAll(
                     this.Groups.AddToGroupAsync(this.Game.Player1.Id, groupName: this.Game.Id),
@@ -160,6 +161,14 @@
                     this.Clients.Caller.SendAsync("CheckSelf");
                     break;
             }
+        }
+
+        private void Board_OnTakePiece(object sender, EventArgs e)
+        {
+            var player = sender as Player;
+            var taken = e as TakePieceEventArgs;
+
+            this.Clients.All.SendAsync("UpdateTakenFigures", player, taken.PieceName);
         }
     }
 }

@@ -3,7 +3,7 @@ for details on configuring this project to bundle and minify static web assets. 
 
 /* MINE CSS*/
 #board {
-    width: 620px;
+    width: 550px;
     display: none;
     margin: auto;
 }
@@ -20,7 +20,40 @@ for details on configuring this project to bundle and minify static web assets. 
 
 #gameOptions {
     display: none;
+    margin-top: 10px;
 }
+
+* {
+    box-sizing: border-box;
+}
+
+/* Create three unequal columns that floats next to each other */
+.column {
+    float: left;
+    padding: 10px;
+}
+
+.left, .right {
+    width: 25%;
+}
+
+.middle {
+    width: 50%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.pieces {
+    float: left;
+    width: 20.00%;
+}
+
+
 
 
 

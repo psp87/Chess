@@ -8,18 +8,44 @@
 <link rel="stylesheet" href="~/css/chessboard-1.0.0.min.css">
 
 <main id="main" class="container-fluid text-center">
-    <div id="statusView" class="row">
-        <h6 id="status">STATUS: <span id="statusText"></span></h6>
-        <h6 id="statusCheck"></h6>
-    </div>
-    <div id="board"></div>
-    <div id="nameView" class="row">
-        <h6 id="name">PLAYER: <span id="nameValue"></span></h6>
-    </div>
-    <div id="gameOptions" class="row">
-        <button type="submit" id="threefoldDraw" class="btn btn-primary" style="text-align: center">Declare Threefold Draw</button>
-        <button type="submit" id="offerDraw" class="btn btn-primary" style="text-align: center">Offer Draw</button>
-        <button type="submit" id="resign" class="btn btn-primary" style="text-align: center">Resign</button>
+    <div class="row">
+        <div class="column left">
+            <div id="whiteStats">
+                <h1 id="whiteName"></h1>
+                <p id="whitePoints">0 pts</p>
+                <div id="whiteTakenPieces">
+                    <div id="blackPawn" class="pieces"><img src="~/img/chesspieces/wikipedia/bP.png" alt="Pawn: " width="33" height="33" /><span id="blackPawnsTaken">0</span></div>
+                    <div id="blackKnight" class="pieces"><img src="~/img/chesspieces/wikipedia/bN.png" alt="Knight: " width="33" height="33" /><span id="blackKnightsTaken">0</span></div>
+                    <div id="blackBishop" class="pieces"><img src="~/img/chesspieces/wikipedia/bB.png" alt="Bishop: " width="33" height="33" /><span id="blackBishopsTaken">0</span></div>
+                    <div id="blackRook" class="pieces"><img src="~/img/chesspieces/wikipedia/bR.png" alt="Rook: " width="33" height="33" /><span id="blackRooksTaken">0</span></div>
+                    <div id="blackQueen" class="pieces"><img src="~/img/chesspieces/wikipedia/bQ.png" alt="Queen: " width="33" height="33" /><span id="blackQueensTaken">0</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="column middle">
+            <div id="boardMain">
+                <h6 id="status">STATUS: <span id="statusText"></span><span id="statusCheck"></span></h6>
+                <div id="board"></div>
+                <div id="gameOptions">
+                    <button type="submit" id="threefoldDraw" class="btn btn-primary" style="text-align: center; background-color: lightgray; color: black; border: none">Declare Threefold Draw</button>
+                    <button type="submit" id="offerDraw" class="btn btn-primary" style="text-align: center; background-color: lightgray; color: black; border: none">Offer Draw</button>
+                    <button type="submit" id="resign" class="btn btn-primary" style="text-align: center; background-color: lightgray; color: black; border: none">Resign</button>
+                </div>
+            </div>
+        </div>
+        <div class="column right">
+            <div id="blackStats">
+                <h1 id="blackName"></h1>
+                <p id="blackPoints">0 pts</p>
+                <div id="blackTakenPieces">
+                    <div id="whitePawn" class="pieces"><img src="~/img/chesspieces/wikipedia/wP.png" alt="Pawn: " width="33" height="33" style="align-content: center" /><span id="whitePawnsTaken">0</span></div>
+                    <div id="whiteKnight" class="pieces"><img src="~/img/chesspieces/wikipedia/wN.png" alt="Knight: " width="33" height="33" style="align-content: center" /><span id="whiteKnightsTaken">0</span></div>
+                    <div id="whiteBishop" class="pieces"><img src="~/img/chesspieces/wikipedia/wB.png" alt="Bishop: " width="33" height="33" style="align-content: center" /><span id="whiteBishopsTaken">0</span></div>
+                    <div id="whiteRook" class="pieces"><img src="~/img/chesspieces/wikipedia/wR.png" alt="Rook: " width="33" height="33" style="align-content: center" /><span id="whiteRooksTaken">0</span></div>
+                    <div id="whiteQueen" class="pieces"><img src="~/img/chesspieces/wikipedia/wQ.png" alt="Queen: " width="33" height="33" style="align-content: center" /><span id="whiteQueensTaken">0</span></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="findOpponent" class="row m-5">
@@ -44,11 +70,29 @@
 
         var playerId;
         var playerName;
+        var playerOneName;
+        var playerTwoName;
 
         let $findGame = document.getElementById('findGame');
         let $statusText = document.getElementById('statusText');
         let $statusCheck = document.getElementById('statusCheck');
+        let $gameOptions = document.getElementById('gameOptions');
 
+        let $whiteStats = document.getElementById('whiteStats');
+        let $board = document.getElementById('board');
+        let $blackStats = document.getElementById('blackStats');
+
+        var $blackPawnsTaken = document.getElementById('blackPawnsTaken');
+        var $blackKnightsTaken = document.getElementById('blackKnightsTaken');
+        var $blackBishopsTaken = document.getElementById('blackBishopsTaken');
+        var $blackRooksTaken = document.getElementById('blackRooksTaken');
+        var $blackQueensTaken = document.getElementById('blackQueensTaken');
+
+        var $whitePawnsTaken = document.getElementById('whitePawnsTaken');
+        var $whiteKnightsTaken = document.getElementById('whiteKnightsTaken');
+        var $whiteBishopsTaken = document.getElementById('whiteBishopsTaken');
+        var $whiteRooksTaken = document.getElementById('whiteRooksTaken');
+        var $whiteQueensTaken = document.getElementById('whiteQueensTaken');
 
         $('#findGame').click(function () {
             var name = $('#username').val();
@@ -84,17 +128,18 @@
         connection.on("Start", function (game) {
             if (game.id != "") {
                 document.getElementById('findOpponent').style.display = "none";
-
-                document.getElementById('board').style.display = "block";
+                $whiteStats.style.display = "block";
+                $board.style.display = "block";
+                $blackStats.style.display = "block";
+                $gameOptions.style.display = "block";
 
                 playerColor = (playerId == game.player1.id) ? game.player1.color : game.player2.color;
                 playerName = (playerId == game.player1.id) ? game.player1.name : game.player2.name;
+                playerOneName = game.player1.name;
+                playerTwoName = game.player2.name;
 
-                document.getElementById('statusView').style.display = "block";
-                document.getElementById('nameView').style.display = "block";
-                document.getElementById('gameOptions').style.display = "block";
-                document.getElementById('nameValue').innerText = playerName;
-                document.getElementById('nameValue').style.color = "black";
+                document.getElementById('whiteName').innerText = playerOneName;
+                document.getElementById('blackName').innerText = playerTwoName;
 
                 updateStatus(game.movingPlayer.name);
             }
@@ -184,6 +229,36 @@
                     break;
                 case 6: $statusText.innerText = `${winner.name.toUpperCase()} RESIGNED!`;
                     break;
+            }
+        })
+
+        connection.on("UpdateTakenFigures", function (movingPlayer, pieceName) {
+            if (movingPlayer.name == playerOneName) {
+                switch (pieceName) {
+                    case "Pawn": $blackPawnsTaken.innerText++;
+                        break;
+                    case "Knight": $blackKnightsTaken.innerText++;
+                        break;
+                    case "Bishop": $blackBishopsTaken.innerText++;
+                        break;
+                    case "Rook": $blackRooksTaken.innerText++;
+                        break;
+                    case "Queen": $blackQueensTaken.innerText++;
+                        break;
+                }
+            } else {
+                switch (pieceName) {
+                    case "Pawn": $whitePawnsTaken.innerText++;
+                        break;
+                    case "Knight": $whiteKnightsTaken.innerText++;
+                        break;
+                    case "Bishop": $whiteBishopsTaken.innerText++;
+                        break;
+                    case "Rook": $whiteRooksTaken.innerText++;
+                        break;
+                    case "Queen": $whiteQueensTaken.innerText++;
+                        break;
+                }   
             }
         })
 

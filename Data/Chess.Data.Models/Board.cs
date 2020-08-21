@@ -7,6 +7,7 @@
 
     using Chess.Common;
     using Chess.Common.Enums;
+    using Chess.Data.Models.EventArgs;
     using Chess.Data.Models.Pieces;
     using Chess.Data.Models.Pieces.Contracts;
     using Chess.Data.Models.Pieces.Helpers;
@@ -44,6 +45,8 @@
             this.Source = Factory.GetSquare();
             this.Target = Factory.GetSquare();
         }
+
+        public event EventHandler OnTakePiece;
 
         public Square[][] Matrix { get; set; }
 
@@ -290,6 +293,7 @@
                 this.Target.Piece.IsFirstMove = false;
                 movingPlayer.TakeFigure(piece.Name);
                 movingPlayer.Points += piece.Points;
+                this.OnTakePiece?.Invoke(movingPlayer, new TakePieceEventArgs(piece.Name));
                 return true;
             }
 

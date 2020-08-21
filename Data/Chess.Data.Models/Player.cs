@@ -39,14 +39,11 @@
 
         public int Points { get; set; }
 
+        public Dictionary<string, int> TakenFigures => this.takenFigures;
+
         public void TakeFigure(string figureName)
         {
             this.takenFigures[figureName]++;
-        }
-
-        public int TakenFigures(string figureName)
-        {
-            return this.takenFigures[figureName];
         }
     }
 }
