@@ -1,33 +1,42 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
+﻿#whiteStats, #blackStats, #boardMain {
+    display: none;
+}
 
-/* MINE CSS*/
 #board {
     width: 550px;
-    display: none;
     margin: auto;
 }
 
-#statusView, #nameView {
-    display: none;
-    margin-top: 15px;
-    margin-bottom: 15px;
+#status {
+    color: darkgray;
+    margin-bottom: 12px;
 }
 
-#status, #name {
+.color {
     color: darkgray;
 }
 
-#gameOptions {
-    display: none;
+#gameOptions button {
     margin-top: 10px;
+    text-align: center;
+    background-color: darkslategray;
+    color: white;
+    border: none;
+}
+
+.pieces {
+    float: left;
+    width: 20.00%;
+}
+
+#statusCheck {
+    color: black;
 }
 
 * {
     box-sizing: border-box;
 }
 
-/* Create three unequal columns that floats next to each other */
 .column {
     float: left;
     padding: 10px;
@@ -41,16 +50,10 @@ for details on configuring this project to bundle and minify static web assets. 
     width: 50%;
 }
 
-/* Clear floats after the columns */
 .row:after {
     content: "";
     display: table;
     clear: both;
-}
-
-.pieces {
-    float: left;
-    width: 20.00%;
 }
 
 

@@ -11,6 +11,7 @@
     <div class="row">
         <div class="column left">
             <div id="whiteStats">
+                <div class="color">white</div>
                 <h1 id="whiteName"></h1>
                 <p id="whitePoints"><span id="whitePointsValue">0</span> pts</p>
                 <div id="whiteTakenPieces">
@@ -24,17 +25,18 @@
         </div>
         <div class="column middle">
             <div id="boardMain">
-                <h6 id="status">STATUS: <span id="statusText"></span><span id="statusCheck"></span></h6>
+                <h6 id="status">STATUS: <span id="statusText"></span><span id="statusCheck"></span> </h6>
                 <div id="board"></div>
                 <div id="gameOptions">
-                    <button type="submit" id="threefoldDraw" class="btn btn-primary" style="text-align: center; background-color: lightgray; color: black; border: none">Declare Threefold Draw</button>
-                    <button type="submit" id="offerDraw" class="btn btn-primary" style="text-align: center; background-color: lightgray; color: black; border: none">Offer Draw</button>
-                    <button type="submit" id="resign" class="btn btn-primary" style="text-align: center; background-color: lightgray; color: black; border: none">Resign</button>
+                    <button type="submit" id="threefoldDraw" class="btn btn-primary">Declare Threefold Draw</button>
+                    <button type="submit" id="offerDraw" class="btn btn-primary">Offer Draw</button>
+                    <button type="submit" id="resign" class="btn btn-primary">Resign</button>
                 </div>
             </div>
         </div>
         <div class="column right">
             <div id="blackStats">
+                <div class="color">black</div>
                 <h1 id="blackName"></h1>
                 <p id="blackPoints"><span id="blackPointsValue">0</span> pts</p>
                 <div id="blackTakenPieces">
@@ -68,31 +70,18 @@
         var connection = new signalR.HubConnectionBuilder().withUrl("/hub").build();
         connection.start();
 
-        var playerId;
-        var playerName;
-        var playerOneName;
-        var playerTwoName;
+        let playerId;
+        let playerName;
+        let playerOneName;
+        let playerTwoName;
+
+        let $whiteStats = document.getElementById('whiteStats');
+        let $boardMain = document.getElementById('boardMain');
+        let $blackStats = document.getElementById('blackStats');
 
         let $findGame = document.getElementById('findGame');
         let $statusText = document.getElementById('statusText');
         let $statusCheck = document.getElementById('statusCheck');
-        let $gameOptions = document.getElementById('gameOptions');
-
-        let $whiteStats = document.getElementById('whiteStats');
-        let $board = document.getElementById('board');
-        let $blackStats = document.getElementById('blackStats');
-
-        var $blackPawnsTaken = document.getElementById('blackPawnsTaken');
-        var $blackKnightsTaken = document.getElementById('blackKnightsTaken');
-        var $blackBishopsTaken = document.getElementById('blackBishopsTaken');
-        var $blackRooksTaken = document.getElementById('blackRooksTaken');
-        var $blackQueensTaken = document.getElementById('blackQueensTaken');
-
-        var $whitePawnsTaken = document.getElementById('whitePawnsTaken');
-        var $whiteKnightsTaken = document.getElementById('whiteKnightsTaken');
-        var $whiteBishopsTaken = document.getElementById('whiteBishopsTaken');
-        var $whiteRooksTaken = document.getElementById('whiteRooksTaken');
-        var $whiteQueensTaken = document.getElementById('whiteQueensTaken');
 
         $('#findGame').click(function () {
             var name = $('#username').val();
@@ -129,9 +118,8 @@
             if (game.id != "") {
                 document.getElementById('findOpponent').style.display = "none";
                 $whiteStats.style.display = "block";
-                $board.style.display = "block";
+                $boardMain.style.display = "block";
                 $blackStats.style.display = "block";
-                $gameOptions.style.display = "block";
 
                 playerColor = (playerId == game.player1.id) ? game.player1.color : game.player2.color;
                 playerName = (playerId == game.player1.id) ? game.player1.name : game.player2.name;
@@ -237,6 +225,12 @@
                 var $whitePointsValue = document.getElementById('whitePointsValue');
                 $whitePointsValue.innerText = points;
 
+                let $blackPawnsTaken = document.getElementById('blackPawnsTaken');
+                let $blackKnightsTaken = document.getElementById('blackKnightsTaken');
+                let $blackBishopsTaken = document.getElementById('blackBishopsTaken');
+                let $blackRooksTaken = document.getElementById('blackRooksTaken');
+                let $blackQueensTaken = document.getElementById('blackQueensTaken');
+
                 switch (pieceName) {
                     case "Pawn": $blackPawnsTaken.innerText++;
                         break;
@@ -252,6 +246,12 @@
             } else {
                 var $blackPointsValue = document.getElementById('blackPointsValue');
                 $blackPointsValue.innerText = points;
+                
+                let $whitePawnsTaken = document.getElementById('whitePawnsTaken');
+                let $whiteKnightsTaken = document.getElementById('whiteKnightsTaken');
+                let $whiteBishopsTaken = document.getElementById('whiteBishopsTaken');
+                let $whiteRooksTaken = document.getElementById('whiteRooksTaken');
+                let $whiteQueensTaken = document.getElementById('whiteQueensTaken');
 
                 switch (pieceName) {
                     case "Pawn": $whitePawnsTaken.innerText++;
