@@ -71,6 +71,8 @@
 
             await this.Clients.Others.SendAsync("BoardMove", source, target);
 
+            await this.Clients.All.SendAsync("UpdateMoveHistory", this.Game.Opponent, source, target);
+
             if (GlobalConstants.GameOver.ToString() == GameOver.None.ToString())
             {
                 await this.Clients.All.SendAsync("UpdateStatus", this.Game.MovingPlayer.Name);

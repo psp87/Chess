@@ -3,7 +3,7 @@
 }
 
 #board {
-    width: 550px;
+    width: 530px;
     margin: auto;
 }
 
@@ -56,21 +56,18 @@
     clear: both;
 }
 
-
-
-
-
-a.navbar-brand {
-    white-space: normal;
-    text-align: center;
-    word-break: break-all;
+.list-group-item {
+    padding: 3px;
 }
+
+
 
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
     font-size: 14px;
 }
+
 @media (min-width: 768px) {
     html {
         font-size: 16px;
@@ -80,6 +77,7 @@ html {
 .border-top {
     border-top: 1px solid #e5e5e5;
 }
+
 .border-bottom {
     border-bottom: 1px solid #e5e5e5;
 }
@@ -104,6 +102,7 @@ body {
     /* Margin bottom by footer height */
     margin-bottom: 60px;
 }
+
 .footer {
     position: absolute;
     bottom: 0;
