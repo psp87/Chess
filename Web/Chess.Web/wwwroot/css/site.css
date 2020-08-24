@@ -58,10 +58,14 @@
 
 .list-group-item {
     padding: 3px;
+    text-align: left;
+    width: 50%;
+    text-indent: 10px;
 }
 
-
-
+#whiteMoveHistory, #blackMoveHistory {
+    align-items: center;
+}
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
