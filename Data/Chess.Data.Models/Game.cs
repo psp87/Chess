@@ -73,7 +73,6 @@
             if (!this.MovingPlayer.IsCheck)
             {
                 this.OnNotification?.Invoke(this.MovingPlayer, new NotificationEventArgs(Notification.InvalidMove));
-                this.MovingPlayer.IsCheck = false;
             }
 
             return false;

@@ -130,6 +130,7 @@
                 if (movingPlayer.IsCheck)
                 {
                     this.OnNotification?.Invoke(movingPlayer, new NotificationEventArgs(Notification.CheckSelf));
+                    movingPlayer.IsCheck = false;
                     return false;
                 }
 
