@@ -272,8 +272,10 @@
             }
         })
 
-        connection.on("UpdateMoveHistory", function (movingPlayer, source, target) {
-            var li = getListItem(source, target);
+        connection.on("UpdateMoveHistory", function (movingPlayer, moveString) {
+            var li = document.createElement('li');
+            li.classList.add('list-group-item');
+            li.innerText = moveString;
 
             if (movingPlayer.name == playerOneName) {
                 var $whiteMoveHistory = document.getElementById('whiteMoveHistory');
@@ -283,27 +285,6 @@
                 $blackMoveHistory.appendChild(li);
             }
         })
-
-        function getListItem(source, target) {
-            var li = document.createElement('li');
-            li.classList.add('list-group-item');
-
-            var div = document.createElement('div');
-            var span1 = document.createElement("span");
-            var span2 = document.createElement("span");
-            var arrow = document.createElement("span");
-
-            span1.innerText = source.toUpperCase();
-            span2.innerText = target.toUpperCase();
-            arrow.innerText = " -> ";
-
-            div.appendChild(span1);
-            div.appendChild(arrow);
-            div.appendChild(span2);
-            li.appendChild(div);
-
-            return li;
-        }
 
         function updateStatus(name) {
             if (name == playerName) {

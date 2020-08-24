@@ -46,6 +46,10 @@
             this.Target = Factory.GetSquare();
         }
 
+        public event EventHandler OnMoveComplete;
+
+        public event EventHandler OnNotification;
+
         public event EventHandler OnTakePiece;
 
         public Square[][] Matrix { get; set; }
@@ -107,6 +111,9 @@
             this.Source = this.GetSquare(source);
             this.Target = this.GetSquare(target);
 
+            var oldSourcePiece = this.Source.Piece;
+            var oldTargetPiece = this.Target.Piece;
+
             if (this.MovePiece(movingPlayer) ||
                 this.TakePiece(movingPlayer) ||
                 this.EnPassantTake(movingPlayer))
@@ -119,6 +126,15 @@
                     this.GetPawnPromotionFenString(targetFen, isWhite);
                     this.CalculateAttackedSquares();
                 }
+
+                if (movingPlayer.IsCheck)
+                {
+                    this.OnNotification?.Invoke(movingPlayer, new NotificationEventArgs(Notification.CheckSelf));
+                    return false;
+                }
+
+                string moveString = this.GetMoveString(movingPlayer, source, target, oldSourcePiece, oldTargetPiece);
+                this.OnMoveComplete?.Invoke(movingPlayer, new MoveHistoryEventArgs(moveString));
 
                 return true;
             }
@@ -382,6 +398,57 @@
                     }
                 }
             }
+        }
+
+        private string GetMoveString(Player movingPlayer, string source, string target, IPiece oldSourcePiece, IPiece oldTargetPiece)
+        {
+            var sb = new StringBuilder();
+
+            var turn = Math.Floor(GlobalConstants.TurnCounter / 2.0) + 1;
+            sb.Append(turn + ". ");
+
+            if (GlobalConstants.CastlingMove)
+            {
+                if (target[0] == 'g')
+                {
+                    sb.Append("0-0");
+                    return sb.ToString();
+                }
+                else
+                {
+                    sb.Append("0-0-0");
+                    return sb.ToString();
+                }
+            }
+
+            if (oldSourcePiece is Pawn && oldTargetPiece is Empty)
+            {
+                sb.Append(target);
+                return sb.ToString();
+            }
+
+            if (!(oldSourcePiece is Pawn) && oldTargetPiece is Empty)
+            {
+                sb.Append(oldSourcePiece.Symbol + target);
+                return sb.ToString();
+            }
+
+            if (oldTargetPiece.Color != movingPlayer.Color)
+            {
+                if (oldSourcePiece is Pawn)
+                {
+                    var column = source.ToString()[0];
+                    sb.Append(column + "x" + target);
+                    return sb.ToString();
+                }
+                else
+                {
+                    sb.Append(oldSourcePiece.Symbol + "x" + target);
+                    return sb.ToString();
+                }
+            }
+
+            return sb.ToString();
         }
 
         private void GetPawnPromotionFenString(string targetFen, bool isWhite)

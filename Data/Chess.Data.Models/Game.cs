@@ -41,14 +41,6 @@
         {
             if (this.ChessBoard.TryMove(source, target, targetFen, this.MovingPlayer))
             {
-                // Moving player cannot move bacause it is check!
-                if (this.MovingPlayer.IsCheck)
-                {
-                    this.OnNotification?.Invoke(this.MovingPlayer, new NotificationEventArgs(Notification.CheckSelf));
-                    this.MovingPlayer.IsCheck = false;
-                    return false;
-                }
-
                 // Check the opponent for check and checkmate
                 if (this.ChessBoard.IsPlayerChecked(this.Opponent))
                 {
@@ -78,7 +70,12 @@
                 return true;
             }
 
-            this.OnNotification?.Invoke(this.MovingPlayer, new NotificationEventArgs(Notification.InvalidMove));
+            if (!this.MovingPlayer.IsCheck)
+            {
+                this.OnNotification?.Invoke(this.MovingPlayer, new NotificationEventArgs(Notification.InvalidMove));
+                this.MovingPlayer.IsCheck = false;
+            }
+
             return false;
         }
 

@@ -45,7 +45,9 @@
 
                 this.Game = Factory.GetGame(opponent, joiningPlayer);
 
+                this.Game.ChessBoard.OnMoveComplete += this.Board_OnMoveComplete;
                 this.Game.OnGameOver += this.Game_OnGameOver;
+                this.Game.ChessBoard.OnNotification += this.Game_OnNotification;
                 this.Game.OnNotification += this.Game_OnNotification;
                 this.Game.ChessBoard.OnTakePiece += this.Board_OnTakePiece;
 
@@ -70,8 +72,6 @@
             }
 
             await this.Clients.Others.SendAsync("BoardMove", source, target);
-
-            await this.Clients.All.SendAsync("UpdateMoveHistory", this.Game.Opponent, source, target);
 
             if (GlobalConstants.GameOver.ToString() == GameOver.None.ToString())
             {
@@ -141,6 +141,14 @@
             var gameOver = e as GameOverEventArgs;
 
             this.Clients.All.SendAsync("GameOver", player, gameOver.GameOver);
+        }
+
+        private void Board_OnMoveComplete(object sender, EventArgs e)
+        {
+            var player = sender as Player;
+            var moveString = e as MoveHistoryEventArgs;
+
+            this.Clients.All.SendAsync("UpdateMoveHistory", player, moveString.MoveString);
         }
 
         private void Game_OnNotification(object sender, EventArgs e)
