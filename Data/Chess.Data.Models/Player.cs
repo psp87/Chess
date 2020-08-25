@@ -35,6 +35,8 @@
 
         public bool IsCheck { get; set; }
 
+        public bool IsCheckMate { get; set; }
+
         public bool IsMoveAvailable { get; set; }
 
         public int Points { get; set; }

@@ -106,7 +106,7 @@
             return board;
         }
 
-        public bool TryMove(string source, string target, string targetFen, Player movingPlayer)
+        public bool TryMove(string source, string target, string targetFen, Player movingPlayer, Player opponent)
         {
             this.Source = this.GetSquare(source);
             this.Target = this.GetSquare(target);
@@ -134,8 +134,28 @@
                     return false;
                 }
 
-                string moveString = this.GetMoveString(movingPlayer, source, target, oldSourcePiece, oldTargetPiece);
-                this.OnMoveComplete?.Invoke(movingPlayer, new MoveHistoryEventArgs(moveString));
+                // Check the opponent for check and checkmate
+                if (this.IsPlayerChecked(opponent))
+                {
+                    this.OnNotification?.Invoke(opponent, new NotificationEventArgs(Notification.CheckOpponent));
+                    this.IsCheckmate(movingPlayer, opponent);
+                }
+
+                // Clear the check notification
+                if (!movingPlayer.IsCheck && !opponent.IsCheck)
+                {
+                    this.OnNotification?.Invoke(null, new NotificationEventArgs(Notification.CheckClear));
+                }
+
+                this.IsThreefoldRepetionDraw(targetFen);
+                this.IsFivefoldRepetitionDraw(targetFen);
+                this.IsDraw();
+                this.IsStalemate(opponent);
+
+                GlobalConstants.TurnCounter++;
+
+                string notation = this.GetAlgebraicNotation(source, target, oldSourcePiece, oldTargetPiece, opponent);
+                this.OnMoveComplete?.Invoke(movingPlayer, new NotationEventArgs(notation));
 
                 return true;
             }
@@ -151,6 +171,7 @@
                 !this.AttackingPieceCanBeTaken(this.Target, movingPlayer) &&
                 !this.OtherPieceCanBlockTheCheck(king, this.Target, opponent))
             {
+                opponent.IsCheckMate = true;
                 GlobalConstants.GameOver = GameOver.Checkmate;
             }
         }
@@ -401,51 +422,66 @@
             }
         }
 
-        private string GetMoveString(Player movingPlayer, string source, string target, IPiece oldSourcePiece, IPiece oldTargetPiece)
+        private string GetAlgebraicNotation(string source, string target, IPiece oldSourcePiece, IPiece oldTargetPiece, Player opponent)
         {
             var sb = new StringBuilder();
 
-            var turn = Math.Floor(GlobalConstants.TurnCounter / 2.0) + 1;
+            var turn = Math.Ceiling(GlobalConstants.TurnCounter / 2.0);
             sb.Append(turn + ". ");
 
-            if (GlobalConstants.CastlingMove)
+            if (GlobalConstants.EnPassantTake != null)
+            {
+                var file = source[0];
+                sb.Append(file + "x" + target + "e.p");
+            }
+            else if (GlobalConstants.CastlingMove)
             {
                 if (target[0] == 'g')
                 {
                     sb.Append("0-0");
-                    return sb.ToString();
                 }
                 else
                 {
                     sb.Append("0-0-0");
-                    return sb.ToString();
                 }
             }
-
-            if (oldSourcePiece is Pawn && oldTargetPiece is Empty)
+            else if (GlobalConstants.PawnPromotionFen != null)
             {
-                sb.Append(target);
-                return sb.ToString();
+                sb.Append(target + "=Q");
             }
-
-            if (!(oldSourcePiece is Pawn) && oldTargetPiece is Empty)
-            {
-                sb.Append(oldSourcePiece.Symbol + target);
-                return sb.ToString();
-            }
-
-            if (oldTargetPiece.Color != movingPlayer.Color)
+            else if (oldTargetPiece is Empty)
             {
                 if (oldSourcePiece is Pawn)
                 {
-                    var column = source.ToString()[0];
-                    sb.Append(column + "x" + target);
-                    return sb.ToString();
+                    sb.Append(target);
+                }
+                else
+                {
+                    sb.Append(oldSourcePiece.Symbol + target);
+                }
+            }
+            else if (oldTargetPiece.Color != oldSourcePiece.Color)
+            {
+                if (oldSourcePiece is Pawn)
+                {
+                    var file = source[0];
+                    sb.Append(file + "x" + target);
                 }
                 else
                 {
                     sb.Append(oldSourcePiece.Symbol + "x" + target);
-                    return sb.ToString();
+                }
+            }
+
+            if (opponent.IsCheck)
+            {
+                if (!opponent.IsCheckMate)
+                {
+                    sb.Append("+");
+                }
+                else
+                {
+                    sb.Append("#");
                 }
             }
 

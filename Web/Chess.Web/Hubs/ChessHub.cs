@@ -146,9 +146,9 @@
         private void Board_OnMoveComplete(object sender, EventArgs e)
         {
             var player = sender as Player;
-            var moveString = e as MoveHistoryEventArgs;
+            var args = e as NotationEventArgs;
 
-            this.Clients.All.SendAsync("UpdateMoveHistory", player, moveString.MoveString);
+            this.Clients.All.SendAsync("UpdateMoveHistory", player, args.Notation);
         }
 
         private void Game_OnNotification(object sender, EventArgs e)

@@ -39,33 +39,14 @@
 
         public bool MakeMove(string source, string target, string targetFen)
         {
-            if (this.ChessBoard.TryMove(source, target, targetFen, this.MovingPlayer))
+            if (this.ChessBoard.TryMove(source, target, targetFen, this.MovingPlayer, this.Opponent))
             {
-                // Check the opponent for check and checkmate
-                if (this.ChessBoard.IsPlayerChecked(this.Opponent))
-                {
-                    this.OnNotification?.Invoke(this.Opponent, new NotificationEventArgs(Notification.CheckOpponent));
-                    this.ChessBoard.IsCheckmate(this.MovingPlayer, this.Opponent);
-                }
-
-                // Clear the check notification
-                if (!this.MovingPlayer.IsCheck && !this.Opponent.IsCheck)
-                {
-                    this.OnNotification?.Invoke(null, new NotificationEventArgs(Notification.CheckClear));
-                }
-
-                this.ChessBoard.IsThreefoldRepetionDraw(targetFen);
-                this.ChessBoard.IsFivefoldRepetitionDraw(targetFen);
-                this.ChessBoard.IsDraw();
-                this.ChessBoard.IsStalemate(this.Opponent);
-
                 if (GlobalConstants.GameOver.ToString() != GameOver.None.ToString())
                 {
                     this.OnGameOver?.Invoke(this.MovingPlayer, new GameOverEventArgs(GlobalConstants.GameOver));
                 }
 
                 this.ChangeTurns();
-                GlobalConstants.TurnCounter++;
 
                 return true;
             }
