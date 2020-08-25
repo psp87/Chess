@@ -111,8 +111,8 @@
             this.Source = this.GetSquare(source);
             this.Target = this.GetSquare(target);
 
-            var oldSourcePiece = this.Source.Piece;
-            var oldTargetPiece = this.Target.Piece;
+            var oldSource = this.Source.Clone() as Square;
+            var oldTarget = this.Target.Clone() as Square;
 
             if (this.MovePiece(movingPlayer) ||
                 this.TakePiece(movingPlayer) ||
@@ -130,7 +130,6 @@
                 if (movingPlayer.IsCheck)
                 {
                     this.OnNotification?.Invoke(movingPlayer, new NotificationEventArgs(Notification.CheckSelf));
-                    movingPlayer.IsCheck = false;
                     return false;
                 }
 
@@ -154,7 +153,7 @@
 
                 GlobalConstants.TurnCounter++;
 
-                string notation = this.GetAlgebraicNotation(source, target, oldSourcePiece, oldTargetPiece, opponent);
+                string notation = this.GetAlgebraicNotation(oldSource, oldTarget, opponent);
                 this.OnMoveComplete?.Invoke(movingPlayer, new NotationEventArgs(notation));
 
                 return true;
@@ -422,7 +421,7 @@
             }
         }
 
-        private string GetAlgebraicNotation(string source, string target, IPiece oldSourcePiece, IPiece oldTargetPiece, Player opponent)
+        private string GetAlgebraicNotation(Square source, Square target, Player opponent)
         {
             var sb = new StringBuilder();
 
@@ -431,12 +430,12 @@
 
             if (GlobalConstants.EnPassantTake != null)
             {
-                var file = source[0];
+                var file = source.ToString()[0];
                 sb.Append(file + "x" + target + "e.p");
             }
             else if (GlobalConstants.CastlingMove)
             {
-                if (target[0] == 'g')
+                if (target.ToString()[0] == 'g')
                 {
                     sb.Append("0-0");
                 }
@@ -449,27 +448,27 @@
             {
                 sb.Append(target + "=Q");
             }
-            else if (oldTargetPiece is Empty)
+            else if (target.Piece is Empty)
             {
-                if (oldSourcePiece is Pawn)
+                if (source.Piece is Pawn)
                 {
                     sb.Append(target);
                 }
                 else
                 {
-                    sb.Append(oldSourcePiece.Symbol + target);
+                    sb.Append(source.Piece.Symbol + target.ToString());
                 }
             }
-            else if (oldTargetPiece.Color != oldSourcePiece.Color)
+            else if (target.Piece.Color != source.Piece.Color)
             {
-                if (oldSourcePiece is Pawn)
+                if (source.Piece is Pawn)
                 {
-                    var file = source[0];
+                    var file = source.ToString()[0];
                     sb.Append(file + "x" + target);
                 }
                 else
                 {
-                    sb.Append(oldSourcePiece.Symbol + "x" + target);
+                    sb.Append(source.Piece.Symbol + "x" + target);
                 }
             }
 

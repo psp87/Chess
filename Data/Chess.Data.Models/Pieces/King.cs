@@ -123,6 +123,14 @@
             return this.Move(to, matrix);
         }
 
+        public override object Clone()
+        {
+            return new King(this.Color)
+            {
+                Position = this.Position.Clone() as Position,
+            };
+        }
+
         private bool OccupiedSquaresCheck(Position to, Square[][] matrix)
         {
             int colDifference = Math.Abs(this.Position.X - to.X) - 1;

@@ -35,5 +35,13 @@
         {
             throw new NotImplementedException();
         }
+
+        public override object Clone()
+        {
+            return new Empty()
+            {
+                Position = this.Position.Clone() as Position,
+            };
+        }
     }
 }

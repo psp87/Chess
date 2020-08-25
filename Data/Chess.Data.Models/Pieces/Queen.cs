@@ -52,5 +52,13 @@
         {
             return this.Move(to, matrix);
         }
+
+        public override object Clone()
+        {
+            return new Queen(this.Color)
+            {
+                Position = this.Position.Clone() as Position,
+            };
+        }
     }
 }

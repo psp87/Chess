@@ -121,5 +121,13 @@
 
             return false;
         }
+
+        public override object Clone()
+        {
+            return new Pawn(this.Color)
+            {
+                Position = this.Position.Clone() as Position,
+            };
+        }
     }
 }

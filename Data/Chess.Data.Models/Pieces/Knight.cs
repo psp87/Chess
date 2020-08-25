@@ -93,6 +93,14 @@
             return this.Move(to, matrix);
         }
 
+        public override object Clone()
+        {
+            return new Knight(this.Color)
+            {
+                Position = this.Position.Clone() as Position,
+            };
+        }
+
         private void AttackedSquares(int y, int x, Square[][] matrix)
         {
             if (Position.IsInBoard(this.Position.X + x, this.Position.Y + y))

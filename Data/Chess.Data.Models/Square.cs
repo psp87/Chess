@@ -63,6 +63,8 @@
                 Name = this.Name,
                 Position = this.Position.Clone() as Position,
                 Piece = this.Piece.Clone() as Piece,
+                IsOccupied = this.IsOccupied,
+                IsAttacked = this.IsAttacked,
             };
         }
     }
