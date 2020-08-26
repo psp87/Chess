@@ -75,12 +75,6 @@
                         Name = name,
                     };
 
-                    if (square.Piece == null)
-                    {
-                        square.Piece = Factory.GetEmpty();
-                        square.IsOccupied = false;
-                    }
-
                     if (col != 7)
                     {
                         toggle = toggle == Color.Light ? Color.Dark : Color.Light;
@@ -183,7 +177,7 @@
                 {
                     var currentFigure = this.Matrix[y][x].Piece;
 
-                    if (currentFigure.Color == player.Color)
+                    if (currentFigure != null && currentFigure.Color == player.Color)
                     {
                         currentFigure.IsMoveAvailable(this.Matrix);
                         if (currentFigure.IsMovable)
@@ -208,7 +202,7 @@
                 {
                     var currentFigure = this.Matrix[y][x].Piece;
 
-                    if (!(currentFigure is Empty || currentFigure is King))
+                    if (!(currentFigure == null || currentFigure is King))
                     {
                         if (currentFigure is Pawn ||
                             currentFigure is Rook ||
@@ -295,7 +289,7 @@
 
         private bool MovePiece(Player movingPlayer)
         {
-            if (!this.Target.IsOccupied &&
+            if (this.Target.Piece == null &&
                 movingPlayer.Color == this.Source.Piece.Color &&
                 this.Source.Piece.Move(this.Target.Position, this.Matrix))
             {
@@ -314,7 +308,7 @@
 
         private bool TakePiece(Player movingPlayer)
         {
-            if (this.Target.IsOccupied &&
+            if (this.Target.Piece != null &&
                 this.Target.Piece.Color != this.Source.Piece.Color &&
                 movingPlayer.Color == this.Source.Piece.Color &&
                 this.Source.Piece.Take(this.Target.Position, this.Matrix))
@@ -413,7 +407,7 @@
             {
                 for (int x = 0; x < GlobalConstants.BoardCols; x++)
                 {
-                    if (this.Matrix[y][x].IsOccupied == true)
+                    if (this.Matrix[y][x].Piece != null)
                     {
                         this.Matrix[y][x].Piece.Attacking(this.Matrix);
                     }
@@ -448,7 +442,7 @@
             {
                 sb.Append(target + "=Q");
             }
-            else if (target.Piece is Empty)
+            else if (target.Piece == null)
             {
                 if (source.Piece is Pawn)
                 {
@@ -619,10 +613,9 @@
                         if (this.NeighbourSquareAvailable(checkedSquare, movingPlayer))
                         {
                             var currentFigure = this.Matrix[kingY][kingX].Piece;
-                            var empty = Factory.GetEmpty();
                             var neighbourFigure = this.Matrix[kingY + y][kingX + x].Piece;
 
-                            this.AssignNewValuesAndCalculate(kingY, kingX, y, x, currentFigure, empty);
+                            this.AssignNewValuesAndCalculate(kingY, kingX, y, x, currentFigure);
 
                             if (!this.Matrix[kingY + y][kingX + x].IsAttacked.Where(k => k.Color == movingPlayer.Color).Any())
                             {
@@ -728,14 +721,14 @@
 
         private bool NeighbourSquareAvailable(Square square, Player movingPlayer)
         {
-            if (square.IsOccupied &&
+            if (square.Piece != null &&
                 square.Piece.Color == movingPlayer.Color &&
                 !square.IsAttacked.Where(x => x.Color == movingPlayer.Color).Any())
             {
                 return true;
             }
 
-            if (!square.IsOccupied &&
+            if (square.Piece == null &&
                 !square.IsAttacked.Where(x => x.Color == movingPlayer.Color).Any())
             {
                 return true;
@@ -744,25 +737,17 @@
             return false;
         }
 
-        private void AssignNewValuesAndCalculate(int kingRow, int kingCol, int i, int k, IPiece currentFigure, IPiece empty)
+        private void AssignNewValuesAndCalculate(int kingRow, int kingCol, int i, int k, IPiece currentFigure)
         {
-            this.Matrix[kingRow][kingCol].Piece = empty;
-            this.Matrix[kingRow][kingCol].IsOccupied = false;
+            this.Matrix[kingRow][kingCol].Piece = null;
             this.Matrix[kingRow + i][kingCol + k].Piece = currentFigure;
-            this.Matrix[kingRow + i][kingCol + k].IsOccupied = true;
             this.CalculateAttackedSquares();
         }
 
         private void AssignOldValuesAndCalculate(int kingRow, int kingCol, int i, int k, IPiece currentFigure, IPiece neighbourFigure)
         {
             this.Matrix[kingRow][kingCol].Piece = currentFigure;
-            this.Matrix[kingRow][kingCol].IsOccupied = true;
             this.Matrix[kingRow + i][kingCol + k].Piece = neighbourFigure;
-            this.Matrix[kingRow + i][kingCol + k].IsOccupied = true;
-            if (neighbourFigure is Empty)
-            {
-                this.Matrix[kingRow + i][kingCol + k].IsOccupied = false;
-            }
 
             this.CalculateAttackedSquares();
         }
@@ -776,9 +761,7 @@
 
         private void RemovePiece(Square square)
         {
-            IPiece empty = Factory.GetEmpty();
-
-            this.Matrix[square.Position.Y][square.Position.X].Piece = empty;
+            this.Matrix[square.Position.Y][square.Position.X].Piece = null;
         }
 
         private void ReversePiece(Square source, Square target)

@@ -48,11 +48,6 @@
              return new King(color);
         }
 
-        public static IPiece GetEmpty()
-        {
-            return new Empty();
-        }
-
         public static Position GetPosition()
         {
             return new Position();

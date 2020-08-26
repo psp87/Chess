@@ -34,8 +34,6 @@
                 {
                     this.piece.Position.X = this.Position.X;
                     this.piece.Position.Y = this.Position.Y;
-
-                    this.IsOccupied = this.piece is Empty ? false : true;
                 }
             }
         }
@@ -45,8 +43,6 @@
         public string Name { get; set; }
 
         public Color Color { get; set; }
-
-        public bool IsOccupied { get; set; }
 
         public List<IPiece> IsAttacked { get; set; }
 
@@ -62,8 +58,7 @@
                 Color = this.Color,
                 Name = this.Name,
                 Position = this.Position.Clone() as Position,
-                Piece = this.Piece.Clone() as Piece,
-                IsOccupied = this.IsOccupied,
+                Piece = this.Piece?.Clone() as Piece,
                 IsAttacked = this.IsAttacked,
             };
         }

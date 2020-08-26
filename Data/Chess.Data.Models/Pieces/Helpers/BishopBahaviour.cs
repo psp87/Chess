@@ -20,7 +20,7 @@
                     {
                         var checkedSquare = matrix[piece.Position.Y + i][piece.Position.X + k];
 
-                        if (!checkedSquare.IsOccupied || checkedSquare.Piece.Color != piece.Color)
+                        if (checkedSquare.Piece == null || checkedSquare.Piece.Color != piece.Color)
                         {
                             return true;
                         }
@@ -66,7 +66,7 @@
                 {
                     matrix[y][x].IsAttacked.Add(piece);
 
-                    if (matrix[y][x].IsOccupied)
+                    if (matrix[y][x].Piece != null)
                     {
                         break;
                     }
@@ -112,7 +112,7 @@
                 int x = from.X + (signX * i);
                 int y = from.Y + (signY * i);
 
-                if (boardMatrix[y][x].IsOccupied)
+                if (boardMatrix[y][x].Piece != null)
                 {
                     return false;
                 }

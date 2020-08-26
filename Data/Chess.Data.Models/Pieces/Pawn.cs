@@ -23,7 +23,7 @@
             {
                 var checkedSquare = matrix[this.Position.Y + (sign * 1)][this.Position.X];
 
-                if (!checkedSquare.IsOccupied)
+                if (checkedSquare.Piece == null)
                 {
                     this.IsMovable = true;
                     return;
@@ -34,7 +34,7 @@
             {
                 var checkedSquare = matrix[this.Position.Y + (sign * 1)][this.Position.X - 1];
 
-                if (checkedSquare.IsOccupied && checkedSquare.Piece.Color != this.Color)
+                if (checkedSquare.Piece != null && checkedSquare.Piece.Color != this.Color)
                 {
                     this.IsMovable = true;
                     return;
@@ -45,7 +45,7 @@
             {
                 var checkedSquare = matrix[this.Position.Y + (sign * 1)][this.Position.X + 1];
 
-                if (checkedSquare.IsOccupied && checkedSquare.Piece.Color != this.Color)
+                if (checkedSquare.Piece != null && checkedSquare.Piece.Color != this.Color)
                 {
                     this.IsMovable = true;
                     return;

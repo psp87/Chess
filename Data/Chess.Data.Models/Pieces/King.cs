@@ -33,10 +33,10 @@
                     {
                         var checkedSquare = matrix[this.Position.Y + y][this.Position.X + x];
 
-                        if ((checkedSquare.IsOccupied &&
+                        if ((checkedSquare.Piece != null &&
                             checkedSquare.Piece.Color != this.Color &&
                             !checkedSquare.IsAttacked.Where(p => p.Color != this.Color).Any()) ||
-                            (!checkedSquare.IsOccupied &&
+                            (checkedSquare.Piece == null &&
                             !checkedSquare.IsAttacked.Where(p => p.Color != this.Color).Any()))
                         {
                             this.IsMovable = true;
@@ -105,7 +105,7 @@
                         !secondSquareOnWay.IsAttacked.Where(x => x.Color != this.Color).Any())
                     {
                         matrix[this.Position.Y][to.X + sign].Piece = matrix[this.Position.Y][lastPiecePosition].Piece;
-                        matrix[this.Position.Y][lastPiecePosition].Piece = Factory.GetEmpty();
+                        matrix[this.Position.Y][lastPiecePosition].Piece = null;
 
                         GlobalConstants.CastlingMove = true;
                         Castling.RookSource = matrix[this.Position.Y][lastPiecePosition].ToString();
@@ -146,7 +146,7 @@
             {
                 int sign = this.Position.X < to.X ? i : -i;
 
-                if (matrix[this.Position.Y][this.Position.X + sign].IsOccupied)
+                if (matrix[this.Position.Y][this.Position.X + sign].Piece != null)
                 {
                     return false;
                 }

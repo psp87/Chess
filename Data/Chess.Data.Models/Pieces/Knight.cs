@@ -116,7 +116,7 @@
             {
                 var square = matrix[this.Position.Y + y][this.Position.X + x];
 
-                if (!square.IsOccupied || square.Piece.Color != this.Color)
+                if (square.Piece == null || square.Piece.Color != this.Color)
                 {
                     return true;
                 }
