@@ -48,9 +48,6 @@
             return this.Position.ToString();
         }
 
-        public virtual object Clone()
-        {
-            return this.Clone();
-        }
+        public abstract object Clone();
     }
 }

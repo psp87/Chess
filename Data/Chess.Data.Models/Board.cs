@@ -48,7 +48,7 @@
 
         public event EventHandler OnMoveComplete;
 
-        public event EventHandler OnNotification;
+        public event EventHandler OnMessage;
 
         public event EventHandler OnTakePiece;
 
@@ -129,21 +129,21 @@
 
                 if (movingPlayer.IsCheck)
                 {
-                    this.OnNotification?.Invoke(movingPlayer, new NotificationEventArgs(Notification.CheckSelf));
+                    this.OnMessage?.Invoke(movingPlayer, new MessageEventArgs(Notification.CheckSelf));
                     return false;
                 }
 
                 // Check the opponent for check and checkmate
                 if (this.IsPlayerChecked(opponent))
                 {
-                    this.OnNotification?.Invoke(opponent, new NotificationEventArgs(Notification.CheckOpponent));
+                    this.OnMessage?.Invoke(opponent, new MessageEventArgs(Notification.CheckOpponent));
                     this.IsCheckmate(movingPlayer, opponent);
                 }
 
                 // Clear the check notification
                 if (!movingPlayer.IsCheck && !opponent.IsCheck)
                 {
-                    this.OnNotification?.Invoke(null, new NotificationEventArgs(Notification.CheckClear));
+                    this.OnMessage?.Invoke(null, new MessageEventArgs(Notification.CheckClear));
                 }
 
                 this.IsThreefoldRepetionDraw(targetFen);

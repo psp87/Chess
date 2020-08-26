@@ -47,7 +47,7 @@
 
                 this.Game.ChessBoard.OnMoveComplete += this.Board_OnMoveComplete;
                 this.Game.OnGameOver += this.Game_OnGameOver;
-                this.Game.ChessBoard.OnNotification += this.Game_OnNotification;
+                this.Game.ChessBoard.OnMessage += this.Game_OnNotification;
                 this.Game.OnNotification += this.Game_OnNotification;
                 this.Game.ChessBoard.OnTakePiece += this.Board_OnTakePiece;
 
@@ -154,7 +154,7 @@
         private void Game_OnNotification(object sender, EventArgs e)
         {
             var player = sender as Player;
-            var notification = e as NotificationEventArgs;
+            var notification = e as MessageEventArgs;
 
             switch (notification.Type)
             {

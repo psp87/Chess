@@ -128,6 +128,8 @@
             return new King(this.Color)
             {
                 Position = this.Position.Clone() as Position,
+                IsFirstMove = this.IsFirstMove,
+                IsMovable = this.IsMovable,
             };
         }
 

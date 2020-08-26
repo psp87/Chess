@@ -98,6 +98,7 @@
             return new Knight(this.Color)
             {
                 Position = this.Position.Clone() as Position,
+                IsMovable = this.IsMovable,
             };
         }
 
