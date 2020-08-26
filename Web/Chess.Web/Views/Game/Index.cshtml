@@ -21,7 +21,9 @@
                     <div id="blackQueen" class="pieces"><img src="~/img/chesspieces/wikipedia/bQ.png" alt="Queen: " width="33" height="33" /><span id="blackQueensTaken">0</span></div>
                 </div>
                 <h6 class="color">white</h6>
-                <div><ul id="whiteMoveHistory" class="list-group"></ul></div>
+                <div>
+                    <ul id="whiteMoveHistory" class="list-group"></ul>
+                </div>
             </div>
         </div>
         <div class="column middle">
@@ -280,9 +282,15 @@
             if (movingPlayer.name == playerOneName) {
                 var $whiteMoveHistory = document.getElementById('whiteMoveHistory');
                 $whiteMoveHistory.appendChild(li);
+                if ($whiteMoveHistory.getElementsByTagName("li").length > 13) {
+                    $whiteMoveHistory.removeChild($whiteMoveHistory.childNodes[0]);
+                }
             } else {
                 var $blackMoveHistory = document.getElementById('blackMoveHistory');
                 $blackMoveHistory.appendChild(li);
+                if ($blackMoveHistory.getElementsByTagName("li").length > 13) {
+                    $blackMoveHistory.removeChild($blackMoveHistory.childNodes[0]);
+                }
             }
         })
 
