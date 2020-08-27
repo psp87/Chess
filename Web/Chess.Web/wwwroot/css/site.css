@@ -75,7 +75,7 @@
 }
 
 .chessText {
-    width: 95%;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
     text-align: justify;
@@ -83,7 +83,7 @@
 
 .chessImage {
     position: relative;
-    width: 95%;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
 }
