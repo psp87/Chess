@@ -74,6 +74,45 @@
     border-color: lightgray;
 }
 
+.chessText {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: justify;
+}
+
+.chessImage {
+    position: relative;
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.chessImage img {
+    width: 100%;
+    height: auto;
+}
+
+.chessImage .btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    background-color: antiquewhite;
+    color: black;
+    font-size: 18px;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.chessImage .btn:hover {
+    background-color: palegreen;
+}
+
+
 
 
 /* Sticky footer styles
