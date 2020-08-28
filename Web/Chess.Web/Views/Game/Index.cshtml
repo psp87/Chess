@@ -11,7 +11,7 @@
     <div class="row">
         <div class="column left">
             <div id="whiteStats">
-                <h1 id="whiteName"></h1>
+                <h1><i class="far fa-user fa-sm"></i> <span id="whiteName"></span></h1>
                 <p id="whitePoints"><span id="whitePointsValue">0</span> pts</p>
                 <div id="whiteTakenPieces">
                     <div id="blackPawn" class="pieces"><img src="~/img/chesspieces/wikipedia/bP.png" alt="Pawn: " width="33" height="33" /><span id="blackPawnsTaken">0</span></div>
@@ -20,26 +20,27 @@
                     <div id="blackRook" class="pieces"><img src="~/img/chesspieces/wikipedia/bR.png" alt="Rook: " width="33" height="33" /><span id="blackRooksTaken">0</span></div>
                     <div id="blackQueen" class="pieces"><img src="~/img/chesspieces/wikipedia/bQ.png" alt="Queen: " width="33" height="33" /><span id="blackQueensTaken">0</span></div>
                 </div>
-                <h6 class="color">white</h6>
                 <div>
+                    <br />
+                    <br />
                     <ul id="whiteMoveHistory" class="list-group"></ul>
                 </div>
             </div>
         </div>
         <div class="column middle">
             <div id="boardMain">
-                <h6 id="status">STATUS: <span id="statusText"></span><span id="statusCheck"></span> </h6>
+                <h6 id="status"><i class="fas fa-arrow-alt-circle-right"></i> <span id="statusText"></span><span id="statusCheck"></span> </h6>
                 <div id="board"></div>
                 <div id="gameOptions">
-                    <button type="submit" id="threefoldDraw" class="btn btn-primary">Declare Draw</button>
-                    <button type="submit" id="offerDraw" class="btn btn-primary">Offer Draw</button>
-                    <button type="submit" id="resign" class="btn btn-primary">Resign</button>
+                    <button type="submit" id="threefoldDraw" class="btn btn-primary"><i class="fas fa-equals"></i> Declare Draw</button>
+                    <button type="submit" id="offerDraw" class="btn btn-primary"><i class="far fa-handshake"></i> Offer Draw</button>
+                    <button type="submit" id="resign" class="btn btn-primary"><i class="far fa-flag"></i> Resign</button>
                 </div>
             </div>
         </div>
         <div class="column right">
             <div id="blackStats">
-                <h1 id="blackName"></h1>
+                <h1><i class="fas fa-user fa-sm"></i> <span id="blackName"></span></h1>
                 <p id="blackPoints"><span id="blackPointsValue">0</span> pts</p>
                 <div id="blackTakenPieces">
                     <div id="whitePawn" class="pieces"><img src="~/img/chesspieces/wikipedia/wP.png" alt="Pawn: " width="33" height="33" style="align-content: center" /><span id="whitePawnsTaken">0</span></div>
@@ -48,8 +49,9 @@
                     <div id="whiteRook" class="pieces"><img src="~/img/chesspieces/wikipedia/wR.png" alt="Rook: " width="33" height="33" style="align-content: center" /><span id="whiteRooksTaken">0</span></div>
                     <div id="whiteQueen" class="pieces"><img src="~/img/chesspieces/wikipedia/wQ.png" alt="Queen: " width="33" height="33" style="align-content: center" /><span id="whiteQueensTaken">0</span></div>
                 </div>
-                <h6 class="color">black</h6>
                 <div>
+                    <br />
+                    <br />
                     <ul id="blackMoveHistory" class="list-group"></ul>
                 </div>
             </div>

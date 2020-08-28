@@ -7,11 +7,6 @@
     margin: auto;
 }
 
-#status {
-    color: darkgray;
-    margin-bottom: 12px;
-}
-
 .color {
     color: darkgray;
 }
@@ -22,16 +17,12 @@
     background-color: darkslategrey;
     color: white;
     border: none;
-    width: 120px;
+    width: 140px;
 }
 
 .pieces {
     float: left;
     width: 20.00%;
-}
-
-#statusCheck {
-    color: black;
 }
 
 * {
@@ -99,13 +90,14 @@
     left: 50%;
     transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
-    background-color: antiquewhite;
+    background-color: lightgreen;
     color: black;
     font-size: 18px;
     padding: 12px 24px;
     border: none;
     cursor: pointer;
     border-radius: 5px;
+    width: 10%;
 }
 
 .chessImage .btn:hover {
@@ -118,6 +110,10 @@
     margin-left: auto;
     margin-right: auto;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+#whitePoints, #blackPoints {
+    font-size: 18px;
 }
 
 
