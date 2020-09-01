@@ -2,5 +2,6 @@
 {
     public interface IGameService
     {
+        int GetCount();
     }
 }

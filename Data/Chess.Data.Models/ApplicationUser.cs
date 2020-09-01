@@ -1,5 +1,4 @@
-﻿// ReSharper disable VirtualMemberCallInConstructor
-namespace Chess.Data.Models
+﻿namespace Chess.Data.Models
 {
     using System;
     using System.Collections.Generic;

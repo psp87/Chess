@@ -2,8 +2,10 @@
 {
     using Chess.Services.Data.Contracts;
 
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
+    [Authorize]
     public class GameController : BaseController
     {
         private readonly IGameService gameService;
@@ -15,7 +17,7 @@
 
         public IActionResult Index()
         {
-            return this.View();
+            return this.View(this.User.Identity);
         }
 
         public IActionResult New()
