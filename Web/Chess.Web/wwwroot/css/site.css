@@ -86,12 +86,12 @@
 
 .chessImage .btn {
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 25%;
+    left: 13%;
     transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
-    background-color: lightgreen;
-    color: black;
+    background-color: black;
+    color: white;
     font-size: 18px;
     padding: 12px 24px;
     border: none;
@@ -101,7 +101,7 @@
 }
 
 .chessImage .btn:hover {
-    background-color: palegreen;
+    background-color: darkseagreen;
 }
 
 .about {
