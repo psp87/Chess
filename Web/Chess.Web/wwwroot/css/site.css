@@ -86,8 +86,8 @@
 
 .chessImage .btn {
     position: absolute;
-    top: 25%;
-    left: 13%;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
     background-color: black;
@@ -116,6 +116,27 @@
     font-size: 18px;
 }
 
+#title {
+    text-align: center;
+    background-color: #454a52;
+    color: white;
+    margin: 0px;
+    padding: 5px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-variant: small-caps;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+#by-text {
+    text-align: center;
+    background-color: black;
+    color: white;
+    margin: 0px;
+    padding: 5px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    letter-spacing: 1px;
+}
 
 
 /* Sticky footer styles
