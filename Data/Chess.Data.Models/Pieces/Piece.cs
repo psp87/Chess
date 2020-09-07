@@ -39,9 +39,9 @@
 
         public abstract void Attacking(Square[][] boardMatrix);
 
-        public abstract bool Move(Position toPosition, Square[][] boardMatrix);
+        public abstract bool Move(Position toPosition, Square[][] boardMatrix, int turn);
 
-        public abstract bool Take(Position toPosition, Square[][] boardMatrix);
+        public abstract bool Take(Position toPosition, Square[][] boardMatrix, int turn);
 
         public override string ToString()
         {

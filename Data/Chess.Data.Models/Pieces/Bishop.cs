@@ -27,14 +27,14 @@
             this.bishop.Attacking(this, matrix);
         }
 
-        public override bool Move(Position to, Square[][] matrix)
+        public override bool Move(Position to, Square[][] matrix, int turn)
         {
             return this.bishop.Move(this, to, matrix);
         }
 
-        public override bool Take(Position to, Square[][] matrix)
+        public override bool Take(Position to, Square[][] matrix, int turn)
         {
-            return this.Move(to, matrix);
+            return this.Move(to, matrix, turn);
         }
 
         public override object Clone()

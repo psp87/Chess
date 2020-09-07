@@ -70,7 +70,7 @@
             }
         }
 
-        public override bool Move(Position to, Square[][] matrix)
+        public override bool Move(Position to, Square[][] matrix, int turn)
         {
             int sign = this.Color == Color.Light ? -1 : 1;
 
@@ -92,7 +92,7 @@
 
                 if (number == sign * 2)
                 {
-                    EnPassant.Turn = GlobalConstants.TurnCounter + 1;
+                    EnPassant.Turn = turn + 1;
                     EnPassant.Position = new Position(this.Position.Y + sign, this.Position.X);
                 }
 
@@ -102,7 +102,7 @@
             return false;
         }
 
-        public override bool Take(Position to, Square[][] matrix)
+        public override bool Take(Position to, Square[][] matrix, int turn)
         {
             int sign = this.Color == Color.Light ? -1 : 1;
 

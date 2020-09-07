@@ -12,8 +12,6 @@
 
         public const int BoardCols = 8;
 
-        public static int TurnCounter { get; set; }
-
         public static GameOver GameOver { get; set; }
 
         public static string EnPassantTake { get; set; }

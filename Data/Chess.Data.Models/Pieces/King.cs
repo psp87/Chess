@@ -68,7 +68,7 @@
             }
         }
 
-        public override bool Move(Position to, Square[][] matrix)
+        public override bool Move(Position to, Square[][] matrix, int turn)
         {
             if (!matrix[to.Y][to.X].IsAttacked.Where(x => x.Color != this.Color).Any())
             {
@@ -118,9 +118,9 @@
             return false;
         }
 
-        public override bool Take(Position to, Square[][] matrix)
+        public override bool Take(Position to, Square[][] matrix, int turn)
         {
-            return this.Move(to, matrix);
+            return this.Move(to, matrix, turn);
         }
 
         public override object Clone()

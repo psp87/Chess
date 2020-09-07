@@ -19,6 +19,7 @@
             this.Id = Guid.NewGuid().ToString();
             this.Player1.GameId = this.Id;
             this.Player2.GameId = this.Id;
+            this.Turn = 1;
         }
 
         public event EventHandler OnNotification;
@@ -28,6 +29,8 @@
         public string Id { get; set; }
 
         public Board ChessBoard { get; set; }
+
+        public int Turn { get; set; }
 
         public Player Player1 { get; set; }
 
@@ -39,13 +42,14 @@
 
         public bool MakeMove(string source, string target, string targetFen)
         {
-            if (this.ChessBoard.TryMove(source, target, targetFen, this.MovingPlayer, this.Opponent))
+            if (this.ChessBoard.TryMove(source, target, targetFen, this.MovingPlayer, this.Opponent, this.Turn))
             {
                 if (GlobalConstants.GameOver.ToString() != GameOver.None.ToString())
                 {
                     this.OnGameOver?.Invoke(this.MovingPlayer, new GameOverEventArgs(GlobalConstants.GameOver));
                 }
 
+                this.Turn++;
                 this.ChangeTurns();
 
                 return true;

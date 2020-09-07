@@ -100,7 +100,7 @@
             return board;
         }
 
-        public bool TryMove(string source, string target, string targetFen, Player movingPlayer, Player opponent)
+        public bool TryMove(string source, string target, string targetFen, Player movingPlayer, Player opponent, int turn)
         {
             this.Source = this.GetSquare(source);
             this.Target = this.GetSquare(target);
@@ -108,9 +108,9 @@
             var oldSource = this.Source.Clone() as Square;
             var oldTarget = this.Target.Clone() as Square;
 
-            if (this.MovePiece(movingPlayer) ||
-                this.TakePiece(movingPlayer) ||
-                this.EnPassantTake(movingPlayer))
+            if (this.MovePiece(movingPlayer, turn) ||
+                this.TakePiece(movingPlayer, turn) ||
+                this.EnPassantTake(movingPlayer, turn))
             {
                 if (this.Target.Piece is Pawn && this.Target.Piece.IsLastMove)
                 {
@@ -145,9 +145,7 @@
                 this.IsDraw();
                 this.IsStalemate(opponent);
 
-                GlobalConstants.TurnCounter++;
-
-                string notation = this.GetAlgebraicNotation(oldSource, oldTarget, opponent);
+                string notation = this.GetAlgebraicNotation(oldSource, oldTarget, opponent, turn);
                 this.OnMoveComplete?.Invoke(movingPlayer, new NotationEventArgs(notation));
 
                 return true;
@@ -287,11 +285,11 @@
             return false;
         }
 
-        private bool MovePiece(Player movingPlayer)
+        private bool MovePiece(Player movingPlayer, int turn)
         {
             if (this.Target.Piece == null &&
                 movingPlayer.Color == this.Source.Piece.Color &&
-                this.Source.Piece.Move(this.Target.Position, this.Matrix))
+                this.Source.Piece.Move(this.Target.Position, this.Matrix, turn))
             {
                 if (!this.Try(movingPlayer))
                 {
@@ -306,12 +304,12 @@
             return false;
         }
 
-        private bool TakePiece(Player movingPlayer)
+        private bool TakePiece(Player movingPlayer, int turn)
         {
             if (this.Target.Piece != null &&
                 this.Target.Piece.Color != this.Source.Piece.Color &&
                 movingPlayer.Color == this.Source.Piece.Color &&
-                this.Source.Piece.Take(this.Target.Position, this.Matrix))
+                this.Source.Piece.Take(this.Target.Position, this.Matrix, turn))
             {
                 var piece = this.Target.Piece;
 
@@ -331,7 +329,7 @@
             return false;
         }
 
-        private bool EnPassantTake(Player movingPlayer)
+        private bool EnPassantTake(Player movingPlayer, int turn)
         {
             if (EnPassant.Position != null)
             {
@@ -340,7 +338,7 @@
                 var firstPosition = positions[0];
                 var secondPosition = positions[1];
 
-                if (EnPassant.Turn == GlobalConstants.TurnCounter &&
+                if (EnPassant.Turn == turn &&
                     EnPassant.Position.Equals(this.Target.Position) &&
                     this.Source.Piece is Pawn &&
                     (this.Source.Position.Equals(firstPosition) ||
@@ -415,12 +413,12 @@
             }
         }
 
-        private string GetAlgebraicNotation(Square source, Square target, Player opponent)
+        private string GetAlgebraicNotation(Square source, Square target, Player opponent, int turn)
         {
             var sb = new StringBuilder();
 
-            var turn = Math.Ceiling(GlobalConstants.TurnCounter / 2.0);
-            sb.Append(turn + ". ");
+            var playerTurn = Math.Ceiling(turn / 2.0);
+            sb.Append(playerTurn + ". ");
 
             if (GlobalConstants.EnPassantTake != null)
             {
