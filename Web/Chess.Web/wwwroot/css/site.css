@@ -139,7 +139,9 @@
     color: white;
     margin: 0px;
     padding: 5px;
+    font-variant: small-caps;
     letter-spacing: 1px;
+    font-size: small;
 }
 
 #aboutImage {
@@ -151,8 +153,13 @@
     color: white;
     padding: 3px;
     letter-spacing: 1px;
-    font-weight: 500;
 }
+
+#findGame {
+    background-color: #454a52;
+    color: white;
+}
+
 
 
 /* Sticky footer styles

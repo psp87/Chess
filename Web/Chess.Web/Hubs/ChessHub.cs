@@ -145,22 +145,25 @@
         private void Game_OnGameOver(object sender, EventArgs e)
         {
             var player = sender as Player;
+            var game = this.games[player.GameId];
             var gameOver = e as GameOverEventArgs;
 
-            this.Clients.Group(this.games[player.GameId].Id).SendAsync("GameOver", player, gameOver.GameOver);
+            this.Clients.Group(game.Id).SendAsync("GameOver", player, gameOver.GameOver);
         }
 
         private void Board_OnMoveComplete(object sender, EventArgs e)
         {
             var player = sender as Player;
+            var game = this.games[player.GameId];
             var args = e as NotationEventArgs;
 
-            this.Clients.Group(this.games[player.GameId].Id).SendAsync("UpdateMoveHistory", player, args.Notation);
+            this.Clients.Group(game.Id).SendAsync("UpdateMoveHistory", player, args.Notation);
         }
 
         private void Game_OnNotification(object sender, EventArgs e)
         {
             var player = sender as Player;
+            var game = this.games[player.GameId];
             var notification = e as MessageEventArgs;
 
             switch (notification.Type)
@@ -169,10 +172,10 @@
                     this.Clients.Caller.SendAsync("InvalidMessage");
                     break;
                 case Notification.CheckClear:
-                    this.Clients.Group(this.games[player.GameId].Id).SendAsync("EmptyCheckStatus");
+                    this.Clients.Group(game.Id).SendAsync("EmptyCheckStatus");
                     break;
                 case Notification.CheckOpponent:
-                    this.Clients.Group(this.games[player.GameId].Id).SendAsync("CheckOpponent");
+                    this.Clients.Group(game.Id).SendAsync("CheckOpponent");
                     break;
                 case Notification.CheckSelf:
                     this.Clients.Caller.SendAsync("CheckSelf");
@@ -183,9 +186,10 @@
         private void Board_OnTakePiece(object sender, EventArgs e)
         {
             var player = sender as Player;
+            var game = this.games[player.GameId];
             var args = e as TakePieceEventArgs;
 
-            this.Clients.Group(this.games[player.GameId].Id).SendAsync("UpdateTakenFigures", player, args.PieceName, args.Points);
+            this.Clients.Group(game.Id).SendAsync("UpdateTakenFigures", player, args.PieceName, args.Points);
         }
     }
 }
