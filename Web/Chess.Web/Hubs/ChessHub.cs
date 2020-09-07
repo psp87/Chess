@@ -14,15 +14,16 @@
 
     public class ChessHub : Hub
     {
-        #region Private Variables
-        private readonly ConcurrentDictionary<string, Player> players =
-            new ConcurrentDictionary<string, Player>(StringComparer.OrdinalIgnoreCase);
+        private readonly ConcurrentDictionary<string, Player> players;
+        private readonly ConcurrentDictionary<string, Game> games;
+        private readonly ConcurrentQueue<Player> waitingPlayers;
 
-        private readonly ConcurrentQueue<Player> waitingPlayers =
-            new ConcurrentQueue<Player>();
-        #endregion
-
-        public Game Game { get; set; }
+        public ChessHub()
+        {
+            this.players = new ConcurrentDictionary<string, Player>(StringComparer.OrdinalIgnoreCase);
+            this.games = new ConcurrentDictionary<string, Game>(StringComparer.OrdinalIgnoreCase);
+            this.waitingPlayers = new ConcurrentQueue<Player>();
+        }
 
         public async Task FindGame(string username)
         {
@@ -43,18 +44,19 @@
                 opponent.Color = Color.Light;
                 opponent.HasToMove = true;
 
-                this.Game = Factory.GetGame(opponent, joiningPlayer);
+                var game = Factory.GetGame(opponent, joiningPlayer);
+                this.games[game.Id] = game;
 
-                this.Game.ChessBoard.OnMoveComplete += this.Board_OnMoveComplete;
-                this.Game.OnGameOver += this.Game_OnGameOver;
-                this.Game.ChessBoard.OnMessage += this.Game_OnNotification;
-                this.Game.OnNotification += this.Game_OnNotification;
-                this.Game.ChessBoard.OnTakePiece += this.Board_OnTakePiece;
+                game.ChessBoard.OnMoveComplete += this.Board_OnMoveComplete;
+                game.OnGameOver += this.Game_OnGameOver;
+                game.ChessBoard.OnMessage += this.Game_OnNotification;
+                game.OnNotification += this.Game_OnNotification;
+                game.ChessBoard.OnTakePiece += this.Board_OnTakePiece;
 
                 await Task.WhenAll(
-                    this.Groups.AddToGroupAsync(this.Game.Player1.Id, groupName: this.Game.Id),
-                    this.Groups.AddToGroupAsync(this.Game.Player2.Id, groupName: this.Game.Id),
-                    this.Clients.Group(this.Game.Id).SendAsync("Start", this.Game));
+                    this.Groups.AddToGroupAsync(game.Player1.Id, groupName: game.Id),
+                    this.Groups.AddToGroupAsync(game.Player2.Id, groupName: game.Id),
+                    this.Clients.Group(game.Id).SendAsync("Start", game));
 
                 await this.Clients.Caller.SendAsync("ChangeOrientation");
             }
@@ -63,36 +65,37 @@
         public async Task MoveSelected(string source, string target, string sourceFen, string targetFen)
         {
             var player = this.players[this.Context.ConnectionId];
+            var game = this.games[player.GameId];
 
             if (!player.HasToMove ||
-                !this.Game.MakeMove(source, target, targetFen))
+                !game.MakeMove(source, target, targetFen))
             {
                 await this.Clients.Caller.SendAsync("BoardSnapback", sourceFen);
                 return;
             }
 
-            await this.Clients.Others.SendAsync("BoardMove", source, target);
+            await this.Clients.GroupExcept(game.Id, this.Context.ConnectionId).SendAsync("BoardMove", source, target);
 
             if (GlobalConstants.GameOver.ToString() == GameOver.None.ToString())
             {
-                await this.Clients.All.SendAsync("UpdateStatus", this.Game.MovingPlayer.Name);
+                await this.Clients.Group(game.Id).SendAsync("UpdateStatus", game.MovingPlayer.Name);
             }
 
             if (GlobalConstants.EnPassantTake != null)
             {
-                await this.Clients.All.SendAsync("EnPassantTake", GlobalConstants.EnPassantTake, target);
+                await this.Clients.Group(game.Id).SendAsync("EnPassantTake", GlobalConstants.EnPassantTake, target);
                 GlobalConstants.EnPassantTake = null;
             }
 
             if (GlobalConstants.CastlingMove)
             {
-                await this.Clients.All.SendAsync("BoardMove", Castling.RookSource, Castling.RookTarget);
+                await this.Clients.Group(game.Id).SendAsync("BoardMove", Castling.RookSource, Castling.RookTarget);
                 GlobalConstants.CastlingMove = false;
             }
 
             if (GlobalConstants.PawnPromotionFen != null)
             {
-                await this.Clients.All.SendAsync("BoardSetPosition", GlobalConstants.PawnPromotionFen);
+                await this.Clients.Group(game.Id).SendAsync("BoardSetPosition", GlobalConstants.PawnPromotionFen);
                 GlobalConstants.PawnPromotionFen = null;
             }
         }
@@ -100,38 +103,42 @@
         public async Task IsThreefoldDraw()
         {
             var player = this.players[this.Context.ConnectionId];
+            var game = this.games[player.GameId];
 
             if (GlobalConstants.IsThreefoldDraw && player.HasToMove)
             {
-                await this.Clients.All.SendAsync("GameOver", player, GameOver.ThreefoldDraw);
+                await this.Clients.Group(game.Id).SendAsync("GameOver", player, GameOver.ThreefoldDraw);
             }
         }
 
         public async Task Resign()
         {
             var player = this.players[this.Context.ConnectionId];
+            var game = this.games[player.GameId];
 
-            await this.Clients.All.SendAsync("GameOver", player, GameOver.Resign);
+            await this.Clients.Group(game.Id).SendAsync("GameOver", player, GameOver.Resign);
         }
 
         public async Task OfferDrawRequest()
         {
             var player = this.players[this.Context.ConnectionId];
+            var game = this.games[player.GameId];
 
-            await this.Clients.Others.SendAsync("DrawOffered", player);
+            await this.Clients.GroupExcept(game.Id, this.Context.ConnectionId).SendAsync("DrawOffered", player);
         }
 
         public async Task OfferDrawAnswer(bool isAccepted)
         {
             var player = this.players[this.Context.ConnectionId];
+            var game = this.games[player.GameId];
 
             if (isAccepted)
             {
-                await this.Clients.All.SendAsync("GameOver", null, GameOver.Draw);
+                await this.Clients.Group(game.Id).SendAsync("GameOver", null, GameOver.Draw);
             }
             else
             {
-                await this.Clients.Others.SendAsync("DrawOfferRejected", player);
+                await this.Clients.GroupExcept(game.Id, this.Context.ConnectionId).SendAsync("DrawOfferRejected", player);
             }
         }
 
@@ -140,7 +147,7 @@
             var player = sender as Player;
             var gameOver = e as GameOverEventArgs;
 
-            this.Clients.All.SendAsync("GameOver", player, gameOver.GameOver);
+            this.Clients.Group(this.games[player.GameId].Id).SendAsync("GameOver", player, gameOver.GameOver);
         }
 
         private void Board_OnMoveComplete(object sender, EventArgs e)
@@ -148,7 +155,7 @@
             var player = sender as Player;
             var args = e as NotationEventArgs;
 
-            this.Clients.All.SendAsync("UpdateMoveHistory", player, args.Notation);
+            this.Clients.Group(this.games[player.GameId].Id).SendAsync("UpdateMoveHistory", player, args.Notation);
         }
 
         private void Game_OnNotification(object sender, EventArgs e)
@@ -162,10 +169,10 @@
                     this.Clients.Caller.SendAsync("InvalidMessage");
                     break;
                 case Notification.CheckClear:
-                    this.Clients.All.SendAsync("EmptyCheckStatus");
+                    this.Clients.Group(this.games[player.GameId].Id).SendAsync("EmptyCheckStatus");
                     break;
                 case Notification.CheckOpponent:
-                    this.Clients.All.SendAsync("CheckOpponent");
+                    this.Clients.Group(this.games[player.GameId].Id).SendAsync("CheckOpponent");
                     break;
                 case Notification.CheckSelf:
                     this.Clients.Caller.SendAsync("CheckSelf");
@@ -178,7 +185,7 @@
             var player = sender as Player;
             var args = e as TakePieceEventArgs;
 
-            this.Clients.All.SendAsync("UpdateTakenFigures", player, args.PieceName, args.Points);
+            this.Clients.Group(this.games[player.GameId].Id).SendAsync("UpdateTakenFigures", player, args.PieceName, args.Points);
         }
     }
 }

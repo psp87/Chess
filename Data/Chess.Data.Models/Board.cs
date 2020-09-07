@@ -137,7 +137,7 @@
                 // Clear the check notification
                 if (!movingPlayer.IsCheck && !opponent.IsCheck)
                 {
-                    this.OnMessage?.Invoke(null, new MessageEventArgs(Notification.CheckClear));
+                    this.OnMessage?.Invoke(movingPlayer, new MessageEventArgs(Notification.CheckClear));
                 }
 
                 this.IsThreefoldRepetionDraw(targetFen);
