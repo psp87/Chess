@@ -1,12 +1,13 @@
 ﻿namespace Chess.Web.Controllers
 {
+    using System.Threading.Tasks;
+
     using Chess.Data.Models;
     using Chess.Services.Data.Contracts;
 
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-    using System.Threading.Tasks;
 
     [Authorize]
     public class GameController : BaseController
@@ -20,11 +21,9 @@
             this.userManager = userManager;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var user = await this.userManager.GetUserAsync(this.User);
-
-            return this.View(user);
+            return this.View();
         }
 
         public IActionResult New()
