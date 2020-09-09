@@ -7,11 +7,9 @@
 
     public class Player
     {
-        private Dictionary<string, int> takenFigures;
-
         public Player(string name, string connectionId)
         {
-            this.takenFigures = new Dictionary<string, int>()
+            this.TakenFigures = new Dictionary<string, int>()
             {
                 { nameof(Pawn), 0 },
                 { nameof(Knight), 0 },
@@ -39,13 +37,15 @@
 
         public bool IsMoveAvailable { get; set; }
 
+        public bool IsThreefoldDrawAvailable { get; set; }
+
         public int Points { get; set; }
 
-        public Dictionary<string, int> TakenFigures => this.takenFigures;
+        public Dictionary<string, int> TakenFigures { get; }
 
         public void TakeFigure(string figureName)
         {
-            this.takenFigures[figureName]++;
+            this.TakenFigures[figureName]++;
         }
     }
 }

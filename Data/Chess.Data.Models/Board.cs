@@ -142,7 +142,7 @@
                     this.OnMessage?.Invoke(movingPlayer, new MessageEventArgs(Notification.CheckClear));
                 }
 
-                this.IsThreefoldRepetionDraw(targetFen, movingPlayer);
+                this.IsThreefoldRepetionDraw(targetFen, movingPlayer, opponent);
                 this.IsFivefoldRepetitionDraw(targetFen);
                 this.IsDraw();
                 this.IsStalemate(opponent);
@@ -228,11 +228,11 @@
             GlobalConstants.GameOver = GameOver.Draw;
         }
 
-        public void IsThreefoldRepetionDraw(string fen, Player movingPlayer)
+        public void IsThreefoldRepetionDraw(string fen, Player movingPlayer, Player opponent)
         {
             this.movesThreefold.Enqueue(fen);
 
-            GlobalConstants.IsThreefoldDraw = false;
+            movingPlayer.IsThreefoldDrawAvailable = false;
             this.OnThreefoldDrawAvailable?.Invoke(movingPlayer, new ThreefoldDrawEventArgs(false));
 
             if (this.movesThreefold.Count == 9)
@@ -244,7 +244,7 @@
 
                 if (isFirstFenSame && isFiveFenSame)
                 {
-                    GlobalConstants.IsThreefoldDraw = true;
+                    opponent.IsThreefoldDrawAvailable = true;
                     this.OnThreefoldDrawAvailable?.Invoke(movingPlayer, new ThreefoldDrawEventArgs(true));
                 }
 

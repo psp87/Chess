@@ -87,7 +87,7 @@
             var player = this.players[this.Context.ConnectionId];
             var game = this.games[player.GameId];
 
-            if (GlobalConstants.IsThreefoldDraw && player.HasToMove)
+            if (player.IsThreefoldDrawAvailable && player.HasToMove)
             {
                 await this.Clients.Group(game.Id).SendAsync("GameOver", player, GameOver.ThreefoldDraw);
             }
