@@ -25,9 +25,9 @@
             this.waitingPlayers = new ConcurrentQueue<Player>();
         }
 
-        public async Task FindGame(string username)
+        public async Task FindGame(string name)
         {
-            Player joiningPlayer = Factory.GetPlayer(username, this.Context.ConnectionId);
+            Player joiningPlayer = Factory.GetPlayer(name, this.Context.ConnectionId);
             this.players[joiningPlayer.Id] = joiningPlayer;
             await this.Clients.Caller.SendAsync("PlayerJoined", joiningPlayer);
 
@@ -40,25 +40,7 @@
             }
             else
             {
-                joiningPlayer.Color = Color.Dark;
-                opponent.Color = Color.Light;
-                opponent.HasToMove = true;
-
-                var game = Factory.GetGame(opponent, joiningPlayer);
-                this.games[game.Id] = game;
-
-                game.ChessBoard.OnMoveComplete += this.Board_OnMoveComplete;
-                game.OnGameOver += this.Game_OnGameOver;
-                game.ChessBoard.OnMessage += this.Game_OnNotification;
-                game.OnNotification += this.Game_OnNotification;
-                game.ChessBoard.OnTakePiece += this.Board_OnTakePiece;
-
-                await Task.WhenAll(
-                    this.Groups.AddToGroupAsync(game.Player1.Id, groupName: game.Id),
-                    this.Groups.AddToGroupAsync(game.Player2.Id, groupName: game.Id),
-                    this.Clients.Group(game.Id).SendAsync("Start", game));
-
-                await this.Clients.Caller.SendAsync("ChangeOrientation");
+                await this.StartGame(joiningPlayer, opponent);
             }
         }
 
@@ -140,6 +122,40 @@
             {
                 await this.Clients.GroupExcept(game.Id, this.Context.ConnectionId).SendAsync("DrawOfferRejected", player);
             }
+        }
+
+        private async Task StartGame(Player joiningPlayer, Player opponent)
+        {
+            joiningPlayer.Color = Color.Black;
+            opponent.Color = Color.White;
+            opponent.HasToMove = true;
+
+            var game = Factory.GetGame(opponent, joiningPlayer);
+            this.games[game.Id] = game;
+
+            game.ChessBoard.OnMoveComplete += this.Board_OnMoveComplete;
+            game.OnGameOver += this.Game_OnGameOver;
+            game.ChessBoard.OnMessage += this.Game_OnNotification;
+            game.OnNotification += this.Game_OnNotification;
+            game.ChessBoard.OnTakePiece += this.Board_OnTakePiece;
+            game.ChessBoard.OnThreefoldDrawAvailable += this.Board_OnThreefoldDrawAvailable;
+
+            await Task.WhenAll(
+                this.Groups.AddToGroupAsync(game.Player1.Id, groupName: game.Id),
+                this.Groups.AddToGroupAsync(game.Player2.Id, groupName: game.Id),
+                this.Clients.Group(game.Id).SendAsync("Start", game));
+
+            await this.Clients.Caller.SendAsync("ChangeOrientation");
+        }
+
+        private void Board_OnThreefoldDrawAvailable(object sender, EventArgs e)
+        {
+            var player = sender as Player;
+            var game = this.games[player.GameId];
+            var args = e as ThreefoldDrawEventArgs;
+
+            this.Clients.Caller.SendAsync("ThreefoldAvailable", player, false);
+            this.Clients.GroupExcept(game.Id, this.Context.ConnectionId).SendAsync("ThreefoldAvailable", player, args.IsAvailable);
         }
 
         private void Game_OnGameOver(object sender, EventArgs e)

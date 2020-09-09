@@ -32,7 +32,7 @@
                 <h6 id="status"><i class="fas fa-arrow-alt-circle-right"></i> <span id="statusText"></span><span id="statusCheck"></span> </h6>
                 <div id="board"></div>
                 <div id="gameOptions">
-                    <button type="submit" id="threefoldDraw" class="btn btn-primary"><i class="fas fa-equals"></i> Declare Draw</button>
+                    <button type="submit" id="threefoldDraw" class="btn btn-primary" disabled><i class="fas fa-equals"></i> Declare 3F Draw</button>
                     <button type="submit" id="offerDraw" class="btn btn-primary"><i class="far fa-handshake"></i> Offer Draw</button>
                     <button type="submit" id="resign" class="btn btn-primary"><i class="far fa-flag"></i> Resign</button>
                 </div>
@@ -138,6 +138,14 @@
                 document.getElementById('blackName').innerText = playerTwoName;
 
                 updateStatus(game.movingPlayer.name);
+            }
+        })
+
+        connection.on("ThreefoldAvailable", function (player, isAvailable) {
+            if (isAvailable) {
+                $('#threefoldDraw').removeAttr('disabled');
+            } else {
+                $('#threefoldDraw').attr('disabled','disabled');
             }
         })
 

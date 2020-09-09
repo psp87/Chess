@@ -17,7 +17,7 @@
 
         public override void IsMoveAvailable(Square[][] matrix)
         {
-            int sign = this.Color == Color.Light ? -1 : 1;
+            int sign = this.Color == Color.White ? -1 : 1;
 
             if (Position.IsInBoard(this.Position.X, this.Position.Y + (sign * 1)))
             {
@@ -57,7 +57,7 @@
 
         public override void Attacking(Square[][] matrix)
         {
-            int sign = this.Color == Color.Light ? -1 : 1;
+            int sign = this.Color == Color.White ? -1 : 1;
 
             if (Position.IsInBoard(this.Position.X - 1, this.Position.Y + (sign * 1)))
             {
@@ -72,11 +72,11 @@
 
         public override bool Move(Position to, Square[][] matrix, int turn)
         {
-            int sign = this.Color == Color.Light ? -1 : 1;
+            int sign = this.Color == Color.White ? -1 : 1;
 
             if (!this.IsFirstMove && to.X == this.Position.X && to.Y == this.Position.Y + (sign * 1))
             {
-                var lastPosition = this.Color == Color.Light ? 0 : 7;
+                var lastPosition = this.Color == Color.White ? 0 : 7;
 
                 if (to.Y == lastPosition)
                 {
@@ -104,12 +104,12 @@
 
         public override bool Take(Position to, Square[][] matrix, int turn)
         {
-            int sign = this.Color == Color.Light ? -1 : 1;
+            int sign = this.Color == Color.White ? -1 : 1;
 
             if (to.Y == this.Position.Y + (sign * 1) &&
                 (to.X == this.Position.X - 1 || to.X == this.Position.X + 1))
             {
-                var lastPosition = this.Color == Color.Light ? 0 : 7;
+                var lastPosition = this.Color == Color.White ? 0 : 7;
 
                 if (to.Y == lastPosition)
                 {

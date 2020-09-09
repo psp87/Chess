@@ -9,7 +9,7 @@
     {
         private Dictionary<string, int> takenFigures;
 
-        public Player(string username, string connectionId)
+        public Player(string name, string connectionId)
         {
             this.takenFigures = new Dictionary<string, int>()
             {
@@ -19,7 +19,7 @@
                 { nameof(Rook), 0 },
                 { nameof(Queen), 0 },
             };
-            this.Name = username;
+            this.Name = name;
             this.Id = connectionId;
         }
 

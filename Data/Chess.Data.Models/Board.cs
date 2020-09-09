@@ -23,14 +23,14 @@
 
         private Dictionary<string, Piece> setup = new Dictionary<string, Piece>()
         {
-            { "A1", new Rook(Color.Light) },  { "B1", new Knight(Color.Light) }, { "C1", new Bishop(Color.Light) }, { "D1", new Queen(Color.Light) },
-            { "E1", new King(Color.Light) }, { "F1", new Bishop(Color.Light) }, { "G1", new Knight(Color.Light) }, { "H1", new Rook(Color.Light) },
-            { "A2", new Pawn(Color.Light) },  { "B2", new Pawn(Color.Light) },   { "C2", new Pawn(Color.Light) },   { "D2", new Pawn(Color.Light) },
-            { "E2", new Pawn(Color.Light) },  { "F2", new Pawn(Color.Light) },   { "G2", new Pawn(Color.Light) },   { "H2", new Pawn(Color.Light) },
-            { "A7", new Pawn(Color.Dark) },  { "B7", new Pawn(Color.Dark) },   { "C7", new Pawn(Color.Dark) },   { "D7", new Pawn(Color.Dark) },
-            { "E7", new Pawn(Color.Dark) },  { "F7", new Pawn(Color.Dark) },   { "G7", new Pawn(Color.Dark) },   { "H7", new Pawn(Color.Dark) },
-            { "A8", new Rook(Color.Dark) },  { "B8", new Knight(Color.Dark) }, { "C8", new Bishop(Color.Dark) }, { "D8", new Queen(Color.Dark) },
-            { "E8", new King(Color.Dark) }, { "F8", new Bishop(Color.Dark) }, { "G8", new Knight(Color.Dark) }, { "H8", new Rook(Color.Dark) },
+            { "A1", new Rook(Color.White) },  { "B1", new Knight(Color.White) }, { "C1", new Bishop(Color.White) }, { "D1", new Queen(Color.White) },
+            { "E1", new King(Color.White) }, { "F1", new Bishop(Color.White) }, { "G1", new Knight(Color.White) }, { "H1", new Rook(Color.White) },
+            { "A2", new Pawn(Color.White) },  { "B2", new Pawn(Color.White) },   { "C2", new Pawn(Color.White) },   { "D2", new Pawn(Color.White) },
+            { "E2", new Pawn(Color.White) },  { "F2", new Pawn(Color.White) },   { "G2", new Pawn(Color.White) },   { "H2", new Pawn(Color.White) },
+            { "A7", new Pawn(Color.Black) },  { "B7", new Pawn(Color.Black) },   { "C7", new Pawn(Color.Black) },   { "D7", new Pawn(Color.Black) },
+            { "E7", new Pawn(Color.Black) },  { "F7", new Pawn(Color.Black) },   { "G7", new Pawn(Color.Black) },   { "H7", new Pawn(Color.Black) },
+            { "A8", new Rook(Color.Black) },  { "B8", new Knight(Color.Black) }, { "C8", new Bishop(Color.Black) }, { "D8", new Queen(Color.Black) },
+            { "E8", new King(Color.Black) }, { "F8", new Bishop(Color.Black) }, { "G8", new Knight(Color.Black) }, { "H8", new Rook(Color.Black) },
         };
 
         public Board()
@@ -52,6 +52,8 @@
 
         public event EventHandler OnTakePiece;
 
+        public event EventHandler OnThreefoldDrawAvailable;
+
         public Square[][] Matrix { get; set; }
 
         public Square Source { get; set; }
@@ -60,7 +62,7 @@
 
         public void Initialize()
         {
-            var toggle = Color.Light;
+            var toggle = Color.White;
 
             for (int row = 0; row < GlobalConstants.BoardRows; row++)
             {
@@ -77,7 +79,7 @@
 
                     if (col != 7)
                     {
-                        toggle = toggle == Color.Light ? Color.Dark : Color.Light;
+                        toggle = toggle == Color.White ? Color.Black : Color.White;
                     }
 
                     this.Matrix[row][col] = square;
@@ -115,7 +117,7 @@
                 if (this.Target.Piece is Pawn && this.Target.Piece.IsLastMove)
                 {
                     this.Target.Piece = Factory.GetQueen(movingPlayer.Color);
-                    var isWhite = movingPlayer.Color == Color.Light ? true : false;
+                    var isWhite = movingPlayer.Color == Color.White ? true : false;
 
                     this.GetPawnPromotionFenString(targetFen, isWhite);
                     this.CalculateAttackedSquares();
@@ -140,7 +142,7 @@
                     this.OnMessage?.Invoke(movingPlayer, new MessageEventArgs(Notification.CheckClear));
                 }
 
-                this.IsThreefoldRepetionDraw(targetFen);
+                this.IsThreefoldRepetionDraw(targetFen, movingPlayer);
                 this.IsFivefoldRepetitionDraw(targetFen);
                 this.IsDraw();
                 this.IsStalemate(opponent);
@@ -211,7 +213,7 @@
                             return;
                         }
 
-                        if (currentFigure.Color == Color.Light)
+                        if (currentFigure.Color == Color.White)
                         {
                             counterBishopKnightWhite++;
                         }
@@ -226,11 +228,12 @@
             GlobalConstants.GameOver = GameOver.Draw;
         }
 
-        public void IsThreefoldRepetionDraw(string fen)
+        public void IsThreefoldRepetionDraw(string fen, Player movingPlayer)
         {
             this.movesThreefold.Enqueue(fen);
 
             GlobalConstants.IsThreefoldDraw = false;
+            this.OnThreefoldDrawAvailable?.Invoke(movingPlayer, new ThreefoldDrawEventArgs(false));
 
             if (this.movesThreefold.Count == 9)
             {
@@ -242,6 +245,7 @@
                 if (isFirstFenSame && isFiveFenSame)
                 {
                     GlobalConstants.IsThreefoldDraw = true;
+                    this.OnThreefoldDrawAvailable?.Invoke(movingPlayer, new ThreefoldDrawEventArgs(true));
                 }
 
                 this.movesThreefold.Dequeue();
@@ -558,7 +562,7 @@
         {
             this.ReversePiece(this.Source, this.Target);
             this.RemovePiece(this.Target);
-            var color = this.Matrix[this.Source.Position.Y][this.Source.Position.X + x].Piece.Color == Color.Light ? Color.Light : Color.Dark;
+            var color = this.Matrix[this.Source.Position.Y][this.Source.Position.X + x].Piece.Color == Color.White ? Color.White : Color.Black;
             this.Matrix[this.Source.Position.Y][this.Source.Position.X + x].Piece = Factory.GetPawn(color);
         }
 
@@ -566,7 +570,7 @@
         {
             var positions = new List<Position>();
 
-            var sign = movingPlayer.Color == Color.Light ? 1 : -1;
+            var sign = movingPlayer.Color == Color.White ? 1 : -1;
 
             int row = this.Target.Position.Y + sign;
             int colFirst = this.Target.Position.X + 1;
@@ -664,7 +668,7 @@
                     for (int i = 1; i <= difference; i++)
                     {
                         int sign = attackingCol - kingX < 0 ? i : -i;
-                        var signPlayer = opponent.Color == Color.Light ? 1 : -1;
+                        var signPlayer = opponent.Color == Color.White ? 1 : -1;
 
                         var currentSquare = this.Matrix[kingY][attackingCol + sign];
                         var neighbourSquare = this.Matrix[kingY][attackingCol + sign + signPlayer];
@@ -700,7 +704,7 @@
                     {
                         int signRow = attackingRow - kingY < 0 ? i : -i;
                         int signCol = attackingCol - kingX < 0 ? i : -i;
-                        var signPlayer = opponent.Color == Color.Light ? 1 : -1;
+                        var signPlayer = opponent.Color == Color.White ? 1 : -1;
 
                         var currentSquare = this.Matrix[attackingRow + signRow][attackingCol + signCol];
                         var neighbourSquare = this.Matrix[attackingRow + signRow + signPlayer][attackingCol + signCol];
