@@ -63,22 +63,22 @@
                 await this.Clients.Group(game.Id).SendAsync("UpdateStatus", game.MovingPlayer.Name);
             }
 
-            if (GlobalConstants.EnPassantTake != null)
+            if (EnPassant.FenString != null)
             {
-                await this.Clients.Group(game.Id).SendAsync("EnPassantTake", GlobalConstants.EnPassantTake, target);
-                GlobalConstants.EnPassantTake = null;
+                await this.Clients.Group(game.Id).SendAsync("EnPassantTake", EnPassant.FenString, target);
+                EnPassant.FenString = null;
             }
 
-            if (GlobalConstants.CastlingMove)
+            if (Castling.IsCastlingMove)
             {
                 await this.Clients.Group(game.Id).SendAsync("BoardMove", Castling.RookSource, Castling.RookTarget);
-                GlobalConstants.CastlingMove = false;
+                Castling.IsCastlingMove = false;
             }
 
-            if (GlobalConstants.PawnPromotionFen != null)
+            if (PawnPromotion.FenString != null)
             {
-                await this.Clients.Group(game.Id).SendAsync("BoardSetPosition", GlobalConstants.PawnPromotionFen);
-                GlobalConstants.PawnPromotionFen = null;
+                await this.Clients.Group(game.Id).SendAsync("BoardSetPosition", PawnPromotion.FenString);
+                PawnPromotion.FenString = null;
             }
         }
 

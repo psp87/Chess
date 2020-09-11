@@ -107,7 +107,7 @@
                         matrix[this.Position.Y][to.X + sign].Piece = matrix[this.Position.Y][lastPiecePosition].Piece;
                         matrix[this.Position.Y][lastPiecePosition].Piece = null;
 
-                        GlobalConstants.CastlingMove = true;
+                        Castling.IsCastlingMove = true;
                         Castling.RookSource = matrix[this.Position.Y][lastPiecePosition].ToString();
                         Castling.RookTarget = matrix[this.Position.Y][to.X + sign].ToString();
                         return true;

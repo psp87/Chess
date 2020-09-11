@@ -350,7 +350,7 @@
                     }
 
                     string position = this.GetStringPosition(this.Source.Position.X + x, this.Source.Position.Y);
-                    GlobalConstants.EnPassantTake = position;
+                    EnPassant.FenString = position;
 
                     movingPlayer.TakeFigure(piece.Name);
                     movingPlayer.Points += piece.Points;
@@ -410,12 +410,12 @@
             var playerTurn = Math.Ceiling(turn / 2.0);
             sb.Append(playerTurn + ". ");
 
-            if (GlobalConstants.EnPassantTake != null)
+            if (EnPassant.FenString != null)
             {
                 var file = source.ToString()[0];
                 sb.Append(file + "x" + target + "e.p");
             }
-            else if (GlobalConstants.CastlingMove)
+            else if (Castling.IsCastlingMove)
             {
                 if (target.ToString()[0] == 'g')
                 {
@@ -426,7 +426,7 @@
                     sb.Append("0-0-0");
                 }
             }
-            else if (GlobalConstants.PawnPromotionFen != null)
+            else if (PawnPromotion.FenString != null)
             {
                 sb.Append(target + "=Q");
             }
@@ -510,7 +510,7 @@
                 }
             }
 
-            GlobalConstants.PawnPromotionFen = sb.ToString();
+            PawnPromotion.FenString = sb.ToString();
         }
 
         private Square GetSquare(string position)
