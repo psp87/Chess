@@ -58,7 +58,7 @@
 
             await this.Clients.GroupExcept(game.Id, this.Context.ConnectionId).SendAsync("BoardMove", source, target);
 
-            if (GlobalConstants.GameOver.ToString() == GameOver.None.ToString())
+            if (game.GameOver.ToString() == GameOver.None.ToString())
             {
                 await this.Clients.Group(game.Id).SendAsync("UpdateStatus", game.MovingPlayer.Name);
             }

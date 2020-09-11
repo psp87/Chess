@@ -2,7 +2,6 @@
 {
     using System;
 
-    using Chess.Common;
     using Chess.Common.Enums;
     using Chess.Data.Models.EventArgs;
 
@@ -17,6 +16,7 @@
             this.Player2 = player2;
 
             this.Id = Guid.NewGuid().ToString();
+            this.GameOver = GameOver.None;
             this.Player1.GameId = this.Id;
             this.Player2.GameId = this.Id;
             this.Turn = 1;
@@ -29,6 +29,8 @@
         public string Id { get; set; }
 
         public Board ChessBoard { get; set; }
+
+        public GameOver GameOver { get; set; }
 
         public int Turn { get; set; }
 
@@ -44,9 +46,40 @@
         {
             if (this.ChessBoard.TryMove(source, target, targetFen, this.MovingPlayer, this.Opponent, this.Turn))
             {
-                if (GlobalConstants.GameOver.ToString() != GameOver.None.ToString())
+                if (this.ChessBoard.IsPlayerChecked(this.Opponent))
                 {
-                    this.OnGameOver?.Invoke(this.MovingPlayer, new GameOverEventArgs(GlobalConstants.GameOver));
+                    this.OnNotification?.Invoke(this.Opponent, new MessageEventArgs(Notification.CheckOpponent));
+                    if (this.ChessBoard.IsCheckmate(this.MovingPlayer, this.Opponent))
+                    {
+                        this.GameOver = GameOver.Checkmate;
+                    }
+                }
+
+                if (!this.MovingPlayer.IsCheck && !this.Opponent.IsCheck)
+                {
+                    this.OnNotification?.Invoke(this.MovingPlayer, new MessageEventArgs(Notification.CheckClear));
+                }
+
+                this.ChessBoard.IsThreefoldRepetionDraw(targetFen, this.MovingPlayer, this.Opponent);
+
+                if (this.ChessBoard.IsFivefoldRepetitionDraw(targetFen))
+                {
+                    this.GameOver = GameOver.FivefoldDraw;
+                }
+
+                if (this.ChessBoard.IsDraw())
+                {
+                    this.GameOver = GameOver.Draw;
+                }
+
+                if (this.ChessBoard.IsStalemate(this.Opponent))
+                {
+                    this.GameOver = GameOver.Stalemate;
+                }
+
+                if (this.GameOver.ToString() != GameOver.None.ToString())
+                {
+                    this.OnGameOver?.Invoke(this.MovingPlayer, new GameOverEventArgs(this.GameOver));
                 }
 
                 this.Turn++;

@@ -46,9 +46,9 @@
             this.Target = Factory.GetSquare();
         }
 
-        public event EventHandler OnMoveComplete;
-
         public event EventHandler OnMessage;
+
+        public event EventHandler OnMoveComplete;
 
         public event EventHandler OnTakePiece;
 
@@ -129,24 +129,6 @@
                     return false;
                 }
 
-                // Check the opponent for check and checkmate
-                if (this.IsPlayerChecked(opponent))
-                {
-                    this.OnMessage?.Invoke(opponent, new MessageEventArgs(Notification.CheckOpponent));
-                    this.IsCheckmate(movingPlayer, opponent);
-                }
-
-                // Clear the check notification
-                if (!movingPlayer.IsCheck && !opponent.IsCheck)
-                {
-                    this.OnMessage?.Invoke(movingPlayer, new MessageEventArgs(Notification.CheckClear));
-                }
-
-                this.IsThreefoldRepetionDraw(targetFen, movingPlayer, opponent);
-                this.IsFivefoldRepetitionDraw(targetFen);
-                this.IsDraw();
-                this.IsStalemate(opponent);
-
                 string notation = this.GetAlgebraicNotation(oldSource, oldTarget, opponent, turn);
                 this.OnMoveComplete?.Invoke(movingPlayer, new NotationEventArgs(notation));
 
@@ -156,7 +138,7 @@
             return false;
         }
 
-        public void IsCheckmate(Player movingPlayer, Player opponent)
+        public bool IsCheckmate(Player movingPlayer, Player opponent)
         {
             var king = this.GetKingSquare(opponent.Color);
 
@@ -165,11 +147,13 @@
                 !this.OtherPieceCanBlockTheCheck(king, this.Target, opponent))
             {
                 opponent.IsCheckMate = true;
-                GlobalConstants.GameOver = GameOver.Checkmate;
+                return true;
             }
+
+            return false;
         }
 
-        public void IsStalemate(Player player)
+        public bool IsStalemate(Player player)
         {
             for (int y = 0; y < GlobalConstants.BoardRows; y++)
             {
@@ -182,16 +166,16 @@
                         currentFigure.IsMoveAvailable(this.Matrix);
                         if (currentFigure.IsMovable)
                         {
-                            return;
+                            return false;
                         }
                     }
                 }
             }
 
-            GlobalConstants.GameOver = GameOver.Stalemate;
+            return true;
         }
 
-        public void IsDraw()
+        public bool IsDraw()
         {
             int counterBishopKnightWhite = 0;
             int counterBishopKnightBlack = 0;
@@ -210,7 +194,7 @@
                             counterBishopKnightWhite > 1 ||
                             counterBishopKnightBlack > 1)
                         {
-                            return;
+                            return false;
                         }
 
                         if (currentFigure.Color == Color.White)
@@ -225,7 +209,7 @@
                 }
             }
 
-            GlobalConstants.GameOver = GameOver.Draw;
+            return true;
         }
 
         public void IsThreefoldRepetionDraw(string fen, Player movingPlayer, Player opponent)
@@ -252,7 +236,7 @@
             }
         }
 
-        public void IsFivefoldRepetitionDraw(string fen)
+        public bool IsFivefoldRepetitionDraw(string fen)
         {
             this.movesFivefold.Enqueue(fen);
 
@@ -267,13 +251,15 @@
 
                 if (isFirstFenSame && isFiveFenSame && isNineFenSame && isThirteenFenSame)
                 {
-                    GlobalConstants.GameOver = GameOver.FivefoldDraw;
+                    return true;
                 }
                 else
                 {
                     this.movesFivefold.Dequeue();
                 }
             }
+
+            return false;
         }
 
         public bool IsPlayerChecked(Player player)
