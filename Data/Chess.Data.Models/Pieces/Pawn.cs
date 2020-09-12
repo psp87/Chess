@@ -1,8 +1,6 @@
 ﻿namespace Chess.Data.Models.Pieces
 {
-    using Chess.Common;
     using Chess.Common.Enums;
-    using Chess.Data.Models.Pieces.Helpers;
 
     public class Pawn : Piece
     {
@@ -70,7 +68,7 @@
             }
         }
 
-        public override bool Move(Position to, Square[][] matrix, int turn)
+        public override bool Move(Position to, Square[][] matrix, int turn, Move move)
         {
             int sign = this.Color == Color.White ? -1 : 1;
 
@@ -92,8 +90,8 @@
 
                 if (number == sign * 2)
                 {
-                    EnPassant.Turn = turn + 1;
-                    EnPassant.Position = new Position(this.Position.Y + sign, this.Position.X);
+                    move.EnPassantArgs.Turn = turn + 1;
+                    move.EnPassantArgs.Position = new Position(this.Position.Y + sign, this.Position.X);
                 }
 
                 return true;
@@ -102,7 +100,7 @@
             return false;
         }
 
-        public override bool Take(Position to, Square[][] matrix, int turn)
+        public override bool Take(Position to, Square[][] matrix, int turn, Move move)
         {
             int sign = this.Color == Color.White ? -1 : 1;
 

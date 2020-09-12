@@ -43,7 +43,7 @@
             this.AttackedSquares(2, 1, matrix);
         }
 
-        public override bool Move(Position to, Square[][] matrix, int turn)
+        public override bool Move(Position to, Square[][] matrix, int turn, Move move)
         {
             if (to.X == this.Position.X - 1 && to.Y == this.Position.Y - 2)
             {
@@ -88,9 +88,9 @@
             return false;
         }
 
-        public override bool Take(Position to, Square[][] matrix, int turn)
+        public override bool Take(Position to, Square[][] matrix, int turn, Move move)
         {
-            return this.Move(to, matrix, turn);
+            return this.Move(to, matrix, turn, move);
         }
 
         public override object Clone()

@@ -38,9 +38,9 @@
             this.bishop.Attacking(this, matrix);
         }
 
-        public override bool Move(Position to, Square[][] matrix, int turn)
+        public override bool Move(Position to, Square[][] matrix, int turn, Move move)
         {
-            if (this.bishop.Move(this, to, matrix) || this.rook.Move(this, to, matrix))
+            if (this.bishop.Move(this, to, matrix, move) || this.rook.Move(this, to, matrix, move))
             {
                 return true;
             }
@@ -48,9 +48,9 @@
             return false;
         }
 
-        public override bool Take(Position to, Square[][] matrix, int turn)
+        public override bool Take(Position to, Square[][] matrix, int turn, Move move)
         {
-            return this.Move(to, matrix, turn);
+            return this.Move(to, matrix, turn, move);
         }
 
         public override object Clone()

@@ -1,22 +1,35 @@
 ﻿namespace Chess.Data.Models
 {
+    using Chess.Common.Enums;
+    using Chess.Data.Models.Pieces.Helpers;
+
     public class Move
     {
         public Move()
         {
-            this.Start = Factory.GetSquare();
-            this.End = Factory.GetSquare();
+            this.Source = Factory.GetSquare();
+            this.Target = Factory.GetSquare();
+
+            this.CastlingArgs = new Castling();
+            this.EnPassantArgs = new EnPassant();
+            this.PawnPromotionArgs = new PawnPromotion();
         }
 
-        public char Symbol { get; set; }
+        public Square Source { get; set; }
 
-        public Square Start { get; set; }
+        public Square Target { get; set; }
 
-        public Square End { get; set; }
+        public MoveType Type { get; set; }
+
+        public Castling CastlingArgs { get; set; }
+
+        public EnPassant EnPassantArgs { get; set; }
+
+        public PawnPromotion PawnPromotionArgs { get; set; }
 
         public override string ToString()
         {
-            return this.Start.ToString() + this.End.ToString();
+            return this.Source.ToString() + this.Target.ToString();
         }
     }
 }

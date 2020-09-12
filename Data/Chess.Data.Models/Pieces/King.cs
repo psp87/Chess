@@ -3,9 +3,7 @@
     using System;
     using System.Linq;
 
-    using Chess.Common;
     using Chess.Common.Enums;
-    using Chess.Data.Models.Pieces.Helpers;
 
     public class King : Piece
     {
@@ -68,7 +66,7 @@
             }
         }
 
-        public override bool Move(Position to, Square[][] matrix, int turn)
+        public override bool Move(Position to, Square[][] matrix, int turn, Move move)
         {
             if (!matrix[to.Y][to.X].IsAttacked.Where(x => x.Color != this.Color).Any())
             {
@@ -107,9 +105,9 @@
                         matrix[this.Position.Y][to.X + sign].Piece = matrix[this.Position.Y][lastPiecePosition].Piece;
                         matrix[this.Position.Y][lastPiecePosition].Piece = null;
 
-                        Castling.IsCastlingMove = true;
-                        Castling.RookSource = matrix[this.Position.Y][lastPiecePosition].ToString();
-                        Castling.RookTarget = matrix[this.Position.Y][to.X + sign].ToString();
+                        move.CastlingArgs.IsCastlingMove = true;
+                        move.CastlingArgs.RookSource = matrix[this.Position.Y][lastPiecePosition].ToString();
+                        move.CastlingArgs.RookTarget = matrix[this.Position.Y][to.X + sign].ToString();
                         return true;
                     }
                 }
@@ -118,9 +116,9 @@
             return false;
         }
 
-        public override bool Take(Position to, Square[][] matrix, int turn)
+        public override bool Take(Position to, Square[][] matrix, int turn, Move move)
         {
-            return this.Move(to, matrix, turn);
+            return this.Move(to, matrix, turn, move);
         }
 
         public override object Clone()

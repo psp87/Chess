@@ -4,6 +4,7 @@
 
     using Chess.Common.Enums;
     using Chess.Data.Models.EventArgs;
+    using Chess.Data.Models.Pieces;
 
     public class Game
     {
@@ -19,6 +20,7 @@
             this.GameOver = GameOver.None;
             this.Player1.GameId = this.Id;
             this.Player2.GameId = this.Id;
+            this.Move = Factory.GetMove();
             this.Turn = 1;
         }
 
@@ -26,7 +28,11 @@
 
         public event EventHandler OnGameOver;
 
+        public event EventHandler OnMoveComplete;
+
         public string Id { get; set; }
+
+        public Move Move { get; set; }
 
         public Board ChessBoard { get; set; }
 
@@ -44,12 +50,39 @@
 
         public bool MakeMove(string source, string target, string targetFen)
         {
-            if (this.ChessBoard.TryMove(source, target, targetFen, this.MovingPlayer, this.Opponent, this.Turn))
+            this.Move.Source = this.ChessBoard.GetSquare(source);
+            this.Move.Target = this.ChessBoard.GetSquare(target);
+
+            var oldSource = this.Move.Source.Clone() as Square;
+            var oldTarget = this.Move.Target.Clone() as Square;
+
+            if (this.ChessBoard.MovePiece(this.MovingPlayer, this.Turn, this.Move) ||
+                this.ChessBoard.TakePiece(this.MovingPlayer, this.Turn, this.Move) ||
+                this.ChessBoard.EnPassantTake(this.MovingPlayer, this.Turn, this.Move))
             {
+                if (this.Move.Target.Piece is Pawn && this.Move.Target.Piece.IsLastMove)
+                {
+                    this.Move.Target.Piece = Factory.GetQueen(this.MovingPlayer.Color);
+                    var isWhite = this.MovingPlayer.Color == Color.White ? true : false;
+
+                    this.ChessBoard.GetPawnPromotionFenString(targetFen, isWhite, this.Move);
+                    this.ChessBoard.CalculateAttackedSquares();
+                }
+
+                if (this.MovingPlayer.IsCheck)
+                {
+                    this.OnNotification?.Invoke(this.MovingPlayer, new MessageEventArgs(Notification.CheckSelf));
+                    return false;
+                }
+
+                string notation = this.ChessBoard.GetAlgebraicNotation(oldSource, oldTarget, this.Opponent, this.Turn, this.Move);
+                this.OnMoveComplete?.Invoke(this.MovingPlayer, new NotationEventArgs(notation));
+
+                //-------------------------------------------
                 if (this.ChessBoard.IsPlayerChecked(this.Opponent))
                 {
                     this.OnNotification?.Invoke(this.Opponent, new MessageEventArgs(Notification.CheckOpponent));
-                    if (this.ChessBoard.IsCheckmate(this.MovingPlayer, this.Opponent))
+                    if (this.ChessBoard.IsCheckmate(this.MovingPlayer, this.Opponent, this.Move))
                     {
                         this.GameOver = GameOver.Checkmate;
                     }
@@ -94,6 +127,7 @@
             }
 
             this.MovingPlayer.IsCheck = false;
+
             return false;
         }
 

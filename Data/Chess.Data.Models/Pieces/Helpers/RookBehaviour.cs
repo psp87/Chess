@@ -10,7 +10,7 @@
         {
         }
 
-        public bool Move(IPiece piece, Position to, Square[][] matrix)
+        public bool Move(IPiece piece, Position to, Square[][] matrix, Move move)
         {
             if (to.Y != piece.Position.Y && to.X == piece.Position.X)
             {

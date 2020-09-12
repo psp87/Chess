@@ -12,6 +12,7 @@
     using Chess.Data.Repositories;
     using Chess.Data.Seeding;
     using Chess.Services.Data;
+    using Chess.Services.Data.Contracts;
     using Chess.Services.Messaging;
 
     using CommandLine;

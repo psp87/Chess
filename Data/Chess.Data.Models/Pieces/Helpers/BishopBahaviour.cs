@@ -39,7 +39,7 @@
             this.AttackedSquares(1, 1, matrix, piece);
         }
 
-        public bool Move(IPiece piece, Position to, Square[][] matrix)
+        public bool Move(IPiece piece, Position to, Square[][] matrix, Move move)
         {
             int differenceX = Math.Abs(to.X - piece.Position.X);
             int differenceY = Math.Abs(to.Y - piece.Position.Y);

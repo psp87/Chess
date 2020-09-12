@@ -63,22 +63,22 @@
                 await this.Clients.Group(game.Id).SendAsync("UpdateStatus", game.MovingPlayer.Name);
             }
 
-            if (EnPassant.FenString != null)
+            if (game.Move.EnPassantArgs.FenString != null)
             {
-                await this.Clients.Group(game.Id).SendAsync("EnPassantTake", EnPassant.FenString, target);
-                EnPassant.FenString = null;
+                await this.Clients.Group(game.Id).SendAsync("EnPassantTake", game.Move.EnPassantArgs.FenString, target);
+                game.Move.EnPassantArgs.FenString = null;
             }
 
-            if (Castling.IsCastlingMove)
+            if (game.Move.CastlingArgs.IsCastlingMove)
             {
-                await this.Clients.Group(game.Id).SendAsync("BoardMove", Castling.RookSource, Castling.RookTarget);
-                Castling.IsCastlingMove = false;
+                await this.Clients.Group(game.Id).SendAsync("BoardMove", game.Move.CastlingArgs.RookSource, game.Move.CastlingArgs.RookTarget);
+                game.Move.CastlingArgs.IsCastlingMove = false;
             }
 
-            if (PawnPromotion.FenString != null)
+            if (game.Move.PawnPromotionArgs.FenString != null)
             {
-                await this.Clients.Group(game.Id).SendAsync("BoardSetPosition", PawnPromotion.FenString);
-                PawnPromotion.FenString = null;
+                await this.Clients.Group(game.Id).SendAsync("BoardSetPosition", game.Move.PawnPromotionArgs.FenString);
+                game.Move.PawnPromotionArgs.FenString = null;
             }
         }
 
@@ -133,9 +133,8 @@
             var game = Factory.GetGame(opponent, joiningPlayer);
             this.games[game.Id] = game;
 
-            game.ChessBoard.OnMoveComplete += this.Board_OnMoveComplete;
+            game.OnMoveComplete += this.Board_OnMoveComplete;
             game.OnGameOver += this.Game_OnGameOver;
-            game.ChessBoard.OnMessage += this.Game_OnNotification;
             game.OnNotification += this.Game_OnNotification;
             game.ChessBoard.OnTakePiece += this.Board_OnTakePiece;
             game.ChessBoard.OnThreefoldDrawAvailable += this.Board_OnThreefoldDrawAvailable;

@@ -1,11 +1,11 @@
 ﻿namespace Chess.Data.Models.Pieces.Helpers
 {
-    public static class Castling
+    public class Castling
     {
-        public static bool IsCastlingMove { get; set; }
+        public bool IsCastlingMove { get; set; }
 
-        public static string RookSource { get; set; }
+        public string RookSource { get; set; }
 
-        public static string RookTarget { get; set; }
+        public string RookTarget { get; set; }
     }
 }

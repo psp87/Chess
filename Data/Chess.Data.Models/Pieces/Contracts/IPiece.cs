@@ -26,8 +26,8 @@
 
         void Attacking(Square[][] matrix);
 
-        bool Move(Position toPosition, Square[][] boardMatrix, int turn);
+        bool Move(Position toPosition, Square[][] boardMatrix, int turn, Move move);
 
-        bool Take(Position toPosition, Square[][] boardMatrix, int turn);
+        bool Take(Position toPosition, Square[][] boardMatrix, int turn, Move move);
     }
 }
