@@ -63,22 +63,22 @@
                 await this.Clients.Group(game.Id).SendAsync("UpdateStatus", game.MovingPlayer.Name);
             }
 
-            if (game.Move.EnPassantArgs.FenString != null)
+            if (game.Move.Type != MoveType.Normal)
             {
-                await this.Clients.Group(game.Id).SendAsync("EnPassantTake", game.Move.EnPassantArgs.FenString, target);
-                game.Move.EnPassantArgs.FenString = null;
-            }
+                switch (game.Move.Type)
+                {
+                    case MoveType.Castling:
+                        await this.Clients.Group(game.Id).SendAsync("BoardMove", game.Move.CastlingArgs.RookSource, game.Move.CastlingArgs.RookTarget);
+                        break;
+                    case MoveType.EnPassant:
+                        await this.Clients.Group(game.Id).SendAsync("EnPassantTake", game.Move.EnPassantArgs.FenString, target);
+                        break;
+                    case MoveType.PawnPromotion:
+                        await this.Clients.Group(game.Id).SendAsync("BoardSetPosition", game.Move.PawnPromotionArgs.FenString);
+                        break;
+                }
 
-            if (game.Move.CastlingArgs.IsCastlingMove)
-            {
-                await this.Clients.Group(game.Id).SendAsync("BoardMove", game.Move.CastlingArgs.RookSource, game.Move.CastlingArgs.RookTarget);
-                game.Move.CastlingArgs.IsCastlingMove = false;
-            }
-
-            if (game.Move.PawnPromotionArgs.FenString != null)
-            {
-                await this.Clients.Group(game.Id).SendAsync("BoardSetPosition", game.Move.PawnPromotionArgs.FenString);
-                game.Move.PawnPromotionArgs.FenString = null;
+                game.Move.Type = MoveType.Normal;
             }
         }
 
@@ -136,8 +136,8 @@
             game.OnMoveComplete += this.Board_OnMoveComplete;
             game.OnGameOver += this.Game_OnGameOver;
             game.OnNotification += this.Game_OnNotification;
-            game.ChessBoard.OnTakePiece += this.Board_OnTakePiece;
-            game.ChessBoard.OnThreefoldDrawAvailable += this.Board_OnThreefoldDrawAvailable;
+            game.OnTakePiece += this.Board_OnTakePiece;
+            game.OnThreefoldDrawAvailable += this.Board_OnThreefoldDrawAvailable;
 
             await Task.WhenAll(
                 this.Groups.AddToGroupAsync(game.Player1.Id, groupName: game.Id),

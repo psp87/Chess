@@ -105,6 +105,7 @@
                         matrix[this.Position.Y][to.X + sign].Piece = matrix[this.Position.Y][lastPiecePosition].Piece;
                         matrix[this.Position.Y][lastPiecePosition].Piece = null;
 
+                        move.Type = MoveType.Castling;
                         move.CastlingArgs.IsCastlingMove = true;
                         move.CastlingArgs.RookSource = matrix[this.Position.Y][lastPiecePosition].ToString();
                         move.CastlingArgs.RookTarget = matrix[this.Position.Y][to.X + sign].ToString();
