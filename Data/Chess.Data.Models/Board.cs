@@ -74,65 +74,6 @@
             return board;
         }
 
-        public bool IsStalemate(Player player)
-        {
-            for (int y = 0; y < GlobalConstants.BoardRows; y++)
-            {
-                for (int x = 0; x < GlobalConstants.BoardCols; x++)
-                {
-                    var currentFigure = this.Matrix[y][x].Piece;
-
-                    if (currentFigure != null && currentFigure.Color == player.Color)
-                    {
-                        currentFigure.IsMoveAvailable(this.Matrix);
-                        if (currentFigure.IsMovable)
-                        {
-                            return false;
-                        }
-                    }
-                }
-            }
-
-            return true;
-        }
-
-        public bool IsDraw()
-        {
-            int counterBishopKnightWhite = 0;
-            int counterBishopKnightBlack = 0;
-
-            for (int y = 0; y < GlobalConstants.BoardRows; y++)
-            {
-                for (int x = 0; x < GlobalConstants.BoardCols; x++)
-                {
-                    var currentFigure = this.Matrix[y][x].Piece;
-
-                    if (!(currentFigure == null || currentFigure is King))
-                    {
-                        if (currentFigure is Pawn ||
-                            currentFigure is Rook ||
-                            currentFigure is Queen ||
-                            counterBishopKnightWhite > 1 ||
-                            counterBishopKnightBlack > 1)
-                        {
-                            return false;
-                        }
-
-                        if (currentFigure.Color == Color.White)
-                        {
-                            counterBishopKnightWhite++;
-                        }
-                        else
-                        {
-                            counterBishopKnightBlack++;
-                        }
-                    }
-                }
-            }
-
-            return true;
-        }
-
         public bool IsPlayerChecked(Player player)
         {
             var kingSquare = this.GetKingSquare(player.Color);
@@ -188,6 +129,11 @@
             return this.Matrix[row][col];
         }
 
+        public Square GetSquareByCoordinates(int y, int x)
+        {
+            return this.Matrix[y][x];
+        }
+
         public Square GetKingSquare(Color color)
         {
             for (int y = 0; y < GlobalConstants.BoardRows; y++)
@@ -203,7 +149,6 @@
             return null;
         }
 
-        #region EnPassant Internal Methods
         public void ShiftEnPassant(int x, Move move)
         {
             this.PlacePiece(move.Source, move.Target);
@@ -218,9 +163,7 @@
             var color = this.Matrix[move.Source.Position.Y][move.Source.Position.X + x].Piece.Color == Color.White ? Color.White : Color.Black;
             this.Matrix[move.Source.Position.Y][move.Source.Position.X + x].Piece = Factory.GetPawn(color);
         }
-        #endregion
 
-        #region IsOpponentCheckmate Internal Methods
         public bool IsKingAbleToMove(Square king, Player movingPlayer)
         {
             int kingY = king.Position.Y;
@@ -380,7 +323,6 @@
 
             this.CalculateAttackedSquares();
         }
-        #endregion
 
         #region Board Base Methods
         private void PlacePiece(Square source, Square target)
