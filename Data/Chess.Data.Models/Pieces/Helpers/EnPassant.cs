@@ -6,6 +6,6 @@
 
         public Position Position { get; set; }
 
-        public string FenString { get; set; }
+        public string SquareName { get; set; }
     }
 }
