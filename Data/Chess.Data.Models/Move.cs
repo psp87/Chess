@@ -13,6 +13,8 @@
             this.CastlingArgs = new Castling();
             this.EnPassantArgs = new EnPassant();
             this.PawnPromotionArgs = new PawnPromotion();
+
+            this.Type = MoveType.Normal;
         }
 
         public Square Source { get; set; }
