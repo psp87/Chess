@@ -82,19 +82,36 @@
             }
         }
 
-        public void PlacePiece(Square source, Square target)
+        public void ShiftPiece(Move move)
         {
-            this.Matrix[target.Position.Y][target.Position.X].Piece = this.Matrix[source.Position.Y][source.Position.X].Piece;
+            var source = this.GetSquareByName(move.Source.Name);
+            var target = this.GetSquareByName(move.Target.Name);
+
+            target.Piece = source.Piece;
+            source.Piece = null;
         }
 
-        public void RemovePiece(Square square)
+        public void ReversePiece(Move move)
         {
-            this.Matrix[square.Position.Y][square.Position.X].Piece = null;
+            var source = this.GetSquareByName(move.Source.Name);
+            var target = this.GetSquareByName(move.Target.Name);
+
+            source.Piece = target.Piece;
+            target.Piece = null;
         }
 
-        public void ReversePiece(Square source, Square target)
+        public void ShiftEnPassant(Move move, int x)
         {
-            this.Matrix[source.Position.Y][source.Position.X].Piece = this.Matrix[target.Position.Y][target.Position.X].Piece;
+            this.ShiftPiece(move);
+            var square = this.GetSquareByCoordinates(move.Source.Position.Y, move.Source.Position.X + x);
+            square.Piece = null;
+        }
+
+        public void ReverseEnPassant(Move move, int x)
+        {
+            this.ReversePiece(move);
+            var square = this.GetSquareByCoordinates(move.Source.Position.Y, move.Source.Position.X + x);
+            square.Piece = Factory.GetPawn(square.Piece.Color);
         }
 
         public Square GetKingSquare(Color color)

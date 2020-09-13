@@ -353,12 +353,12 @@
                     var piece = Factory.GetPawn(this.MovingPlayer.Color);
                     int x = this.Move.Target.Position.X > this.Move.Source.Position.X ? 1 : -1;
 
-                    this.ShiftEnPassant(x, this.Move);
+                    this.ChessBoard.ShiftEnPassant(this.Move, x);
                     this.ChessBoard.CalculateAttackedSquares();
 
                     if (this.IsPlayerChecked(this.MovingPlayer))
                     {
-                        this.ReverseEnPassant(x, this.Move);
+                        this.ChessBoard.ReverseEnPassant(this.Move, x);
                         this.ChessBoard.CalculateAttackedSquares();
 
                         this.MovingPlayer.IsCheck = true;
@@ -382,12 +382,12 @@
 
         private bool Try()
         {
-            this.ShiftPiece(this.Move.Source, this.Move.Target);
+            this.ChessBoard.ShiftPiece(this.Move);
             this.ChessBoard.CalculateAttackedSquares();
 
             if (this.IsPlayerChecked(this.MovingPlayer))
             {
-                this.Reverse(this.Move.Source, this.Move.Target);
+                this.ChessBoard.ReversePiece(this.Move);
                 this.ChessBoard.CalculateAttackedSquares();
                 return false;
             }
@@ -543,33 +543,6 @@
             }
 
             return false;
-        }
-
-        private void ShiftPiece(Square source, Square target)
-        {
-            this.ChessBoard.PlacePiece(source, target);
-            this.ChessBoard.RemovePiece(source);
-        }
-
-        private void Reverse(Square source, Square target)
-        {
-            this.ChessBoard.ReversePiece(source, target);
-            this.ChessBoard.RemovePiece(target);
-        }
-
-        private void ShiftEnPassant(int x, Move move)
-        {
-            this.ChessBoard.PlacePiece(move.Source, move.Target);
-            this.ChessBoard.RemovePiece(move.Source);
-            this.ChessBoard.RemovePiece(this.ChessBoard.Matrix[move.Source.Position.Y][move.Source.Position.X + x]);
-        }
-
-        private void ReverseEnPassant(int x, Move move)
-        {
-            this.ChessBoard.ReversePiece(move.Source, move.Target);
-            this.ChessBoard.RemovePiece(move.Target);
-            var color = this.ChessBoard.Matrix[move.Source.Position.Y][move.Source.Position.X + x].Piece.Color == Color.White ? Color.White : Color.Black;
-            this.ChessBoard.Matrix[move.Source.Position.Y][move.Source.Position.X + x].Piece = Factory.GetPawn(color);
         }
 
         private bool IsKingAbleToMove()
