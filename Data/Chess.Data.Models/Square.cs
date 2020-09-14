@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     using Chess.Common.Enums;
     using Chess.Data.Models.Pieces;
@@ -65,7 +66,7 @@
                 Name = this.Name,
                 Position = this.Position.Clone() as Position,
                 Piece = this.Piece?.Clone() as Piece,
-                IsAttacked = this.IsAttacked,
+                IsAttacked = this.IsAttacked.ToList(),
             };
         }
     }

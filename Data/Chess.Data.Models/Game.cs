@@ -72,13 +72,14 @@
 
             var oldSource = this.Move.Source.Clone() as Square;
             var oldTarget = this.Move.Target.Clone() as Square;
+            var oldBoard = this.ChessBoard.Clone() as Board;
 
             if (this.MovePiece() || this.TakePiece() || this.EnPassantTake())
             {
                 this.IsPawnPromotion(targetFen);
                 this.IsGameOver(targetFen);
                 this.ClearCheckMessage();
-                this.UpdateMoveHistory(oldSource, oldTarget);
+                this.UpdateMoveHistory(oldSource, oldTarget, oldBoard);
                 this.ChangeTurns();
                 this.Turn++;
                 return true;
@@ -395,9 +396,9 @@
             }
         }
 
-        private void UpdateMoveHistory(Square source, Square target)
+        private void UpdateMoveHistory(Square source, Square target, Board board)
         {
-            string notation = this.GetAlgebraicNotation(source, target);
+            string notation = this.GetAlgebraicNotation(source, target, board);
             this.OnMoveComplete?.Invoke(this.MovingPlayer, new MoveCompleteEventArgs(notation));
         }
 
@@ -599,7 +600,7 @@
             this.Move.PawnPromotionArgs.FenString = sb.ToString();
         }
 
-        private string GetAlgebraicNotation(Square source, Square target)
+        private string GetAlgebraicNotation(Square source, Square target, Board board)
         {
             var sb = new StringBuilder();
 
@@ -634,7 +635,18 @@
                 }
                 else
                 {
-                    sb.Append(source.Piece.Symbol + target.ToString());
+                    var oldTarget = board.Matrix.SelectMany(x => x).Where(y => y.Name == target.Name).FirstOrDefault();
+
+                    if (oldTarget.IsAttacked.Count(piece =>
+                        piece.Color == source.Piece.Color &&
+                        piece.Name.Contains(source.Piece.Name)) > 1)
+                    {
+                        sb.Append(source.Piece.Symbol + source.Name[0].ToString() + target.ToString());
+                    }
+                    else
+                    {
+                        sb.Append(source.Piece.Symbol + target.ToString());
+                    }
                 }
             }
             else if (target.Piece.Color != source.Piece.Color)
@@ -646,7 +658,24 @@
                 }
                 else
                 {
-                    sb.Append(source.Piece.Symbol + "x" + target);
+                    var oldTarget = board.Matrix.SelectMany(x => x).Where(y => y.Name == target.Name).FirstOrDefault();
+
+                    if (oldTarget.IsAttacked.Count(piece =>
+                        piece.Color == source.Piece.Color &&
+                        piece.Name.Contains(source.Piece.Name)) > 1)
+                    {
+                        sb.Append(source.Piece.Symbol + source.Name[0].ToString() + "x" + target.ToString());
+                    }
+                    else if (oldTarget.IsAttacked.Count(piece =>
+                             piece.Color == source.Piece.Color &&
+                             piece.Name.Contains(source.Piece.Name)) > 1)
+                    {
+                        sb.Append(source.Piece.Symbol + source.Name[0].ToString() + "x" + target.ToString());
+                    }
+                    else
+                    {
+                        sb.Append(source.Piece.Symbol + "x" + target);
+                    }
                 }
             }
 
