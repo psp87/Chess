@@ -12,8 +12,8 @@
 
     public class Game
     {
-        private Queue<string> movesThreefold;
-        private Queue<string> movesFivefold;
+        private readonly Queue<string> movesThreefold;
+        private readonly Queue<string> movesFivefold;
         private string[] arrayThreefold;
         private string[] arrayFivefold;
 
@@ -43,7 +43,7 @@
 
         public event EventHandler OnMoveComplete;
 
-        public event EventHandler OnNotification;
+        public event EventHandler OnMoveEvent;
 
         public event EventHandler OnThreefoldDrawAvailable;
 
@@ -78,23 +78,20 @@
                 this.IsPawnPromotion(targetFen);
                 this.IsGameOver(targetFen);
                 this.ClearCheckMessage();
-
-                string notation = this.GetAlgebraicNotation(oldSource, oldTarget);
-                this.OnMoveComplete?.Invoke(this.MovingPlayer, new NotationEventArgs(notation));
-
-                this.Turn++;
+                this.UpdateMoveHistory(oldSource, oldTarget);
                 this.ChangeTurns();
+                this.Turn++;
                 return true;
             }
             else
             {
                 if (this.MovingPlayer.IsCheck)
                 {
-                    this.OnNotification?.Invoke(this.MovingPlayer, new MessageEventArgs(Notification.CheckSelf));
+                    this.OnMoveEvent?.Invoke(this.MovingPlayer, new MoveEventArgs(Notification.CheckSelf));
                 }
                 else
                 {
-                    this.OnNotification?.Invoke(this.MovingPlayer, new MessageEventArgs(Notification.InvalidMove));
+                    this.OnMoveEvent?.Invoke(this.MovingPlayer, new MoveEventArgs(Notification.InvalidMove));
                 }
 
                 this.MovingPlayer.IsCheck = false;
@@ -175,6 +172,22 @@
             return false;
         }
 
+        private bool TryMove()
+        {
+            this.ChessBoard.ShiftPiece(this.Move);
+            this.ChessBoard.CalculateAttackedSquares();
+
+            if (this.IsPlayerChecked(this.MovingPlayer))
+            {
+                this.ChessBoard.ReversePiece(this.Move);
+                this.ChessBoard.CalculateAttackedSquares();
+                return false;
+            }
+
+            this.MovingPlayer.IsCheck = false;
+            return true;
+        }
+
         private bool TryEnPassantMove()
         {
             int x = this.Move.Target.Position.X > this.Move.Source.Position.X ? 1 : -1;
@@ -196,27 +209,11 @@
             return true;
         }
 
-        private bool TryMove()
-        {
-            this.ChessBoard.ShiftPiece(this.Move);
-            this.ChessBoard.CalculateAttackedSquares();
-
-            if (this.IsPlayerChecked(this.MovingPlayer))
-            {
-                this.ChessBoard.ReversePiece(this.Move);
-                this.ChessBoard.CalculateAttackedSquares();
-                return false;
-            }
-
-            this.MovingPlayer.IsCheck = false;
-            return true;
-        }
-
         private void IsGameOver(string targetFen)
         {
             if (this.IsPlayerChecked(this.Opponent))
             {
-                this.OnNotification?.Invoke(this.Opponent, new MessageEventArgs(Notification.CheckOpponent));
+                this.OnMoveEvent?.Invoke(this.Opponent, new MoveEventArgs(Notification.CheckOpponent));
                 if (this.IsCheckmate())
                 {
                     this.GameOver = GameOver.Checkmate;
@@ -394,8 +391,14 @@
         {
             if (!this.MovingPlayer.IsCheck && !this.Opponent.IsCheck)
             {
-                this.OnNotification?.Invoke(this.MovingPlayer, new MessageEventArgs(Notification.CheckClear));
+                this.OnMoveEvent?.Invoke(this.MovingPlayer, new MoveEventArgs(Notification.CheckClear));
             }
+        }
+
+        private void UpdateMoveHistory(Square source, Square target)
+        {
+            string notation = this.GetAlgebraicNotation(source, target);
+            this.OnMoveComplete?.Invoke(this.MovingPlayer, new MoveCompleteEventArgs(notation));
         }
 
         private void ChangeTurns()
@@ -410,135 +413,6 @@
                 this.Player2.HasToMove = false;
                 this.Player1.HasToMove = true;
             }
-        }
-
-        private List<Position> GetAllowedPositions()
-        {
-            var positions = new List<Position>();
-
-            var sign = this.MovingPlayer.Color == Color.White ? 1 : -1;
-
-            int row = this.Move.Target.Position.Y + sign;
-            int colFirst = this.Move.Target.Position.X + 1;
-            int colSecond = this.Move.Target.Position.X - 1;
-
-            var firstAllowedPosition = Factory.GetPosition(row, colFirst);
-            var secondAllowedPosition = Factory.GetPosition(row, colSecond);
-
-            positions.Add(firstAllowedPosition);
-            positions.Add(secondAllowedPosition);
-
-            return positions;
-        }
-
-        private void GetPawnPromotionFenString(string targetFen)
-        {
-            var sb = new StringBuilder();
-            string[] rows = targetFen.Split('/');
-
-            var lastRow = this.MovingPlayer.Color == Color.White ? 0 : 7;
-            var pawn = this.MovingPlayer.Color == Color.White ? "P" : "p";
-            var queen = this.MovingPlayer.Color == Color.White ? "Q" : "q";
-
-            for (int i = 0; i < rows.Length; i++)
-            {
-                var currentRow = rows[i];
-
-                if (i == lastRow)
-                {
-                    for (int k = 0; k < currentRow.Length; k++)
-                    {
-                        var currentSymbol = currentRow[k].ToString();
-
-                        if (string.Compare(currentSymbol, pawn) == 0)
-                        {
-                            sb.Append(queen);
-                            continue;
-                        }
-
-                        sb.Append(currentSymbol);
-                    }
-                }
-                else
-                {
-                    if (this.MovingPlayer.Color == Color.White)
-                    {
-                        sb.Append("/" + currentRow);
-                    }
-                    else
-                    {
-                        sb.Append(currentRow + "/");
-                    }
-                }
-            }
-
-            this.Move.PawnPromotionArgs.FenString = sb.ToString();
-        }
-
-        private string GetAlgebraicNotation(Square source, Square target)
-        {
-            var sb = new StringBuilder();
-
-            var playerTurn = Math.Ceiling(this.Turn / 2.0);
-            sb.Append(playerTurn + ". ");
-
-            if (this.Move.Type == MoveType.EnPassant)
-            {
-                var file = source.ToString()[0];
-                sb.Append(file + "x" + target + "e.p");
-            }
-            else if (this.Move.Type == MoveType.Castling)
-            {
-                if (target.ToString()[0] == 'g')
-                {
-                    sb.Append("0-0");
-                }
-                else
-                {
-                    sb.Append("0-0-0");
-                }
-            }
-            else if (this.Move.Type == MoveType.PawnPromotion)
-            {
-                sb.Append(target + "=Q");
-            }
-            else if (target.Piece == null)
-            {
-                if (source.Piece is Pawn)
-                {
-                    sb.Append(target);
-                }
-                else
-                {
-                    sb.Append(source.Piece.Symbol + target.ToString());
-                }
-            }
-            else if (target.Piece.Color != source.Piece.Color)
-            {
-                if (source.Piece is Pawn)
-                {
-                    var file = source.ToString()[0];
-                    sb.Append(file + "x" + target);
-                }
-                else
-                {
-                    sb.Append(source.Piece.Symbol + "x" + target);
-                }
-            }
-
-            if (this.Opponent.IsCheck)
-            {
-                if (!this.Opponent.IsCheckMate)
-                {
-                    sb.Append("+");
-                }
-                else
-                {
-                    sb.Append("#");
-                }
-            }
-
-            return sb.ToString();
         }
 
         private bool IsKingAbleToMove()
@@ -679,6 +553,135 @@
             }
 
             return false;
+        }
+
+        private void GetPawnPromotionFenString(string targetFen)
+        {
+            var sb = new StringBuilder();
+            string[] rows = targetFen.Split('/');
+
+            var lastRow = this.MovingPlayer.Color == Color.White ? 0 : 7;
+            var pawn = this.MovingPlayer.Color == Color.White ? "P" : "p";
+            var queen = this.MovingPlayer.Color == Color.White ? "Q" : "q";
+
+            for (int i = 0; i < rows.Length; i++)
+            {
+                var currentRow = rows[i];
+
+                if (i == lastRow)
+                {
+                    for (int k = 0; k < currentRow.Length; k++)
+                    {
+                        var currentSymbol = currentRow[k].ToString();
+
+                        if (string.Compare(currentSymbol, pawn) == 0)
+                        {
+                            sb.Append(queen);
+                            continue;
+                        }
+
+                        sb.Append(currentSymbol);
+                    }
+                }
+                else
+                {
+                    if (this.MovingPlayer.Color == Color.White)
+                    {
+                        sb.Append("/" + currentRow);
+                    }
+                    else
+                    {
+                        sb.Append(currentRow + "/");
+                    }
+                }
+            }
+
+            this.Move.PawnPromotionArgs.FenString = sb.ToString();
+        }
+
+        private string GetAlgebraicNotation(Square source, Square target)
+        {
+            var sb = new StringBuilder();
+
+            var playerTurn = Math.Ceiling(this.Turn / 2.0);
+            sb.Append(playerTurn + ". ");
+
+            if (this.Move.Type == MoveType.EnPassant)
+            {
+                var file = source.ToString()[0];
+                sb.Append(file + "x" + target + "e.p");
+            }
+            else if (this.Move.Type == MoveType.Castling)
+            {
+                if (target.ToString()[0] == 'g')
+                {
+                    sb.Append("0-0");
+                }
+                else
+                {
+                    sb.Append("0-0-0");
+                }
+            }
+            else if (this.Move.Type == MoveType.PawnPromotion)
+            {
+                sb.Append(target + "=Q");
+            }
+            else if (target.Piece == null)
+            {
+                if (source.Piece is Pawn)
+                {
+                    sb.Append(target);
+                }
+                else
+                {
+                    sb.Append(source.Piece.Symbol + target.ToString());
+                }
+            }
+            else if (target.Piece.Color != source.Piece.Color)
+            {
+                if (source.Piece is Pawn)
+                {
+                    var file = source.ToString()[0];
+                    sb.Append(file + "x" + target);
+                }
+                else
+                {
+                    sb.Append(source.Piece.Symbol + "x" + target);
+                }
+            }
+
+            if (this.Opponent.IsCheck)
+            {
+                if (!this.Opponent.IsCheckMate)
+                {
+                    sb.Append("+");
+                }
+                else
+                {
+                    sb.Append("#");
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        private List<Position> GetAllowedPositions()
+        {
+            var positions = new List<Position>();
+
+            var sign = this.MovingPlayer.Color == Color.White ? 1 : -1;
+
+            int row = this.Move.Target.Position.Y + sign;
+            int colFirst = this.Move.Target.Position.X + 1;
+            int colSecond = this.Move.Target.Position.X - 1;
+
+            var firstAllowedPosition = Factory.GetPosition(row, colFirst);
+            var secondAllowedPosition = Factory.GetPosition(row, colSecond);
+
+            positions.Add(firstAllowedPosition);
+            positions.Add(secondAllowedPosition);
+
+            return positions;
         }
     }
 }

@@ -131,11 +131,11 @@
             var game = Factory.GetGame(opponent, joiningPlayer);
             this.games[game.Id] = game;
 
-            game.OnMoveComplete += this.Board_OnMoveComplete;
             game.OnGameOver += this.Game_OnGameOver;
-            game.OnNotification += this.Game_OnNotification;
-            game.OnTakePiece += this.Board_OnTakePiece;
-            game.OnThreefoldDrawAvailable += this.Board_OnThreefoldDrawAvailable;
+            game.OnMoveComplete += this.Game_OnMoveComplete;
+            game.OnMoveEvent += this.Game_OnMoveEvent;
+            game.OnTakePiece += this.Game_OnTakePiece;
+            game.OnThreefoldDrawAvailable += this.Game_OnThreefoldDrawAvailable;
 
             await Task.WhenAll(
                 this.Groups.AddToGroupAsync(game.Player1.Id, groupName: game.Id),
@@ -143,16 +143,6 @@
                 this.Clients.Group(game.Id).SendAsync("Start", game));
 
             await this.Clients.Caller.SendAsync("ChangeOrientation");
-        }
-
-        private void Board_OnThreefoldDrawAvailable(object sender, EventArgs e)
-        {
-            var player = sender as Player;
-            var game = this.games[player.GameId];
-            var args = e as ThreefoldDrawEventArgs;
-
-            this.Clients.Caller.SendAsync("ThreefoldAvailable", player, false);
-            this.Clients.GroupExcept(game.Id, this.Context.ConnectionId).SendAsync("ThreefoldAvailable", player, args.IsAvailable);
         }
 
         private void Game_OnGameOver(object sender, EventArgs e)
@@ -164,20 +154,20 @@
             this.Clients.Group(game.Id).SendAsync("GameOver", player, gameOver.GameOver);
         }
 
-        private void Board_OnMoveComplete(object sender, EventArgs e)
+        private void Game_OnMoveComplete(object sender, EventArgs e)
         {
             var player = sender as Player;
             var game = this.games[player.GameId];
-            var args = e as NotationEventArgs;
+            var args = e as MoveCompleteEventArgs;
 
             this.Clients.Group(game.Id).SendAsync("UpdateMoveHistory", player, args.Notation);
         }
 
-        private void Game_OnNotification(object sender, EventArgs e)
+        private void Game_OnMoveEvent(object sender, EventArgs e)
         {
             var player = sender as Player;
             var game = this.games[player.GameId];
-            var notification = e as MessageEventArgs;
+            var notification = e as MoveEventArgs;
 
             switch (notification.Type)
             {
@@ -196,13 +186,23 @@
             }
         }
 
-        private void Board_OnTakePiece(object sender, EventArgs e)
+        private void Game_OnTakePiece(object sender, EventArgs e)
         {
             var player = sender as Player;
             var game = this.games[player.GameId];
             var args = e as TakePieceEventArgs;
 
             this.Clients.Group(game.Id).SendAsync("UpdateTakenFigures", player, args.PieceName, args.Points);
+        }
+
+        private void Game_OnThreefoldDrawAvailable(object sender, EventArgs e)
+        {
+            var player = sender as Player;
+            var game = this.games[player.GameId];
+            var args = e as ThreefoldDrawEventArgs;
+
+            this.Clients.Caller.SendAsync("ThreefoldAvailable", player, false);
+            this.Clients.GroupExcept(game.Id, this.Context.ConnectionId).SendAsync("ThreefoldAvailable", player, args.IsAvailable);
         }
     }
 }
