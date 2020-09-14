@@ -84,20 +84,14 @@
 
         public void ShiftPiece(Move move)
         {
-            var source = this.GetSquareByName(move.Source.Name);
-            var target = this.GetSquareByName(move.Target.Name);
-
-            target.Piece = source.Piece;
-            source.Piece = null;
+            move.Target.Piece = move.Source.Piece;
+            move.Source.Piece = null;
         }
 
         public void ReversePiece(Move move)
         {
-            var source = this.GetSquareByName(move.Source.Name);
-            var target = this.GetSquareByName(move.Target.Name);
-
-            source.Piece = target.Piece;
-            target.Piece = null;
+            move.Source.Piece = move.Target.Piece;
+            move.Target.Piece = null;
         }
 
         public void ShiftEnPassant(Move move, int x)
@@ -111,7 +105,8 @@
         {
             this.ReversePiece(move);
             var square = this.GetSquareByCoordinates(move.Source.Position.Y, move.Source.Position.X + x);
-            square.Piece = Factory.GetPawn(square.Piece.Color);
+            var color = move.Source.Piece.Color == Color.White ? Color.Black : Color.White;
+            square.Piece = Factory.GetPawn(color);
         }
 
         public Square GetKingSquare(Color color)

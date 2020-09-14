@@ -148,47 +148,52 @@
 
         private bool EnPassantTake()
         {
-            if (this.Move.EnPassantArgs.Position != null)
+            if (this.Move.EnPassantArgs.SquareAvailable != null)
             {
                 var positions = this.GetAllowedPositions();
 
-                var firstPosition = positions[0];
-                var secondPosition = positions[1];
-
                 if (this.Move.EnPassantArgs.Turn == this.Turn &&
-                    this.Move.EnPassantArgs.Position.Equals(this.Move.Target.Position) &&
+                    this.Move.EnPassantArgs.SquareAvailable.Equals(this.Move.Target) &&
                     this.Move.Source.Piece is Pawn &&
-                    (this.Move.Source.Position.Equals(firstPosition) ||
-                    this.Move.Source.Position.Equals(secondPosition)))
+                    (this.Move.Source.Position.Equals(positions[0]) ||
+                    this.Move.Source.Position.Equals(positions[1])))
                 {
-                    var piece = Factory.GetPawn(this.MovingPlayer.Color);
-                    int x = this.Move.Target.Position.X > this.Move.Source.Position.X ? 1 : -1;
-
-                    this.ChessBoard.ShiftEnPassant(this.Move, x);
-                    this.ChessBoard.CalculateAttackedSquares();
-
-                    if (this.IsPlayerChecked(this.MovingPlayer))
+                    if (!this.TryEnPassantMove())
                     {
-                        this.ChessBoard.ReverseEnPassant(this.Move, x);
-                        this.ChessBoard.CalculateAttackedSquares();
-
                         this.MovingPlayer.IsCheck = true;
                         return false;
                     }
 
-                    var square = this.ChessBoard.GetSquareByCoordinates(this.Move.Source.Position.Y, this.Move.Source.Position.X + x);
-                    this.Move.EnPassantArgs.SquareName = square.Name;
-                    this.Move.Type = MoveType.EnPassant;
-
-                    this.MovingPlayer.TakeFigure(piece.Name);
-                    this.MovingPlayer.Points += piece.Points;
-                    this.OnTakePiece?.Invoke(this.MovingPlayer, new TakePieceEventArgs(piece.Name, this.MovingPlayer.Points));
-                    this.MovingPlayer.IsCheck = false;
+                    this.MovingPlayer.TakeFigure(this.Move.Target.Piece.Name);
+                    this.MovingPlayer.Points += this.Move.Target.Piece.Points;
+                    this.OnTakePiece?.Invoke(this.MovingPlayer, new TakePieceEventArgs(this.Move.Target.Piece.Name, this.MovingPlayer.Points));
+                    this.Move.EnPassantArgs.SquareAvailable = null;
                     return true;
                 }
             }
 
             return false;
+        }
+
+        private bool TryEnPassantMove()
+        {
+            int x = this.Move.Target.Position.X > this.Move.Source.Position.X ? 1 : -1;
+            this.ChessBoard.ShiftEnPassant(this.Move, x);
+            this.ChessBoard.CalculateAttackedSquares();
+
+            if (this.IsPlayerChecked(this.MovingPlayer))
+            {
+                this.ChessBoard.ReverseEnPassant(this.Move, x);
+                this.ChessBoard.CalculateAttackedSquares();
+                this.MovingPlayer.IsCheck = true;
+                return false;
+            }
+
+            var square = this.ChessBoard.GetSquareByCoordinates(this.Move.Source.Position.Y, this.Move.Source.Position.X + x);
+            this.Move.EnPassantArgs.SquareTakenPiece = square;
+            this.Move.Type = MoveType.EnPassant;
+            this.MovingPlayer.IsCheck = false;
+            return true;
         }
 
         private bool TryMove()
@@ -256,7 +261,7 @@
 
         private bool IsCheckmate()
         {
-            if (!this.IsKingAbleToMove() && !this.AttackingPieceCanBeTaken() && !this.OtherPieceCanBlockTheCheck())
+            if (!this.IsKingAbleToMove() && !this.IsAbleToTakeAttackingPiece() && !this.CanOtherPieceBlockTheCheck())
             {
                 this.Opponent.IsCheckMate = true;
                 return true;
@@ -536,10 +541,9 @@
             return sb.ToString();
         }
 
-        #region Checkmate internal methods
         private bool IsKingAbleToMove()
         {
-            var kingSquare = this.ChessBoard.GetKingSquare(this.Opponent.Color);
+            var opponentKingSquare = this.ChessBoard.GetKingSquare(this.Opponent.Color);
 
             for (int y = -1; y <= 1; y++)
             {
@@ -550,14 +554,14 @@
                         continue;
                     }
 
-                    var row = kingSquare.Position.Y + y;
-                    var col = kingSquare.Position.X + x;
+                    var row = opponentKingSquare.Position.Y + y;
+                    var col = opponentKingSquare.Position.X + x;
 
                     if (Position.IsInBoard(row, col))
                     {
                         var checkedSquare = this.ChessBoard.GetSquareByCoordinates(row, col);
 
-                        if (this.NeighbourSquareAvailable(checkedSquare))
+                        if (this.IsSquareAvailable(checkedSquare))
                         {
                             return true;
                         }
@@ -568,7 +572,7 @@
             return false;
         }
 
-        private bool AttackingPieceCanBeTaken()
+        private bool IsAbleToTakeAttackingPiece()
         {
             if (this.Move.Target.IsAttacked.Where(x => x.Color == this.Opponent.Color).Any())
             {
@@ -585,14 +589,14 @@
             return false;
         }
 
-        private bool OtherPieceCanBlockTheCheck()
+        private bool CanOtherPieceBlockTheCheck()
         {
-            var kingSquare = this.ChessBoard.GetKingSquare(this.Opponent.Color);
+            var opponentKingSquare = this.ChessBoard.GetKingSquare(this.Opponent.Color);
 
             if (!(this.Move.Target.Piece is Knight) && !(this.Move.Target.Piece is Pawn))
             {
-                int kingY = kingSquare.Position.Y;
-                int kingX = kingSquare.Position.X;
+                int kingY = opponentKingSquare.Position.Y;
+                int kingX = opponentKingSquare.Position.X;
 
                 int attackingY = this.Move.Target.Position.Y;
                 int attackingX = this.Move.Target.Position.X;
@@ -610,7 +614,7 @@
                         var neighbourSquare = this.ChessBoard.GetSquareByCoordinates(kingY, attackingX + sign + signPlayer);
 
                         if (currentSquare.IsAttacked.Where(x => x.Color == this.Opponent.Color && !(x is King) && !(x is Pawn)).Any() ||
-                            (neighbourSquare.Piece is Pawn && neighbourSquare.Piece.Color == this.Opponent.Color))
+                           (neighbourSquare.Piece is Pawn && neighbourSquare.Piece.Color == this.Opponent.Color))
                         {
                             return true;
                         }
@@ -659,7 +663,7 @@
             return false;
         }
 
-        private bool NeighbourSquareAvailable(Square square)
+        private bool IsSquareAvailable(Square square)
         {
             if (square.Piece != null &&
                 square.Piece.Color == this.MovingPlayer.Color &&
@@ -676,6 +680,5 @@
 
             return false;
         }
-        #endregion
     }
 }

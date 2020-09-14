@@ -91,7 +91,7 @@
                 if (number == sign * 2)
                 {
                     move.EnPassantArgs.Turn = turn + 1;
-                    move.EnPassantArgs.Position = new Position(this.Position.Y + sign, this.Position.X);
+                    move.EnPassantArgs.SquareAvailable = Factory.GetSquare(this.Position.Y + sign, this.Position.X);
                 }
 
                 return true;

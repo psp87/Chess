@@ -51,6 +51,12 @@
             return this.Name.ToLower();
         }
 
+        public override bool Equals(object obj)
+        {
+            Square other = (Square)obj;
+            return this.Position.X == other.Position.X && this.Position.Y == other.Position.Y;
+        }
+
         public object Clone()
         {
             return new Square()

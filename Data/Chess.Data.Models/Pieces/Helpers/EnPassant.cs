@@ -4,8 +4,8 @@
     {
         public int Turn { get; set; }
 
-        public Position Position { get; set; }
+        public Square SquareAvailable { get; set; }
 
-        public string SquareName { get; set; }
+        public Square SquareTakenPiece { get; set; }
     }
 }

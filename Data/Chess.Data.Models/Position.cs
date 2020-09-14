@@ -29,15 +29,15 @@
             return "[" + this.Y + ", " + this.X + "]";
         }
 
-        public object Clone()
-        {
-            return Factory.GetPosition(this.Y, this.X);
-        }
-
         public override bool Equals(object obj)
         {
             Position other = (Position)obj;
             return this.X == other.X && this.Y == other.Y;
+        }
+
+        public object Clone()
+        {
+            return Factory.GetPosition(this.Y, this.X);
         }
     }
 }
