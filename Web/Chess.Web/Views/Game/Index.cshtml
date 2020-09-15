@@ -5,8 +5,6 @@
 <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
 <script src="~/js/chessboard-1.0.0.min.js"></script>
 
-<link rel="stylesheet" href="~/css/chessboard-1.0.0.min.css">
-
 <main id="main" class="container-fluid text-center">
     <div class="row">
         <div class="column left">
@@ -83,7 +81,7 @@
         let playerColor;
         let playerOneName;
         let playerTwoName;
-        
+
         let $findGame = document.getElementById('findGame');
         let $board = document.getElementById('board');
 
@@ -101,7 +99,7 @@
         let $blackBishopsTaken = document.getElementById('blackBishopsTaken');
         let $blackRooksTaken = document.getElementById('blackRooksTaken');
         let $blackQueensTaken = document.getElementById('blackQueensTaken');
-        
+
         let $blackPointsValue = document.getElementById('blackPointsValue');
         let $whitePawnsTaken = document.getElementById('whitePawnsTaken');
         let $whiteKnightsTaken = document.getElementById('whiteKnightsTaken');
@@ -210,15 +208,15 @@
                     break;
             }
 
-            $('#offerDraw').prop( "disabled", true );
-            $('#resign').prop( "disabled", true );
+            $('#offerDraw').prop("disabled", true);
+            $('#resign').prop("disabled", true);
         })
 
         connection.on("ThreefoldAvailable", function (player, isAvailable) {
             if (isAvailable) {
                 $('#threefoldDraw').removeAttr('disabled');
             } else {
-                $('#threefoldDraw').attr('disabled','disabled');
+                $('#threefoldDraw').attr('disabled', 'disabled');
             }
         })
 
@@ -307,6 +305,21 @@
             updateStatus(movingPlayerName);
         })
 
+        connection.on("HighlightMove", function (source, target) {
+            removeHighlight();
+            let $source = document.getElementsByClassName("square-" + source);
+            $source[0].className += " highlight";
+            let $target = document.getElementsByClassName("square-" + target);
+            $target[0].className += " highlight";
+        })
+
+        function removeHighlight() {
+            let $squares = document.querySelectorAll(".highlight");
+            for (let i = 0; i < $squares.length; i++) {
+                $squares[i].className = $squares[i].className.replace(/\bhighlight\b/g, '');
+            }
+        }
+
         function updateStatus(name) {
             if (name == playerName) {
                 $statusText.innerText = "Your turn!";
@@ -322,7 +335,6 @@
         }
 
         function onDrop(source, target, piece, newPos, oldPos) {
-            console.log(playerColor);
             if (playerColor === 0 && piece.search(/b/) !== -1 ||
                 playerColor === 1 && piece.search(/w/) !== -1) {
                 return 'snapback';
