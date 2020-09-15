@@ -82,17 +82,34 @@
         let playerName;
         let playerOneName;
         let playerTwoName;
+        
+        let $findGame = document.getElementById('findGame');
+        let $board = document.getElementById('board');
 
         let $whiteStats = document.getElementById('whiteStats');
         let $boardMain = document.getElementById('boardMain');
         let $blackStats = document.getElementById('blackStats');
-
-        let $findGame = document.getElementById('findGame');
         let $statusText = document.getElementById('statusText');
         let $statusCheck = document.getElementById('statusCheck');
+        let $whiteMoveHistory = document.getElementById('whiteMoveHistory');
+        let $blackMoveHistory = document.getElementById('blackMoveHistory');
+
+        let $whitePointsValue = document.getElementById('whitePointsValue');
+        let $blackPawnsTaken = document.getElementById('blackPawnsTaken');
+        let $blackKnightsTaken = document.getElementById('blackKnightsTaken');
+        let $blackBishopsTaken = document.getElementById('blackBishopsTaken');
+        let $blackRooksTaken = document.getElementById('blackRooksTaken');
+        let $blackQueensTaken = document.getElementById('blackQueensTaken');
+        
+        let $blackPointsValue = document.getElementById('blackPointsValue');
+        let $whitePawnsTaken = document.getElementById('whitePawnsTaken');
+        let $whiteKnightsTaken = document.getElementById('whiteKnightsTaken');
+        let $whiteBishopsTaken = document.getElementById('whiteBishopsTaken');
+        let $whiteRooksTaken = document.getElementById('whiteRooksTaken');
+        let $whiteQueensTaken = document.getElementById('whiteQueensTaken');
 
         $('#findGame').click(function () {
-            var name = $('#username').val();
+            let name = $('#username').val();
             connection.invoke("FindGame", name);
             $findGame.disabled = true;
         })
@@ -106,8 +123,8 @@
         })
 
         $('#offerDraw').click(function () {
-            var oldText = $statusText.innerText;
-            $statusText.innerText = `You requested a draw!`;
+            let oldText = $statusText.innerText;
+            $statusText.innerText = `Draw request sent!`;
             sleep(1500).then(() => {
                 $statusText.innerText = oldText;
             })
@@ -141,14 +158,6 @@
             }
         })
 
-        connection.on("ThreefoldAvailable", function (player, isAvailable) {
-            if (isAvailable) {
-                $('#threefoldDraw').removeAttr('disabled');
-            } else {
-                $('#threefoldDraw').attr('disabled','disabled');
-            }
-        })
-
         connection.on("ChangeOrientation", function () {
             board.orientation('black');
         })
@@ -161,12 +170,12 @@
             board.position(fen);
         })
 
-        connection.on("EnPassantTake", function (pawnPosition, target) {
-            board.move(`${target}-${pawnPosition}`, `${pawnPosition}-${target}`);
-        })
-
         connection.on("BoardSetPosition", function (fen) {
             board.position(fen);
+        })
+
+        connection.on("EnPassantTake", function (pawnPosition, target) {
+            board.move(`${target}-${pawnPosition}`, `${pawnPosition}-${target}`);
         })
 
         connection.on("InvalidMessage", function () {
@@ -178,6 +187,40 @@
             })
         })
 
+        connection.on("GameOver", function (player, gameOver) {
+            $statusText.style.color = "purple";
+            $board.style.pointerEvents = "none";
+
+            switch (gameOver) {
+                case 1: {
+                    $statusText.innerText = `CHECKMATE! ${player.name.toUpperCase()} WON THE GAME!`;
+                    $statusCheck.style.display = "none";
+                }
+                    break;
+                case 2: $statusText.innerText = `STALEMATE!`;
+                    break;
+                case 3: $statusText.innerText = `DRAW!`;
+                    break;
+                case 4: $statusText.innerText = `DECLARED THREEFOLD REPETITION DRAW BY ${player.name.toUpperCase()}!`;
+                    break;
+                case 5: $statusText.innerText = `FIVEFOLD REPETITION DRAW!`;
+                    break;
+                case 6: $statusText.innerText = `${player.name.toUpperCase()} RESIGNED!`;
+                    break;
+            }
+
+            $('#offerDraw').prop( "disabled", true );
+            $('#resign').prop( "disabled", true );
+        })
+
+        connection.on("ThreefoldAvailable", function (player, isAvailable) {
+            if (isAvailable) {
+                $('#threefoldDraw').removeAttr('disabled');
+            } else {
+                $('#threefoldDraw').attr('disabled','disabled');
+            }
+        })
+
         connection.on("CheckOpponent", function () {
             $statusCheck.style.display = "block";
             $statusCheck.innerText = "CHECK!";
@@ -185,68 +228,33 @@
 
         connection.on("CheckSelf", function () {
             $statusText.style.color = "red";
-            $statusText.innerText = "King is check!";
+            $statusText.innerText = "Will open a check!";
             sleep(1500).then(() => {
                 $statusText.innerText = "Your Turn!";
                 $statusText.style.color = "green";
             })
         })
 
-        connection.on("EmptyCheckStatus", function () {
+        connection.on("ClearCheckStatus", function () {
             $statusCheck.style.display = "none";
         })
 
         connection.on("DrawOffered", function (player) {
-            var isAccepted = confirm(`${player.name} offered draw! Do you accept?`);
-
+            let isAccepted = confirm(`${player.name} offered draw! Do you accept?`);
             connection.invoke("OfferDrawAnswer", isAccepted);
         })
 
         connection.on("DrawOfferRejected", function (player) {
-            var oldText = $statusText.innerText;
-            $statusText.innerText = `Draw offer rejected by ${player.name}!`;
+            let oldText = $statusText.innerText;
+            $statusText.innerText = `REJECTED BY ${player.name.toUpperCase()}!`;
             sleep(1500).then(() => {
                 $statusText.innerText = oldText;
             })
         })
 
-        connection.on("UpdateStatus", function (movingPlayerName) {
-            updateStatus(movingPlayerName);
-        })
-
-        connection.on("GameOver", function (winner, gameOver) {
-            var $board = document.getElementById('board');
-
-            $statusText.style.color = "purple";
-            $board.style.pointerEvents = "none";
-
-            switch (gameOver) {
-                case 1: $statusText.innerText = `CHECKMATE! ${winner.name.toUpperCase()} WON THE GAME!`;
-                    break;
-                case 2: $statusText.innerText = `THE GAME IS STALEMATE!`;
-                    break;
-                case 3: $statusText.innerText = `THE GAME IS DRAW!`;
-                    break;
-                case 4: $statusText.innerText = `DECLARED THREEFOLD REPETITION DRAW BY ${winner.name.toUpperCase()}!`;
-                    break;
-                case 5: $statusText.innerText = `FIVEFOLD REPETITION DRAW!`;
-                    break;
-                case 6: $statusText.innerText = `${winner.name.toUpperCase()} RESIGNED!`;
-                    break;
-            }
-        })
-
         connection.on("UpdateTakenFigures", function (movingPlayer, pieceName, points) {
             if (movingPlayer.name == playerOneName) {
-                var $whitePointsValue = document.getElementById('whitePointsValue');
                 $whitePointsValue.innerText = points;
-
-                let $blackPawnsTaken = document.getElementById('blackPawnsTaken');
-                let $blackKnightsTaken = document.getElementById('blackKnightsTaken');
-                let $blackBishopsTaken = document.getElementById('blackBishopsTaken');
-                let $blackRooksTaken = document.getElementById('blackRooksTaken');
-                let $blackQueensTaken = document.getElementById('blackQueensTaken');
-
                 switch (pieceName) {
                     case "Pawn": $blackPawnsTaken.innerText++;
                         break;
@@ -260,15 +268,7 @@
                         break;
                 }
             } else {
-                var $blackPointsValue = document.getElementById('blackPointsValue');
                 $blackPointsValue.innerText = points;
-
-                let $whitePawnsTaken = document.getElementById('whitePawnsTaken');
-                let $whiteKnightsTaken = document.getElementById('whiteKnightsTaken');
-                let $whiteBishopsTaken = document.getElementById('whiteBishopsTaken');
-                let $whiteRooksTaken = document.getElementById('whiteRooksTaken');
-                let $whiteQueensTaken = document.getElementById('whiteQueensTaken');
-
                 switch (pieceName) {
                     case "Pawn": $whitePawnsTaken.innerText++;
                         break;
@@ -284,24 +284,26 @@
             }
         })
 
-        connection.on("UpdateMoveHistory", function (movingPlayer, moveString) {
-            var li = document.createElement('li');
+        connection.on("UpdateMoveHistory", function (movingPlayer, moveNotation) {
+            let li = document.createElement('li');
             li.classList.add('list-group-item');
-            li.innerText = moveString;
+            li.innerText = moveNotation;
 
             if (movingPlayer.name == playerOneName) {
-                var $whiteMoveHistory = document.getElementById('whiteMoveHistory');
                 $whiteMoveHistory.appendChild(li);
                 if ($whiteMoveHistory.getElementsByTagName("li").length > 13) {
                     $whiteMoveHistory.removeChild($whiteMoveHistory.childNodes[0]);
                 }
             } else {
-                var $blackMoveHistory = document.getElementById('blackMoveHistory');
                 $blackMoveHistory.appendChild(li);
                 if ($blackMoveHistory.getElementsByTagName("li").length > 13) {
                     $blackMoveHistory.removeChild($blackMoveHistory.childNodes[0]);
                 }
             }
+        })
+
+        connection.on("UpdateStatus", function (movingPlayerName) {
+            updateStatus(movingPlayerName);
         })
 
         function updateStatus(name) {

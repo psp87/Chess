@@ -175,7 +175,7 @@
                     this.Clients.Caller.SendAsync("InvalidMessage");
                     break;
                 case Notification.CheckClear:
-                    this.Clients.Group(game.Id).SendAsync("EmptyCheckStatus");
+                    this.Clients.Group(game.Id).SendAsync("ClearCheckStatus");
                     break;
                 case Notification.CheckOpponent:
                     this.Clients.Group(game.Id).SendAsync("CheckOpponent");
