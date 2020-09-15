@@ -80,6 +80,7 @@
 
         let playerId;
         let playerName;
+        let playerColor;
         let playerOneName;
         let playerTwoName;
         
@@ -321,6 +322,12 @@
         }
 
         function onDrop(source, target, piece, newPos, oldPos) {
+            console.log(playerColor);
+            if (playerColor === 0 && piece.search(/b/) !== -1 ||
+                playerColor === 1 && piece.search(/w/) !== -1) {
+                return 'snapback';
+            }
+
             if (target.length === 2) {
                 let sourceFen = Chessboard.objToFen(oldPos);
                 let targetFen = Chessboard.objToFen(newPos);
@@ -334,6 +341,7 @@
             dropOffBoard: 'snapback',
             showNotation: true,
             onDrop: onDrop,
+            moveSpeed: 50,
             position: 'start'
         }
 
