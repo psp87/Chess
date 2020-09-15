@@ -396,12 +396,6 @@
             }
         }
 
-        private void UpdateMoveHistory(Square source, Square target, Board board)
-        {
-            string notation = this.GetAlgebraicNotation(source, target, board);
-            this.OnMoveComplete?.Invoke(this.MovingPlayer, new MoveCompleteEventArgs(notation));
-        }
-
         private void ChangeTurns()
         {
             if (this.Player1.HasToMove)
@@ -600,6 +594,12 @@
             this.Move.PawnPromotionArgs.FenString = sb.ToString();
         }
 
+        private void UpdateMoveHistory(Square source, Square target, Board board)
+        {
+            string notation = this.GetAlgebraicNotation(source, target, board);
+            this.OnMoveComplete?.Invoke(this.MovingPlayer, new MoveCompleteEventArgs(notation));
+        }
+
         private string GetAlgebraicNotation(Square source, Square target, Board board)
         {
             var sb = new StringBuilder();
@@ -627,54 +627,56 @@
             {
                 sb.Append(target + "=Q");
             }
-            else if (target.Piece == null)
+            else if (target.Piece == null || target.Piece.Color != source.Piece.Color)
             {
                 if (source.Piece is Pawn)
                 {
-                    sb.Append(target);
-                }
-                else
-                {
-                    var oldTarget = board.Matrix.SelectMany(x => x).Where(y => y.Name == target.Name).FirstOrDefault();
-
-                    if (oldTarget.IsAttacked.Count(piece =>
-                        piece.Color == source.Piece.Color &&
-                        piece.Name.Contains(source.Piece.Name)) > 1)
+                    if (target.Piece == null)
                     {
-                        sb.Append(source.Piece.Symbol + source.Name[0].ToString() + target.ToString());
+                        sb.Append(target);
                     }
                     else
                     {
-                        sb.Append(source.Piece.Symbol + target.ToString());
+                        var file = source.ToString()[0];
+                        sb.Append(file + "x" + target);
                     }
-                }
-            }
-            else if (target.Piece.Color != source.Piece.Color)
-            {
-                if (source.Piece is Pawn)
-                {
-                    var file = source.ToString()[0];
-                    sb.Append(file + "x" + target);
                 }
                 else
                 {
-                    var oldTarget = board.Matrix.SelectMany(x => x).Where(y => y.Name == target.Name).FirstOrDefault();
+                    var targetWithOldIsAttackedValue = board.Matrix.SelectMany(x => x).Where(y => y.Name == target.Name).FirstOrDefault();
 
-                    if (oldTarget.IsAttacked.Count(piece =>
+                    if (targetWithOldIsAttackedValue.IsAttacked.Count(piece =>
                         piece.Color == source.Piece.Color &&
                         piece.Name.Contains(source.Piece.Name)) > 1)
                     {
-                        sb.Append(source.Piece.Symbol + source.Name[0].ToString() + "x" + target.ToString());
-                    }
-                    else if (oldTarget.IsAttacked.Count(piece =>
-                             piece.Color == source.Piece.Color &&
-                             piece.Name.Contains(source.Piece.Name)) > 1)
-                    {
-                        sb.Append(source.Piece.Symbol + source.Name[0].ToString() + "x" + target.ToString());
+                        var secondPieceSquare = board.Matrix.SelectMany(x => x).Where(square =>
+                            square.Piece != null &&
+                            square.Piece.Color == source.Piece.Color &&
+                            square.Piece.Name.Contains(source.Piece.Name) &&
+                            square.Name != source.Name).FirstOrDefault();
+
+                        var check = target.Piece == null ? string.Empty : "x";
+
+                        if (secondPieceSquare.Position.X.Equals(source.Position.X))
+                        {
+                            if (target.Piece == null)
+                            {
+                                sb.Append($"{source.Piece.Symbol}{source.Name[1]}{check}{target}");
+                            }
+                            else
+                            {
+                                sb.Append($"{source.Piece.Symbol}{source.Name[1]}{check}{target}");
+                            }
+                        }
+                        else
+                        {
+                            sb.Append($"{source.Piece.Symbol}{source.Name[0]}{check}{target}");
+                        }
                     }
                     else
                     {
-                        sb.Append(source.Piece.Symbol + "x" + target);
+                        var check = target.Piece == null ? string.Empty : "x";
+                        sb.Append($"{source.Piece.Symbol}{check}{target}");
                     }
                 }
             }
