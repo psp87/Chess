@@ -18,10 +18,10 @@
             this.Position = Factory.GetPosition();
         }
 
-        public Square(int posY, int posX)
+        public Square(int rank, int file)
             : this()
         {
-            this.Position = Factory.GetPosition(posY, posX);
+            this.Position = Factory.GetPosition(rank, file);
         }
 
         public IPiece Piece
@@ -33,8 +33,8 @@
                 this.piece = value;
                 if (this.piece != null)
                 {
-                    this.piece.Position.X = this.Position.X;
-                    this.piece.Position.Y = this.Position.Y;
+                    this.piece.Position.File = this.Position.File;
+                    this.piece.Position.Rank = this.Position.Rank;
                 }
             }
         }
@@ -55,7 +55,7 @@
         public override bool Equals(object obj)
         {
             Square other = (Square)obj;
-            return this.Position.X == other.Position.X && this.Position.Y == other.Position.Y;
+            return this.Position.File == other.Position.File && this.Position.Rank == other.Position.Rank;
         }
 
         public object Clone()

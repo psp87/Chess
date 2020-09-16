@@ -45,42 +45,42 @@
 
         public override bool Move(Position to, Square[][] matrix, int turn, Move move)
         {
-            if (to.X == this.Position.X - 1 && to.Y == this.Position.Y - 2)
+            if (to.File == this.Position.File - 1 && to.Rank == this.Position.Rank - 2)
             {
                 return true;
             }
 
-            if (to.X == this.Position.X + 1 && to.Y == this.Position.Y - 2)
+            if (to.File == this.Position.File + 1 && to.Rank == this.Position.Rank - 2)
             {
                 return true;
             }
 
-            if (to.X == this.Position.X - 1 && to.Y == this.Position.Y + 2)
+            if (to.File == this.Position.File - 1 && to.Rank == this.Position.Rank + 2)
             {
                 return true;
             }
 
-            if (to.X == this.Position.X + 1 && to.Y == this.Position.Y + 2)
+            if (to.File == this.Position.File + 1 && to.Rank == this.Position.Rank + 2)
             {
                 return true;
             }
 
-            if (to.X == this.Position.X - 2 && to.Y == this.Position.Y - 1)
+            if (to.File == this.Position.File - 2 && to.Rank == this.Position.Rank - 1)
             {
                 return true;
             }
 
-            if (to.X == this.Position.X - 2 && to.Y == this.Position.Y + 1)
+            if (to.File == this.Position.File - 2 && to.Rank == this.Position.Rank + 1)
             {
                 return true;
             }
 
-            if (to.X == this.Position.X + 2 && to.Y == this.Position.Y - 1)
+            if (to.File == this.Position.File + 2 && to.Rank == this.Position.Rank - 1)
             {
                 return true;
             }
 
-            if (to.X == this.Position.X + 2 && to.Y == this.Position.Y + 1)
+            if (to.File == this.Position.File + 2 && to.Rank == this.Position.Rank + 1)
             {
                 return true;
             }
@@ -102,19 +102,19 @@
             };
         }
 
-        private void AttackedSquares(int y, int x, Square[][] matrix)
+        private void AttackedSquares(int offsetY, int offsetX, Square[][] matrix)
         {
-            if (Position.IsInBoard(this.Position.X + x, this.Position.Y + y))
+            if (Position.IsInBoard(this.Position.File + offsetX, this.Position.Rank + offsetY))
             {
-                matrix[this.Position.Y + y][this.Position.X + x].IsAttacked.Add(this);
+                matrix[this.Position.Rank + offsetY][this.Position.File + offsetX].IsAttacked.Add(this);
             }
         }
 
-        private bool MoveCheck(int y, int x, Square[][] matrix)
+        private bool MoveCheck(int offsetY, int offsetX, Square[][] matrix)
         {
-            if (Position.IsInBoard(this.Position.X + x, this.Position.Y + y))
+            if (Position.IsInBoard(this.Position.File + offsetX, this.Position.Rank + offsetY))
             {
-                var square = matrix[this.Position.Y + y][this.Position.X + x];
+                var square = matrix[this.Position.Rank + offsetY][this.Position.File + offsetX];
 
                 if (square.Piece == null || square.Piece.Color != this.Color)
                 {

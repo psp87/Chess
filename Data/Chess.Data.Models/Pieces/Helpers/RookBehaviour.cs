@@ -12,7 +12,7 @@
 
         public bool Move(IPiece piece, Position to, Square[][] matrix, Move move)
         {
-            if (to.Y != piece.Position.Y && to.X == piece.Position.X)
+            if (to.Rank != piece.Position.Rank && to.File == piece.Position.File)
             {
                 if (this.Movement(to, piece.Position, matrix))
                 {
@@ -20,7 +20,7 @@
                 }
             }
 
-            if (to.Y == piece.Position.Y && to.X != piece.Position.X)
+            if (to.Rank == piece.Position.Rank && to.File != piece.Position.File)
             {
                 if (this.Movement(to, piece.Position, matrix))
                 {
@@ -46,23 +46,23 @@
 
         public void Attacking(IPiece piece, Square[][] matrix)
         {
-            this.AttackedSquaresY(-1, piece.Position.X, matrix, piece);
-            this.AttackedSquaresX(piece.Position.Y, -1, matrix, piece);
-            this.AttackedSquaresY(1, piece.Position.X, matrix, piece);
-            this.AttackedSquaresX(piece.Position.Y, 1, matrix, piece);
+            this.AttackedSquaresY(-1, piece.Position.File, matrix, piece);
+            this.AttackedSquaresX(piece.Position.Rank, -1, matrix, piece);
+            this.AttackedSquaresY(1, piece.Position.File, matrix, piece);
+            this.AttackedSquaresX(piece.Position.Rank, 1, matrix, piece);
         }
 
-        private void AttackedSquaresX(int y, int signX, Square[][] matrix, IPiece piece)
+        private void AttackedSquaresX(int rank, int offsetX, Square[][] matrix, IPiece piece)
         {
             for (int i = 1; i <= 7; i++)
             {
-                int x = piece.Position.X + (signX * i);
+                int file = piece.Position.File + (offsetX * i);
 
-                if (Position.IsInBoard(x, y))
+                if (Position.IsInBoard(file, rank))
                 {
-                    matrix[y][x].IsAttacked.Add(piece);
+                    matrix[rank][file].IsAttacked.Add(piece);
 
-                    if (matrix[y][x].Piece != null)
+                    if (matrix[rank][file].Piece != null)
                     {
                         break;
                     }
@@ -74,17 +74,17 @@
             }
         }
 
-        private void AttackedSquaresY(int signY, int x, Square[][] matrix, IPiece piece)
+        private void AttackedSquaresY(int offsetY, int file, Square[][] matrix, IPiece piece)
         {
             for (int i = 1; i <= 7; i++)
             {
-                int y = piece.Position.Y + (signY * i);
+                int rank = piece.Position.Rank + (offsetY * i);
 
-                if (Position.IsInBoard(x, y))
+                if (Position.IsInBoard(file, rank))
                 {
-                    matrix[y][x].IsAttacked.Add(piece);
+                    matrix[rank][file].IsAttacked.Add(piece);
 
-                    if (matrix[y][x].Piece != null)
+                    if (matrix[rank][file].Piece != null)
                     {
                         break;
                     }
@@ -98,17 +98,17 @@
 
         private bool Movement(Position to, Position from, Square[][] matrix)
         {
-            if (to.Y != from.Y)
+            if (to.Rank != from.Rank)
             {
-                int rowDifference = Math.Abs(from.Y - to.Y) - 1;
+                int ranksBetween = Math.Abs(from.Rank - to.Rank) - 1;
 
-                for (int i = 1; i <= rowDifference; i++)
+                for (int i = 1; i <= ranksBetween; i++)
                 {
-                    int sign = from.Y < to.Y ? i : -i;
+                    int offsetY = from.Rank < to.Rank ? i : -i;
 
-                    int y = from.Y + sign;
+                    int rank = from.Rank + offsetY;
 
-                    if (matrix[y][from.X].Piece != null)
+                    if (matrix[rank][from.File].Piece != null)
                     {
                         return false;
                     }
@@ -116,15 +116,15 @@
             }
             else
             {
-                int colDifference = Math.Abs(from.X - to.X) - 1;
+                int filesBetween = Math.Abs(from.File - to.File) - 1;
 
-                for (int i = 1; i <= colDifference; i++)
+                for (int i = 1; i <= filesBetween; i++)
                 {
-                    int sign = from.X < to.X ? i : -i;
+                    int offsetX = from.File < to.File ? i : -i;
 
-                    int x = from.X + sign;
+                    int file = from.File + offsetX;
 
-                    if (matrix[from.Y][x].Piece != null)
+                    if (matrix[from.Rank][file].Piece != null)
                     {
                         return false;
                     }
@@ -134,11 +134,11 @@
             return true;
         }
 
-        private bool MoveCheck(int y, int x, Square[][] matrix, IPiece piece)
+        private bool MoveCheck(int rank, int file, Square[][] matrix, IPiece piece)
         {
-            if (Position.IsInBoard(piece.Position.X + x, piece.Position.Y + y))
+            if (Position.IsInBoard(piece.Position.File + file, piece.Position.Rank + rank))
             {
-                var checkedSquare = matrix[piece.Position.Y + y][piece.Position.X + x];
+                var checkedSquare = matrix[piece.Position.Rank + rank][piece.Position.File + file];
 
                 if (checkedSquare.Piece == null || checkedSquare.Piece.Color != piece.Color)
                 {

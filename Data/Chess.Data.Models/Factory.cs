@@ -53,9 +53,9 @@
             return new Position();
         }
 
-        public static Position GetPosition(int y, int x)
+        public static Position GetPosition(int rank, int file)
         {
-            return new Position(y, x);
+            return new Position(rank, file);
         }
 
         public static Square GetSquare()
@@ -63,18 +63,18 @@
             return new Square();
         }
 
-        public static Square GetSquare(int y, int x)
+        public static Square GetSquare(int rank, int file)
         {
-            return new Square(y, x);
+            return new Square(rank, file);
         }
 
         public static Square[][] GetMatrix()
         {
-            Square[][] matrix = new Square[GlobalConstants.BoardRows][];
+            Square[][] matrix = new Square[GlobalConstants.Ranks][];
 
-            for (int row = 0; row < GlobalConstants.BoardRows; row++)
+            for (int rank = 0; rank < GlobalConstants.Ranks; rank++)
             {
-                matrix[row] = new Square[GlobalConstants.BoardCols];
+                matrix[rank] = new Square[GlobalConstants.Files];
             }
 
             return matrix;

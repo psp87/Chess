@@ -18,18 +18,18 @@
 
         public override void IsMoveAvailable(Square[][] matrix)
         {
-            for (int x = -1; x <= 1; x++)
+            for (int offsetX = -1; offsetX <= 1; offsetX++)
             {
-                for (int y = -1; y <= 1; y++)
+                for (int offsetY = -1; offsetY <= 1; offsetY++)
                 {
-                    if (x == 0 && y == 0)
+                    if (offsetX == 0 && offsetY == 0)
                     {
                         continue;
                     }
 
-                    if (Position.IsInBoard(this.Position.X + x, this.Position.Y + y))
+                    if (Position.IsInBoard(this.Position.File + offsetX, this.Position.Rank + offsetY))
                     {
-                        var checkedSquare = matrix[this.Position.Y + y][this.Position.X + x];
+                        var checkedSquare = matrix[this.Position.Rank + offsetY][this.Position.File + offsetX];
 
                         if ((checkedSquare.Piece != null &&
                             checkedSquare.Piece.Color != this.Color &&
@@ -49,18 +49,18 @@
 
         public override void Attacking(Square[][] matrix)
         {
-            for (int x = -1; x <= 1; x++)
+            for (int offsetX = -1; offsetX <= 1; offsetX++)
             {
-                for (int y = -1; y <= 1; y++)
+                for (int offsetY = -1; offsetY <= 1; offsetY++)
                 {
-                    if (x == 0 && y == 0)
+                    if (offsetX == 0 && offsetY == 0)
                     {
                         continue;
                     }
 
-                    if (Position.IsInBoard(this.Position.X + x, this.Position.Y + y))
+                    if (Position.IsInBoard(this.Position.File + offsetX, this.Position.Rank + offsetY))
                     {
-                        matrix[this.Position.Y + y][this.Position.X + x].IsAttacked.Add(this);
+                        matrix[this.Position.Rank + offsetY][this.Position.File + offsetX].IsAttacked.Add(this);
                     }
                 }
             }
@@ -68,33 +68,33 @@
 
         public override bool Move(Position to, Square[][] matrix, int turn, Move move)
         {
-            if (!matrix[to.Y][to.X].IsAttacked.Where(x => x.Color != this.Color).Any())
+            if (!matrix[to.Rank][to.File].IsAttacked.Where(x => x.Color != this.Color).Any())
             {
-                for (int x = -1; x <= 1; x++)
+                for (int offsetX = -1; offsetX <= 1; offsetX++)
                 {
-                    for (int y = -1; y <= 1; y++)
+                    for (int offsetY = -1; offsetY <= 1; offsetY++)
                     {
-                        if (x == 0 && y == 0)
+                        if (offsetX == 0 && offsetY == 0)
                         {
                             continue;
                         }
 
-                        if (to.X == this.Position.X + x && to.Y == this.Position.Y + y)
+                        if (to.File == this.Position.File + offsetX && to.Rank == this.Position.Rank + offsetY)
                         {
                             return true;
                         }
                     }
                 }
 
-                if (this.IsFirstMove && to.Y == this.Position.Y &&
-                    (to.X == this.Position.X + 2 || to.X == this.Position.X - 2))
+                if (this.IsFirstMove && to.Rank == this.Position.Rank &&
+                    (to.File == this.Position.File + 2 || to.File == this.Position.File - 2))
                 {
-                    int sign = to.X == this.Position.X + 2 ? -1 : 1;
-                    int lastPiecePosition = to.X == this.Position.X + 2 ? 7 : 0;
+                    int sign = to.File == this.Position.File + 2 ? -1 : 1;
+                    int lastPiecePosition = to.File == this.Position.File + 2 ? 7 : 0;
 
-                    var firstSquareOnWay = matrix[this.Position.Y][to.X + sign];
-                    var secondSquareOnWay = matrix[this.Position.Y][to.X];
-                    var lastPiece = matrix[this.Position.Y][lastPiecePosition].Piece;
+                    var firstSquareOnWay = matrix[this.Position.Rank][to.File + sign];
+                    var secondSquareOnWay = matrix[this.Position.Rank][to.File];
+                    var lastPiece = matrix[this.Position.Rank][lastPiecePosition].Piece;
 
                     if (this.OccupiedSquaresCheck(to, matrix) &&
                         lastPiece is Rook &&
@@ -102,13 +102,13 @@
                         !firstSquareOnWay.IsAttacked.Where(x => x.Color != this.Color).Any() &&
                         !secondSquareOnWay.IsAttacked.Where(x => x.Color != this.Color).Any())
                     {
-                        matrix[this.Position.Y][to.X + sign].Piece = matrix[this.Position.Y][lastPiecePosition].Piece;
-                        matrix[this.Position.Y][lastPiecePosition].Piece = null;
+                        matrix[this.Position.Rank][to.File + sign].Piece = matrix[this.Position.Rank][lastPiecePosition].Piece;
+                        matrix[this.Position.Rank][lastPiecePosition].Piece = null;
 
                         move.Type = MoveType.Castling;
                         move.CastlingArgs.IsCastlingMove = true;
-                        move.CastlingArgs.RookSource = matrix[this.Position.Y][lastPiecePosition].ToString();
-                        move.CastlingArgs.RookTarget = matrix[this.Position.Y][to.X + sign].ToString();
+                        move.CastlingArgs.RookSource = matrix[this.Position.Rank][lastPiecePosition].ToString();
+                        move.CastlingArgs.RookTarget = matrix[this.Position.Rank][to.File + sign].ToString();
                         return true;
                     }
                 }
@@ -134,18 +134,18 @@
 
         private bool OccupiedSquaresCheck(Position to, Square[][] matrix)
         {
-            int colDifference = Math.Abs(this.Position.X - to.X) - 1;
+            int filesBetween = Math.Abs(this.Position.File - to.File) - 1;
 
-            if (this.Position.X > to.X)
+            if (this.Position.File > to.File)
             {
-                colDifference += 2;
+                filesBetween += 2;
             }
 
-            for (int i = 1; i <= colDifference; i++)
+            for (int i = 1; i <= filesBetween; i++)
             {
-                int sign = this.Position.X < to.X ? i : -i;
+                int sign = this.Position.File < to.File ? i : -i;
 
-                if (matrix[this.Position.Y][this.Position.X + sign].Piece != null)
+                if (matrix[this.Position.Rank][this.Position.File + sign].Piece != null)
                 {
                     return false;
                 }

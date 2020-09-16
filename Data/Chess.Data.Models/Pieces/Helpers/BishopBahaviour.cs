@@ -12,13 +12,13 @@
 
         public bool IsMoveAvailable(IPiece piece, Square[][] matrix)
         {
-            for (int i = -1; i <= 1; i += 2)
+            for (int offsetY = -1; offsetY <= 1; offsetY += 2)
             {
-                for (int k = -1; k <= 1; k += 2)
+                for (int offsetX = -1; offsetX <= 1; offsetX += 2)
                 {
-                    if (Position.IsInBoard(piece.Position.X + k, piece.Position.Y + i))
+                    if (Position.IsInBoard(piece.Position.File + offsetX, piece.Position.Rank + offsetY))
                     {
-                        var checkedSquare = matrix[piece.Position.Y + i][piece.Position.X + k];
+                        var checkedSquare = matrix[piece.Position.Rank + offsetY][piece.Position.File + offsetX];
 
                         if (checkedSquare.Piece == null || checkedSquare.Piece.Color != piece.Color)
                         {
@@ -41,10 +41,10 @@
 
         public bool Move(IPiece piece, Position to, Square[][] matrix, Move move)
         {
-            int differenceX = Math.Abs(to.X - piece.Position.X);
-            int differenceY = Math.Abs(to.Y - piece.Position.Y);
+            int filesBetween = Math.Abs(to.File - piece.Position.File);
+            int ranksBetween = Math.Abs(to.Rank - piece.Position.Rank);
 
-            if (differenceY == differenceX)
+            if (ranksBetween == filesBetween)
             {
                 if (this.Movement(to, piece.Position, matrix))
                 {
@@ -55,18 +55,18 @@
             return false;
         }
 
-        private void AttackedSquares(int signY, int signX, Square[][] matrix, IPiece piece)
+        private void AttackedSquares(int offsetY, int offsetX, Square[][] matrix, IPiece piece)
         {
             for (int i = 1; i <= 7; i++)
             {
-                int y = piece.Position.Y + (signY * i);
-                int x = piece.Position.X + (signX * i);
+                int rank = piece.Position.Rank + (offsetY * i);
+                int file = piece.Position.File + (offsetX * i);
 
-                if (Position.IsInBoard(x, y))
+                if (Position.IsInBoard(file, rank))
                 {
-                    matrix[y][x].IsAttacked.Add(piece);
+                    matrix[rank][file].IsAttacked.Add(piece);
 
-                    if (matrix[y][x].Piece != null)
+                    if (matrix[rank][file].Piece != null)
                     {
                         break;
                     }
@@ -80,24 +80,24 @@
 
         private bool Movement(Position to, Position from, Square[][] boardMatrix)
         {
-            int squaresCount = Math.Abs(from.Y - to.Y) - 1;
+            int squaresCount = Math.Abs(from.Rank - to.Rank) - 1;
 
-            if (to.Y < from.Y && to.X < from.X && this.OccupiedSquares(-1, -1, from, squaresCount, boardMatrix))
+            if (to.Rank < from.Rank && to.File < from.File && this.OccupiedSquares(-1, -1, from, squaresCount, boardMatrix))
             {
                 return true;
             }
 
-            if (to.Y > from.Y && to.X > from.X && this.OccupiedSquares(1, 1, from, squaresCount, boardMatrix))
+            if (to.Rank > from.Rank && to.File > from.File && this.OccupiedSquares(1, 1, from, squaresCount, boardMatrix))
             {
                 return true;
             }
 
-            if (to.Y < from.Y && to.X > from.X && this.OccupiedSquares(-1, 1, from, squaresCount, boardMatrix))
+            if (to.Rank < from.Rank && to.File > from.File && this.OccupiedSquares(-1, 1, from, squaresCount, boardMatrix))
             {
                 return true;
             }
 
-            if (to.Y > from.Y && to.X < from.X && this.OccupiedSquares(1, -1, from, squaresCount, boardMatrix))
+            if (to.Rank > from.Rank && to.File < from.File && this.OccupiedSquares(1, -1, from, squaresCount, boardMatrix))
             {
                 return true;
             }
@@ -105,14 +105,14 @@
             return false;
         }
 
-        private bool OccupiedSquares(int signY, int signX, Position from, int squaresCount, Square[][] boardMatrix)
+        private bool OccupiedSquares(int offsetY, int offsetX, Position from, int squaresCount, Square[][] boardMatrix)
         {
             for (int i = 1; i <= squaresCount; i++)
             {
-                int x = from.X + (signX * i);
-                int y = from.Y + (signY * i);
+                int file = from.File + (offsetX * i);
+                int rank = from.Rank + (offsetY * i);
 
-                if (boardMatrix[y][x].Piece != null)
+                if (boardMatrix[rank][file].Piece != null)
                 {
                     return false;
                 }

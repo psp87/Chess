@@ -11,7 +11,7 @@
 
     public class Board : ICloneable
     {
-        private readonly string[] letters = new string[] { "a", "b", "c", "d", "e", "f", "g", "h" };
+        private readonly string[] files = new string[] { "a", "b", "c", "d", "e", "f", "g", "h" };
 
         private readonly Dictionary<string, IPiece> setup = new Dictionary<string, IPiece>()
         {
@@ -37,46 +37,46 @@
         {
             var toggle = Color.White;
 
-            for (int row = 0; row < GlobalConstants.BoardRows; row++)
+            for (int rank = 0; rank < GlobalConstants.Ranks; rank++)
             {
-                for (int col = 0; col < GlobalConstants.BoardCols; col++)
+                for (int file = 0; file < GlobalConstants.Files; file++)
                 {
-                    var name = this.letters[col] + (8 - row);
+                    var name = this.files[file] + (8 - rank);
                     var square = new Square()
                     {
-                        Position = Factory.GetPosition(row, col),
+                        Position = Factory.GetPosition(rank, file),
                         Piece = this.setup.FirstOrDefault(x => x.Key.Equals(name)).Value,
                         Color = toggle,
                         Name = name,
                     };
 
-                    if (col != 7)
+                    if (file != 7)
                     {
                         toggle = toggle == Color.White ? Color.Black : Color.White;
                     }
 
-                    this.Matrix[row][col] = square;
+                    this.Matrix[rank][file] = square;
                 }
             }
         }
 
         public void CalculateAttackedSquares()
         {
-            for (int y = 0; y < GlobalConstants.BoardRows; y++)
+            for (int rank = 0; rank < GlobalConstants.Ranks; rank++)
             {
-                for (int x = 0; x < GlobalConstants.BoardCols; x++)
+                for (int file = 0; file < GlobalConstants.Files; file++)
                 {
-                    this.Matrix[y][x].IsAttacked.Clear();
+                    this.Matrix[rank][file].IsAttacked.Clear();
                 }
             }
 
-            for (int y = 0; y < GlobalConstants.BoardRows; y++)
+            for (int rank = 0; rank < GlobalConstants.Ranks; rank++)
             {
-                for (int x = 0; x < GlobalConstants.BoardCols; x++)
+                for (int file = 0; file < GlobalConstants.Files; file++)
                 {
-                    if (this.Matrix[y][x].Piece != null)
+                    if (this.Matrix[rank][file].Piece != null)
                     {
-                        this.Matrix[y][x].Piece.Attacking(this.Matrix);
+                        this.Matrix[rank][file].Piece.Attacking(this.Matrix);
                     }
                 }
             }
@@ -94,26 +94,26 @@
             move.Target.Piece = null;
         }
 
-        public void ShiftEnPassant(Move move, int x)
+        public void ShiftEnPassant(Move move, int offsetX)
         {
             this.ShiftPiece(move);
-            var square = this.GetSquareByCoordinates(move.Source.Position.Y, move.Source.Position.X + x);
+            var square = this.GetSquareByCoordinates(move.Source.Position.Rank, move.Source.Position.File + offsetX);
             square.Piece = null;
         }
 
-        public void ReverseEnPassant(Move move, int x)
+        public void ReverseEnPassant(Move move, int offsetX)
         {
             this.ReversePiece(move);
-            var square = this.GetSquareByCoordinates(move.Source.Position.Y, move.Source.Position.X + x);
+            var square = this.GetSquareByCoordinates(move.Source.Position.Rank, move.Source.Position.File + offsetX);
             var color = move.Source.Piece.Color == Color.White ? Color.Black : Color.White;
             square.Piece = Factory.GetPawn(color);
         }
 
         public Square GetKingSquare(Color color)
         {
-            for (int y = 0; y < GlobalConstants.BoardRows; y++)
+            for (int rank = 0; rank < GlobalConstants.Ranks; rank++)
             {
-                var kingSquare = this.Matrix[y].FirstOrDefault(x => x.Piece is King && x.Piece.Color == color);
+                var kingSquare = this.Matrix[rank].FirstOrDefault(x => x.Piece is King && x.Piece.Color == color);
 
                 if (kingSquare != null)
                 {
@@ -124,16 +124,16 @@
             return null;
         }
 
-        public Square GetSquareByCoordinates(int y, int x)
+        public Square GetSquareByCoordinates(int rank, int file)
         {
-            return this.Matrix[y][x];
+            return this.Matrix[rank][file];
         }
 
         public Square GetSquareByName(string name)
         {
-            for (int y = 0; y < GlobalConstants.BoardRows; y++)
+            for (int rank = 0; rank < GlobalConstants.Ranks; rank++)
             {
-                var square = this.Matrix[y].FirstOrDefault(x => x.Name == name);
+                var square = this.Matrix[rank].FirstOrDefault(x => x.Name == name);
 
                 if (square != null)
                 {
@@ -148,11 +148,11 @@
         {
             var board = Factory.GetBoard();
 
-            for (int row = 0; row <= 7; row++)
+            for (int rank = 0; rank < GlobalConstants.Ranks; rank++)
             {
-                for (int col = 0; col <= 7; col++)
+                for (int file = 0; file < GlobalConstants.Files; file++)
                 {
-                    board.Matrix[row][col] = this.Matrix[row][col].Clone() as Square;
+                    board.Matrix[rank][file] = this.Matrix[rank][file].Clone() as Square;
                 }
             }
 

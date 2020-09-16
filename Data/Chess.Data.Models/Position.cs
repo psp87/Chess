@@ -9,35 +9,35 @@
         {
         }
 
-        public Position(int posY, int posX)
+        public Position(int rank, int file)
         {
-            this.Y = posY;
-            this.X = posX;
+            this.Rank = rank;
+            this.File = file;
         }
 
-        public int X { get; set; }
+        public int File { get; set; }
 
-        public int Y { get; set; }
+        public int Rank { get; set; }
 
-        public static bool IsInBoard(int x, int y)
+        public static bool IsInBoard(int file, int rank)
         {
-            return x >= 0 && x <= 7 && y >= 0 && y <= 7;
+            return file >= 0 && file <= 7 && rank >= 0 && rank <= 7;
         }
 
         public override string ToString()
         {
-            return "[" + this.Y + ", " + this.X + "]";
+            return "[" + this.Rank + ", " + this.File + "]";
         }
 
         public override bool Equals(object obj)
         {
             Position other = (Position)obj;
-            return this.X == other.X && this.Y == other.Y;
+            return this.File == other.File && this.Rank == other.Rank;
         }
 
         public object Clone()
         {
-            return Factory.GetPosition(this.Y, this.X);
+            return Factory.GetPosition(this.Rank, this.File);
         }
     }
 }

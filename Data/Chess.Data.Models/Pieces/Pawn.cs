@@ -15,11 +15,11 @@
 
         public override void IsMoveAvailable(Square[][] matrix)
         {
-            int sign = this.Color == Color.White ? -1 : 1;
+            int offsetPlayer = this.Color == Color.White ? -1 : 1;
 
-            if (Position.IsInBoard(this.Position.X, this.Position.Y + (sign * 1)))
+            if (Position.IsInBoard(this.Position.File, this.Position.Rank + (offsetPlayer * 1)))
             {
-                var checkedSquare = matrix[this.Position.Y + (sign * 1)][this.Position.X];
+                var checkedSquare = matrix[this.Position.Rank + (offsetPlayer * 1)][this.Position.File];
 
                 if (checkedSquare.Piece == null)
                 {
@@ -28,9 +28,9 @@
                 }
             }
 
-            if (Position.IsInBoard(this.Position.X - 1, this.Position.Y + (sign * 1)))
+            if (Position.IsInBoard(this.Position.File - 1, this.Position.Rank + (offsetPlayer * 1)))
             {
-                var checkedSquare = matrix[this.Position.Y + (sign * 1)][this.Position.X - 1];
+                var checkedSquare = matrix[this.Position.Rank + (offsetPlayer * 1)][this.Position.File - 1];
 
                 if (checkedSquare.Piece != null && checkedSquare.Piece.Color != this.Color)
                 {
@@ -39,9 +39,9 @@
                 }
             }
 
-            if (Position.IsInBoard(this.Position.X + 1, this.Position.Y + (sign * 1)))
+            if (Position.IsInBoard(this.Position.File + 1, this.Position.Rank + (offsetPlayer * 1)))
             {
-                var checkedSquare = matrix[this.Position.Y + (sign * 1)][this.Position.X + 1];
+                var checkedSquare = matrix[this.Position.Rank + (offsetPlayer * 1)][this.Position.File + 1];
 
                 if (checkedSquare.Piece != null && checkedSquare.Piece.Color != this.Color)
                 {
@@ -55,43 +55,43 @@
 
         public override void Attacking(Square[][] matrix)
         {
-            int sign = this.Color == Color.White ? -1 : 1;
+            int offsetPlayer = this.Color == Color.White ? -1 : 1;
 
-            if (Position.IsInBoard(this.Position.X - 1, this.Position.Y + (sign * 1)))
+            if (Position.IsInBoard(this.Position.File - 1, this.Position.Rank + (offsetPlayer * 1)))
             {
-                matrix[this.Position.Y + (sign * 1)][this.Position.X - 1].IsAttacked.Add(this);
+                matrix[this.Position.Rank + (offsetPlayer * 1)][this.Position.File - 1].IsAttacked.Add(this);
             }
 
-            if (Position.IsInBoard(this.Position.X + 1, this.Position.Y + (sign * 1)))
+            if (Position.IsInBoard(this.Position.File + 1, this.Position.Rank + (offsetPlayer * 1)))
             {
-                matrix[this.Position.Y + (sign * 1)][this.Position.X + 1].IsAttacked.Add(this);
+                matrix[this.Position.Rank + (offsetPlayer * 1)][this.Position.File + 1].IsAttacked.Add(this);
             }
         }
 
         public override bool Move(Position to, Square[][] matrix, int turn, Move move)
         {
-            int sign = this.Color == Color.White ? -1 : 1;
+            int offsetPlayer = this.Color == Color.White ? -1 : 1;
 
-            if (!this.IsFirstMove && to.X == this.Position.X && to.Y == this.Position.Y + (sign * 1))
+            if (!this.IsFirstMove && to.File == this.Position.File && to.Rank == this.Position.Rank + (offsetPlayer * 1))
             {
                 var lastPosition = this.Color == Color.White ? 0 : 7;
 
-                if (to.Y == lastPosition)
+                if (to.Rank == lastPosition)
                 {
                     this.IsLastMove = true;
                 }
 
                 return true;
             }
-            else if (this.IsFirstMove && to.X == this.Position.X &&
-                (to.Y == this.Position.Y + (sign * 1) || to.Y == this.Position.Y + (sign * 2)))
+            else if (this.IsFirstMove && to.File == this.Position.File &&
+                (to.Rank == this.Position.Rank + (offsetPlayer * 1) || to.Rank == this.Position.Rank + (offsetPlayer * 2)))
             {
-                int number = to.Y == this.Position.Y + (sign * 1) ? sign * 1 : sign * 2;
+                int number = to.Rank == this.Position.Rank + (offsetPlayer * 1) ? offsetPlayer * 1 : offsetPlayer * 2;
 
-                if (number == sign * 2)
+                if (number == offsetPlayer * 2)
                 {
                     move.EnPassantArgs.Turn = turn + 1;
-                    move.EnPassantArgs.SquareAvailable = Factory.GetSquare(this.Position.Y + sign, this.Position.X);
+                    move.EnPassantArgs.SquareAvailable = Factory.GetSquare(this.Position.Rank + offsetPlayer, this.Position.File);
                 }
 
                 return true;
@@ -102,14 +102,14 @@
 
         public override bool Take(Position to, Square[][] matrix, int turn, Move move)
         {
-            int sign = this.Color == Color.White ? -1 : 1;
+            int offsetPlayer = this.Color == Color.White ? -1 : 1;
 
-            if (to.Y == this.Position.Y + (sign * 1) &&
-                (to.X == this.Position.X - 1 || to.X == this.Position.X + 1))
+            if (to.Rank == this.Position.Rank + (offsetPlayer * 1) &&
+                (to.File == this.Position.File - 1 || to.File == this.Position.File + 1))
             {
                 var lastPosition = this.Color == Color.White ? 0 : 7;
 
-                if (to.Y == lastPosition)
+                if (to.Rank == lastPosition)
                 {
                     this.IsLastMove = true;
                 }

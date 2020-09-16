@@ -191,19 +191,19 @@
 
         private bool TryEnPassantMove()
         {
-            int x = this.Move.Target.Position.X > this.Move.Source.Position.X ? 1 : -1;
-            this.ChessBoard.ShiftEnPassant(this.Move, x);
+            int offsetX = this.Move.Target.Position.File > this.Move.Source.Position.File ? 1 : -1;
+            this.ChessBoard.ShiftEnPassant(this.Move, offsetX);
             this.ChessBoard.CalculateAttackedSquares();
 
             if (this.IsPlayerChecked(this.MovingPlayer))
             {
-                this.ChessBoard.ReverseEnPassant(this.Move, x);
+                this.ChessBoard.ReverseEnPassant(this.Move, offsetX);
                 this.ChessBoard.CalculateAttackedSquares();
                 this.MovingPlayer.IsCheck = true;
                 return false;
             }
 
-            var square = this.ChessBoard.GetSquareByCoordinates(this.Move.Source.Position.Y, this.Move.Source.Position.X + x);
+            var square = this.ChessBoard.GetSquareByCoordinates(this.Move.Source.Position.Rank, this.Move.Source.Position.File + offsetX);
             this.Move.EnPassantArgs.SquareTakenPiece = square;
             this.Move.Type = MoveType.EnPassant;
             this.MovingPlayer.IsCheck = false;
@@ -270,11 +270,11 @@
 
         private bool IsStalemate()
         {
-            for (int y = 0; y < GlobalConstants.BoardRows; y++)
+            for (int rank = 0; rank < GlobalConstants.Ranks; rank++)
             {
-                for (int x = 0; x < GlobalConstants.BoardCols; x++)
+                for (int file = 0; file < GlobalConstants.Files; file++)
                 {
-                    var currentFigure = this.ChessBoard.GetSquareByCoordinates(y, x).Piece;
+                    var currentFigure = this.ChessBoard.GetSquareByCoordinates(rank, file).Piece;
 
                     if (currentFigure != null && currentFigure.Color == this.Opponent.Color)
                     {
@@ -295,11 +295,11 @@
             int counterBishopKnightWhite = 0;
             int counterBishopKnightBlack = 0;
 
-            for (int y = 0; y < GlobalConstants.BoardRows; y++)
+            for (int rank = 0; rank < GlobalConstants.Ranks; rank++)
             {
-                for (int x = 0; x < GlobalConstants.BoardCols; x++)
+                for (int file = 0; file < GlobalConstants.Files; file++)
                 {
-                    var currentFigure = this.ChessBoard.GetSquareByCoordinates(y, x).Piece;
+                    var currentFigure = this.ChessBoard.GetSquareByCoordinates(rank, file).Piece;
 
                     if (!(currentFigure == null || currentFigure is King))
                     {
@@ -414,21 +414,21 @@
         {
             var opponentKingSquare = this.ChessBoard.GetKingSquare(this.Opponent.Color);
 
-            for (int y = -1; y <= 1; y++)
+            for (int offsetY = -1; offsetY <= 1; offsetY++)
             {
-                for (int x = -1; x <= 1; x++)
+                for (int offsetX = -1; offsetX <= 1; offsetX++)
                 {
-                    if (y == 0 && x == 0)
+                    if (offsetY == 0 && offsetX == 0)
                     {
                         continue;
                     }
 
-                    var row = opponentKingSquare.Position.Y + y;
-                    var col = opponentKingSquare.Position.X + x;
+                    var rank = opponentKingSquare.Position.Rank + offsetY;
+                    var file = opponentKingSquare.Position.File + offsetX;
 
-                    if (Position.IsInBoard(row, col))
+                    if (Position.IsInBoard(file, rank))
                     {
-                        var checkedSquare = this.ChessBoard.GetSquareByCoordinates(row, col);
+                        var checkedSquare = this.ChessBoard.GetSquareByCoordinates(rank, file);
 
                         if (this.IsSquareAvailable(checkedSquare))
                         {
@@ -464,23 +464,25 @@
 
             if (!(this.Move.Target.Piece is Knight) && !(this.Move.Target.Piece is Pawn))
             {
-                int kingY = opponentKingSquare.Position.Y;
-                int kingX = opponentKingSquare.Position.X;
+                int kingRank = opponentKingSquare.Position.Rank;
+                int kingFile = opponentKingSquare.Position.File;
 
-                int attackingY = this.Move.Target.Position.Y;
-                int attackingX = this.Move.Target.Position.X;
+                int attackRank = this.Move.Target.Position.Rank;
+                int attackFile = this.Move.Target.Position.File;
 
-                if (attackingY == kingY)
+                if (attackRank == kingRank)
                 {
-                    int difference = Math.Abs(attackingX - kingX) - 1;
+                    int squaresBetween = Math.Abs(attackFile - kingFile) - 1;
 
-                    for (int i = 1; i <= difference; i++)
+                    for (int i = 1; i <= squaresBetween; i++)
                     {
-                        int sign = attackingX - kingX < 0 ? i : -i;
-                        var signPlayer = this.Opponent.Color == Color.White ? 1 : -1;
+                        int offsetX = attackFile - kingFile < 0 ? i : -i;
+                        var offsetPlayer = this.Opponent.Color == Color.White ? 1 : -1;
 
-                        var currentSquare = this.ChessBoard.GetSquareByCoordinates(kingY, attackingX + sign);
-                        var neighbourSquare = this.ChessBoard.GetSquareByCoordinates(kingY, attackingX + sign + signPlayer);
+                        var currentSquare = this.ChessBoard.GetSquareByCoordinates(kingRank, attackFile + offsetX);
+
+                        // Check offsetPlayer?
+                        var neighbourSquare = this.ChessBoard.GetSquareByCoordinates(kingRank, attackFile + offsetX + offsetPlayer);
 
                         if (currentSquare.IsAttacked.Where(x => x.Color == this.Opponent.Color && !(x is King) && !(x is Pawn)).Any() ||
                            (neighbourSquare.Piece is Pawn && neighbourSquare.Piece.Color == this.Opponent.Color))
@@ -490,14 +492,14 @@
                     }
                 }
 
-                if (attackingX == kingX)
+                if (attackFile == kingFile)
                 {
-                    int difference = Math.Abs(attackingY - kingY) - 1;
+                    int squaresBetween = Math.Abs(attackRank - kingRank) - 1;
 
-                    for (int i = 1; i <= difference; i++)
+                    for (int i = 1; i <= squaresBetween; i++)
                     {
-                        int sign = attackingY - kingY < 0 ? i : -i;
-                        var checkedSquare = this.ChessBoard.GetSquareByCoordinates(attackingY + sign, kingX);
+                        int offsetY = attackRank - kingRank < 0 ? i : -i;
+                        var checkedSquare = this.ChessBoard.GetSquareByCoordinates(attackRank + offsetY, kingFile);
 
                         if (checkedSquare.IsAttacked.Where(x => x.Color == this.Opponent.Color &&
                             !(x is King) && !(x is Pawn)).Any())
@@ -507,18 +509,18 @@
                     }
                 }
 
-                if (attackingY != kingY && attackingX != kingX)
+                if (attackRank != kingRank && attackFile != kingFile)
                 {
-                    int difference = Math.Abs(attackingY - kingY) - 1;
+                    int squaresBetween = Math.Abs(attackRank - kingRank) - 1;
 
-                    for (int i = 1; i <= difference; i++)
+                    for (int i = 1; i <= squaresBetween; i++)
                     {
-                        int signRow = attackingY - kingY < 0 ? i : -i;
-                        int signCol = attackingX - kingX < 0 ? i : -i;
-                        var signPlayer = this.Opponent.Color == Color.White ? 1 : -1;
+                        int offsetY = attackRank - kingRank < 0 ? i : -i;
+                        int offsetX = attackFile - kingFile < 0 ? i : -i;
+                        var offsetPlayer = this.Opponent.Color == Color.White ? 1 : -1;
 
-                        var currentSquare = this.ChessBoard.GetSquareByCoordinates(attackingY + signRow, attackingX + signCol);
-                        var neighbourSquare = this.ChessBoard.GetSquareByCoordinates(attackingY + signRow + signPlayer, attackingX + signCol);
+                        var currentSquare = this.ChessBoard.GetSquareByCoordinates(attackRank + offsetY, attackFile + offsetX);
+                        var neighbourSquare = this.ChessBoard.GetSquareByCoordinates(attackRank + offsetY + offsetPlayer, attackFile + offsetX);
 
                         if (currentSquare.IsAttacked.Where(x => x.Color == this.Opponent.Color && !(x is King) && !(x is Pawn)).Any() ||
                             (neighbourSquare.Piece is Pawn && neighbourSquare.Piece.Color == this.Opponent.Color))
@@ -655,22 +657,24 @@
                             square.Piece.Name.Contains(source.Piece.Name) &&
                             square.Name != source.Name).FirstOrDefault();
 
-                        var check = target.Piece == null ? string.Empty : "x";
+                        var xCheck = target.Piece == null ? string.Empty : "x";
 
-                        if (secondPieceSquare.Position.X.Equals(source.Position.X))
+                        if (secondPieceSquare.Position.File.Equals(source.Position.File))
                         {
+                            var rank = source.Name[1];
                             if (target.Piece == null)
                             {
-                                sb.Append($"{source.Piece.Symbol}{source.Name[1]}{check}{target}");
+                                sb.Append($"{source.Piece.Symbol}{rank}{xCheck}{target}");
                             }
                             else
                             {
-                                sb.Append($"{source.Piece.Symbol}{source.Name[1]}{check}{target}");
+                                sb.Append($"{source.Piece.Symbol}{rank}{xCheck}{target}");
                             }
                         }
                         else
                         {
-                            sb.Append($"{source.Piece.Symbol}{source.Name[0]}{check}{target}");
+                            var file = source.Name[0];
+                            sb.Append($"{source.Piece.Symbol}{file}{xCheck}{target}");
                         }
                     }
                     else
@@ -700,14 +704,14 @@
         {
             var positions = new List<Position>();
 
-            var sign = this.MovingPlayer.Color == Color.White ? 1 : -1;
+            var offsetPlayer = this.MovingPlayer.Color == Color.White ? 1 : -1;
 
-            int row = this.Move.Target.Position.Y + sign;
-            int colFirst = this.Move.Target.Position.X + 1;
-            int colSecond = this.Move.Target.Position.X - 1;
+            int rank = this.Move.Target.Position.Rank + offsetPlayer;
+            int fileFirst = this.Move.Target.Position.File + 1;
+            int fileSecond = this.Move.Target.Position.File - 1;
 
-            var firstAllowedPosition = Factory.GetPosition(row, colFirst);
-            var secondAllowedPosition = Factory.GetPosition(row, colSecond);
+            var firstAllowedPosition = Factory.GetPosition(rank, fileFirst);
+            var secondAllowedPosition = Factory.GetPosition(rank, fileSecond);
 
             positions.Add(firstAllowedPosition);
             positions.Add(secondAllowedPosition);
