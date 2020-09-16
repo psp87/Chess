@@ -22,6 +22,38 @@
     width: 150px;
 }
 
+#yesButton {
+    margin: 1px;
+    text-align: center;
+    background-color: #7fb57d;
+    color: white;
+    border: none;
+    width: 65px;
+    font-weight: 600;
+}
+
+#yesButton:hover {
+    background-color: #2cc72e;
+}
+
+#noButton {
+    margin: 1px;
+    text-align: center;
+    background-color: #d15a5a;
+    color: white;
+    border: none;
+    width: 65px;
+    font-weight: 600;
+}
+
+#noButton:hover {
+    background-color: #eb0c0c;
+}
+
+#yes-no-buttons {
+    margin: 4px;
+}
+
 .pieces {
     float: left;
     width: 20.00%;

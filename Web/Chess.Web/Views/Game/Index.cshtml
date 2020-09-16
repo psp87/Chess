@@ -239,8 +239,39 @@
         })
 
         connection.on("DrawOffered", function (player) {
-            let isAccepted = confirm(`${player.name} offered draw! Do you accept?`);
-            connection.invoke("OfferDrawAnswer", isAccepted);
+            let oldText = $statusText.innerText;
+            let oldColor = $statusText.style.color;
+
+            let $yes = document.createElement("button");
+            $yes.innerText = "YES";
+            $yes.setAttribute("id", "yesButton");
+            $yes.classList.add('btn', 'btn-primary');
+            
+            let $no = document.createElement("button");
+            $no.innerText = "NO";
+            $no.setAttribute("id", "noButton");
+            $no.classList.add('btn', 'btn-primary');
+
+            $statusText.style.color = "black";
+            $statusText.innerText = `Draw offer by ${player.name}! Do you accept?`;
+
+            let $div = document.createElement("div");
+            $div.setAttribute("id", "yes-no-buttons")
+            $div.appendChild($yes);
+            $div.appendChild($no);
+            $statusText.appendChild($div);
+
+            $yes.addEventListener("click", function () {
+                connection.invoke("OfferDrawAnswer", true);
+                $statusText.innerText = oldText;
+                $statusText.style.color = oldColor;
+            });
+
+            $no.addEventListener("click", function () {
+                connection.invoke("OfferDrawAnswer", false);
+                $statusText.innerText = oldText;
+                $statusText.style.color = oldColor;
+            });
         })
 
         connection.on("DrawOfferRejected", function (player) {
