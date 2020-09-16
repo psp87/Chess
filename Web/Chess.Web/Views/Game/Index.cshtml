@@ -305,16 +305,22 @@
             updateStatus(movingPlayerName);
         })
 
-        connection.on("HighlightMove", function (source, target) {
-            removeHighlight();
+        connection.on("HighlightMove", function (source, target, player) {
             let $source = document.getElementsByClassName("square-" + source);
-            $source[0].className += " highlight";
             let $target = document.getElementsByClassName("square-" + target);
-            $target[0].className += " highlight";
+            if (player.name === playerOneName) {
+                removeHighlight("black");
+                $source[0].className += " highlight-white";
+                $target[0].className += " highlight-white";
+            } else {
+                removeHighlight("white");
+                $source[0].className += " highlight-black";
+                $target[0].className += " highlight-black";
+            }
         })
 
-        function removeHighlight() {
-            let $squares = document.querySelectorAll(".highlight");
+        function removeHighlight(color) {
+            let $squares = document.querySelectorAll(`.highlight-${color}`);
             for (let i = 0; i < $squares.length; i++) {
                 $squares[i].className = $squares[i].className.replace(/\bhighlight\b/g, '');
             }

@@ -59,7 +59,7 @@
             if (game.GameOver.ToString() == GameOver.None.ToString())
             {
                 await this.Clients.Group(game.Id).SendAsync("UpdateStatus", game.MovingPlayer.Name);
-                await this.Clients.Group(game.Id).SendAsync("HighlightMove", source, target);
+                await this.Clients.Group(game.Id).SendAsync("HighlightMove", source, target, game.Opponent);
             }
 
             if (game.Move.Type != MoveType.Normal)
