@@ -64,10 +64,14 @@
     width: 150px;
 }
 
+#game-options button:hover {
+        background-color: #557d5f;
+    }
+
 #yes-button {
     margin: 1px;
     text-align: center;
-    background-color: #7fb57d;
+    background-color: #557d5f;
     color: white;
     border: none;
     width: 65px;
@@ -75,7 +79,7 @@
 }
 
 #yes-button:hover {
-        background-color: #2cc72e;
+        background-color: #78b086;
     }
 
 #no-button {
