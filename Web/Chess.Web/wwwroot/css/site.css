@@ -4,16 +4,58 @@
     background-attachment: fixed;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 #board {
     width: 530px;
     margin: auto;
 }
 
-#whiteStats, #blackStats, #boardMain {
+.playground {
     display: none;
 }
 
-#gameOptions button {
+.points {
+    font-size: 18px;
+}
+
+.pieces {
+    float: left;
+    width: 20.00%;
+}
+
+.move-history {
+    align-items: center;
+}
+
+.list-group-item {
+    padding: 3px;
+    text-align: left;
+    width: 50%;
+    text-indent: 10px;
+}
+
+#black-move-history .list-group-item {
+    background-color: black;
+    color: white;
+    border-color: lightgray;
+}
+
+.highlight-white {
+    -webkit-box-shadow: inset 0 0 3px 3px yellow;
+    -moz-box-shadow: inset 0 0 3px 3px yellow;
+    box-shadow: inset 0 0 3px 3px yellow;
+}
+
+.highlight-black {
+    -webkit-box-shadow: inset 0 0 3px 3px blue;
+    -moz-box-shadow: inset 0 0 3px 3px blue;
+    box-shadow: inset 0 0 3px 3px blue;
+}
+
+#game-options button {
     margin-top: 10px;
     text-align: center;
     background-color: #454a52;
@@ -22,7 +64,7 @@
     width: 150px;
 }
 
-#yesButton {
+#yes-button {
     margin: 1px;
     text-align: center;
     background-color: #7fb57d;
@@ -32,11 +74,11 @@
     font-weight: 600;
 }
 
-#yesButton:hover {
-    background-color: #2cc72e;
-}
+#yes-button:hover {
+        background-color: #2cc72e;
+    }
 
-#noButton {
+#no-button {
     margin: 1px;
     text-align: center;
     background-color: #d15a5a;
@@ -46,21 +88,17 @@
     font-weight: 600;
 }
 
-#noButton:hover {
-    background-color: #eb0c0c;
-}
+#no-button:hover {
+        background-color: #eb0c0c;
+    }
 
 #yes-no-buttons {
     margin: 4px;
 }
 
-.pieces {
-    float: left;
-    width: 20.00%;
-}
-
-* {
-    box-sizing: border-box;
+#find-game {
+    background-color: #454a52;
+    color: white;
 }
 
 .column {
@@ -82,43 +120,26 @@
     clear: both;
 }
 
-.list-group-item {
-    padding: 3px;
-    text-align: left;
-    width: 50%;
-    text-indent: 10px;
-}
-
-#whiteMoveHistory, #blackMoveHistory {
-    align-items: center;
-}
-
-#blackMoveHistory .list-group-item {
-    background-color: black;
-    color: white;
-    border-color: lightgray;
-}
-
-.chessText {
+.chess-text {
     width: 100%;
     margin-left: auto;
     margin-right: auto;
     text-align: justify;
 }
 
-.chessImage {
+.chess-image {
     position: relative;
     width: 100%;
     margin-left: auto;
     margin-right: auto;
 }
 
-.chessImage img {
+.chess-image img {
     width: 100%;
     height: auto;
 }
 
-.chessImage .btn {
+.chess-image .btn {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -134,8 +155,9 @@
     width: 15%;
 }
 
-.chessImage .btn:hover {
-    background-color: green;
+.chess-image .btn:hover {
+    background-color: #a2d1a1;
+    color: black;
 }
 
 .about {
@@ -148,10 +170,6 @@
 .about h2 {
     text-align: center;
     font-variant: small-caps;
-}
-
-#whitePoints, #blackPoints {
-    font-size: 18px;
 }
 
 #title {
@@ -176,38 +194,19 @@
     font-size: small;
 }
 
-#aboutImage {
+#about-image {
     width: 100%;
 }
 
-#aboutHead {
+#about-head {
     background-color: #454a52;
     color: white;
     padding: 3px;
     letter-spacing: 1px;
 }
 
-#findGame {
-    background-color: #454a52;
-    color: white;
-}
 
-.highlight-white {
-    -webkit-box-shadow: inset 0 0 3px 3px yellow;
-    -moz-box-shadow: inset 0 0 3px 3px yellow;
-    box-shadow: inset 0 0 3px 3px yellow;
-}
-
-.highlight-black {
-    -webkit-box-shadow: inset 0 0 3px 3px blue;
-    -moz-box-shadow: inset 0 0 3px 3px blue;
-    box-shadow: inset 0 0 3px 3px blue;
-}
-
-
-
-/* Sticky footer styles
--------------------------------------------------- */
+/* Sticky footer styles */
 html {
     font-size: 14px;
 }
@@ -235,8 +234,7 @@ button.accept-policy {
     line-height: inherit;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
+/* Sticky footer styles */
 html {
     position: relative;
     min-height: 100%;

@@ -6,65 +6,65 @@
 <script src="~/js/chessboard-1.0.0.min.js"></script>
 
 <main id="main" class="container-fluid text-center">
-    <div class="row">
+    <div class="row playground">
         <div class="column left">
-            <div id="whiteStats">
-                <h1><i class="far fa-user fa-sm"></i> <span id="whiteName"></span></h1>
-                <p id="whitePoints"><span id="whitePointsValue">0</span> pts</p>
-                <div id="whiteTakenPieces">
-                    <div id="blackPawn" class="pieces"><img src="~/img/chesspieces/wikipedia/bP.png" alt="Pawn: " width="33" height="33" /><span id="blackPawnsTaken">0</span></div>
-                    <div id="blackKnight" class="pieces"><img src="~/img/chesspieces/wikipedia/bN.png" alt="Knight: " width="33" height="33" /><span id="blackKnightsTaken">0</span></div>
-                    <div id="blackBishop" class="pieces"><img src="~/img/chesspieces/wikipedia/bB.png" alt="Bishop: " width="33" height="33" /><span id="blackBishopsTaken">0</span></div>
-                    <div id="blackRook" class="pieces"><img src="~/img/chesspieces/wikipedia/bR.png" alt="Rook: " width="33" height="33" /><span id="blackRooksTaken">0</span></div>
-                    <div id="blackQueen" class="pieces"><img src="~/img/chesspieces/wikipedia/bQ.png" alt="Queen: " width="33" height="33" /><span id="blackQueensTaken">0</span></div>
+            <div id="white-stats" class="stats">
+                <h1><i class="far fa-user fa-sm"></i> <span id="white-name"></span></h1>
+                <p id="white-points" class="points"><span id="white-points-value">0</span> pts</p>
+                <div id="white-taken-pieces">
+                    <div id="black-pawn" class="pieces"><img src="~/img/chesspieces/wikipedia/bP.png" alt="Pawn: " width="33" height="33" /><span id="black-pawns-taken">0</span></div>
+                    <div id="black-knight" class="pieces"><img src="~/img/chesspieces/wikipedia/bN.png" alt="Knight: " width="33" height="33" /><span id="black-knights-taken">0</span></div>
+                    <div id="black-bishop" class="pieces"><img src="~/img/chesspieces/wikipedia/bB.png" alt="Bishop: " width="33" height="33" /><span id="black-bishops-taken">0</span></div>
+                    <div id="black-rook" class="pieces"><img src="~/img/chesspieces/wikipedia/bR.png" alt="Rook: " width="33" height="33" /><span id="black-rooks-taken">0</span></div>
+                    <div id="black-queen" class="pieces"><img src="~/img/chesspieces/wikipedia/bQ.png" alt="Queen: " width="33" height="33" /><span id="black-queens-taken">0</span></div>
                 </div>
                 <div>
                     <br />
                     <br />
-                    <ul id="whiteMoveHistory" class="list-group"></ul>
+                    <ul id="white-move-history" class="list-group move-history"></ul>
                 </div>
             </div>
         </div>
         <div class="column middle">
-            <div id="boardMain">
-                <h6 id="status"><i class="fas fa-arrow-alt-circle-right"></i> <span id="statusText"></span><span id="statusCheck"></span> </h6>
+            <div id="board-main" class="board-box">
+                <h6 id="status"><i class="fas fa-arrow-alt-circle-right"></i> <span id="status-text"></span><span id="status-check"></span> </h6>
                 <div id="board"></div>
-                <div id="gameOptions">
-                    <button type="submit" id="threefoldDraw" class="btn btn-primary" disabled><i class="fas fa-equals"></i> Declare 3F Draw</button>
-                    <button type="submit" id="offerDraw" class="btn btn-primary"><i class="far fa-handshake"></i> Offer Draw</button>
+                <div id="game-options" class="option-buttons">
+                    <button type="submit" id="threefold-draw" class="btn btn-primary" disabled><i class="fas fa-equals"></i> Declare 3F Draw</button>
+                    <button type="submit" id="offer-draw" class="btn btn-primary"><i class="far fa-handshake"></i> Offer Draw</button>
                     <button type="submit" id="resign" class="btn btn-primary"><i class="far fa-flag"></i> Resign</button>
                 </div>
             </div>
         </div>
         <div class="column right">
-            <div id="blackStats">
-                <h1><i class="fas fa-user fa-sm"></i> <span id="blackName"></span></h1>
-                <p id="blackPoints"><span id="blackPointsValue">0</span> pts</p>
-                <div id="blackTakenPieces">
-                    <div id="whitePawn" class="pieces"><img src="~/img/chesspieces/wikipedia/wP.png" alt="Pawn: " width="33" height="33" style="align-content: center" /><span id="whitePawnsTaken">0</span></div>
-                    <div id="whiteKnight" class="pieces"><img src="~/img/chesspieces/wikipedia/wN.png" alt="Knight: " width="33" height="33" style="align-content: center" /><span id="whiteKnightsTaken">0</span></div>
-                    <div id="whiteBishop" class="pieces"><img src="~/img/chesspieces/wikipedia/wB.png" alt="Bishop: " width="33" height="33" style="align-content: center" /><span id="whiteBishopsTaken">0</span></div>
-                    <div id="whiteRook" class="pieces"><img src="~/img/chesspieces/wikipedia/wR.png" alt="Rook: " width="33" height="33" style="align-content: center" /><span id="whiteRooksTaken">0</span></div>
-                    <div id="whiteQueen" class="pieces"><img src="~/img/chesspieces/wikipedia/wQ.png" alt="Queen: " width="33" height="33" style="align-content: center" /><span id="whiteQueensTaken">0</span></div>
+            <div id="black-stats" class="stats">
+                <h1><i class="fas fa-user fa-sm"></i> <span id="black-name"></span></h1>
+                <p id="black-points" class="points"><span id="black-points-value">0</span> pts</p>
+                <div id="black-taken-pieces">
+                    <div id="white-pawn" class="pieces"><img src="~/img/chesspieces/wikipedia/wP.png" alt="Pawn: " width="33" height="33" style="align-content: center" /><span id="white-pawns-taken">0</span></div>
+                    <div id="white-knight" class="pieces"><img src="~/img/chesspieces/wikipedia/wN.png" alt="Knight: " width="33" height="33" style="align-content: center" /><span id="white-knights-taken">0</span></div>
+                    <div id="white-bishop" class="pieces"><img src="~/img/chesspieces/wikipedia/wB.png" alt="Bishop: " width="33" height="33" style="align-content: center" /><span id="white-bishops-taken">0</span></div>
+                    <div id="white-rook" class="pieces"><img src="~/img/chesspieces/wikipedia/wR.png" alt="Rook: " width="33" height="33" style="align-content: center" /><span id="white-rooks-taken">0</span></div>
+                    <div id="white-queen" class="pieces"><img src="~/img/chesspieces/wikipedia/wQ.png" alt="Queen: " width="33" height="33" style="align-content: center" /><span id="white-queens-taken">0</span></div>
                 </div>
                 <div>
                     <br />
                     <br />
-                    <ul id="blackMoveHistory" class="list-group"></ul>
+                    <ul id="black-move-history" class="list-group move-history"></ul>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="findOpponent" class="row m-5">
+    <div id="find-opponent" class="row m-5 find-box">
         <div class="mx-auto my-auto text-center">
             <p id="label" class="row help-block m-3 text-center">Enter your game nickname:</p>
             <div class="form-inline">
-                <div class="form-group mr-2" id="usernameGroup">
+                <div class="form-group mr-2" id="username-group">
                     <label class="sr-only control-label" for="username">Username</label>
                     <input type="text" class="form-control" id="username" value="@this.User.Identity.Name" autofocus />
                 </div>
-                <button type="submit" id="findGame" class="btn btn-primary">Find Game</button>
+                <button type="submit" id="find-game" class="btn btn-primary">Find Game</button>
                 <p id="hidden" class="help-block" style="visibility:hidden"></p>
             </div>
         </div>
@@ -82,38 +82,33 @@
         let playerOneName;
         let playerTwoName;
 
-        let $findGame = document.getElementById('findGame');
-        let $board = document.getElementById('board');
+        let $playground = document.querySelector('.playground');
+        let $statusText = document.querySelector('#status-text');
+        let $statusCheck = document.querySelector('#status-check');
 
-        let $whiteStats = document.getElementById('whiteStats');
-        let $boardMain = document.getElementById('boardMain');
-        let $blackStats = document.getElementById('blackStats');
-        let $statusText = document.getElementById('statusText');
-        let $statusCheck = document.getElementById('statusCheck');
-        let $whiteMoveHistory = document.getElementById('whiteMoveHistory');
-        let $blackMoveHistory = document.getElementById('blackMoveHistory');
+        let $whitePointsValue = document.querySelector('#white-points-value');
+        let $whiteMoveHistory = document.querySelector('#white-move-history');
+        let $blackPawnsTaken = document.querySelector('#black-pawns-taken');
+        let $blackKnightsTaken = document.querySelector('#black-knights-taken');
+        let $blackBishopsTaken = document.querySelector('#black-bishops-taken');
+        let $blackRooksTaken = document.querySelector('#black-rooks-taken');
+        let $blackQueensTaken = document.querySelector('#black-queens-taken');
 
-        let $whitePointsValue = document.getElementById('whitePointsValue');
-        let $blackPawnsTaken = document.getElementById('blackPawnsTaken');
-        let $blackKnightsTaken = document.getElementById('blackKnightsTaken');
-        let $blackBishopsTaken = document.getElementById('blackBishopsTaken');
-        let $blackRooksTaken = document.getElementById('blackRooksTaken');
-        let $blackQueensTaken = document.getElementById('blackQueensTaken');
+        let $blackPointsValue = document.querySelector('#black-points-value');
+        let $blackMoveHistory = document.querySelector('#black-move-history');
+        let $whitePawnsTaken = document.querySelector('#white-pawns-taken');
+        let $whiteKnightsTaken = document.querySelector('#white-knights-taken');
+        let $whiteBishopsTaken = document.querySelector('#white-bishops-taken');
+        let $whiteRooksTaken = document.querySelector('#white-rooks-taken');
+        let $whiteQueensTaken = document.querySelector('#white-queens-taken');
 
-        let $blackPointsValue = document.getElementById('blackPointsValue');
-        let $whitePawnsTaken = document.getElementById('whitePawnsTaken');
-        let $whiteKnightsTaken = document.getElementById('whiteKnightsTaken');
-        let $whiteBishopsTaken = document.getElementById('whiteBishopsTaken');
-        let $whiteRooksTaken = document.getElementById('whiteRooksTaken');
-        let $whiteQueensTaken = document.getElementById('whiteQueensTaken');
-
-        $('#findGame').click(function () {
+        $('#find-game').click(function () {
             let name = $('#username').val();
             connection.invoke("FindGame", name);
-            $findGame.disabled = true;
+            document.querySelector('#find-game').disabled = true;
         })
 
-        $('#threefoldDraw').click(function () {
+        $('#threefold-draw').click(function () {
             connection.invoke("IsThreefoldDraw");
         })
 
@@ -121,10 +116,13 @@
             connection.invoke("Resign");
         })
 
-        $('#offerDraw').click(function () {
+        $('#offer-draw').click(function () {
             let oldText = $statusText.innerText;
+            let oldColor = $statusText.style.color;
+            $statusText.style.color = "black";
             $statusText.innerText = `Draw request sent!`;
             sleep(1500).then(() => {
+                $statusText.style.color = oldColor;
                 $statusText.innerText = oldText;
             })
             connection.invoke("OfferDrawRequest");
@@ -140,19 +138,16 @@
 
         connection.on("Start", function (game) {
             if (game.id != "") {
-                document.getElementById('findOpponent').style.display = "none";
-                $whiteStats.style.display = "block";
-                $boardMain.style.display = "block";
-                $blackStats.style.display = "block";
+                document.querySelector('.find-box').style.display = "none";
+                $playground.style.display = "block";
 
                 playerColor = (playerId == game.player1.id) ? game.player1.color : game.player2.color;
                 playerName = (playerId == game.player1.id) ? game.player1.name : game.player2.name;
                 playerOneName = game.player1.name;
                 playerTwoName = game.player2.name;
 
-                document.getElementById('whiteName').innerText = playerOneName;
-                document.getElementById('blackName').innerText = playerTwoName;
-
+                document.querySelector('#white-name').innerText = playerOneName;
+                document.querySelector('#black-name').innerText = playerTwoName;
                 updateStatus(game.movingPlayer.name);
             }
         })
@@ -188,8 +183,7 @@
 
         connection.on("GameOver", function (player, gameOver) {
             $statusText.style.color = "purple";
-            $board.style.pointerEvents = "none";
-
+            document.querySelector('#board').style.pointerEvents = "none";
             switch (gameOver) {
                 case 1: {
                     $statusText.innerText = `CHECKMATE! ${player.name.toUpperCase()} WON THE GAME!`;
@@ -207,16 +201,15 @@
                 case 6: $statusText.innerText = `${player.name.toUpperCase()} RESIGNED!`;
                     break;
             }
-
-            $('#offerDraw').prop("disabled", true);
+            $('#offer-draw').prop("disabled", true);
             $('#resign').prop("disabled", true);
         })
 
         connection.on("ThreefoldAvailable", function (player, isAvailable) {
             if (isAvailable) {
-                $('#threefoldDraw').removeAttr('disabled');
+                $('#threefold-draw').removeAttr('disabled');
             } else {
-                $('#threefoldDraw').attr('disabled', 'disabled');
+                $('#threefold-draw').attr('disabled', 'disabled');
             }
         })
 
@@ -244,12 +237,12 @@
 
             let $yes = document.createElement("button");
             $yes.innerText = "YES";
-            $yes.setAttribute("id", "yesButton");
+            $yes.setAttribute("id", "yes-button");
             $yes.classList.add('btn', 'btn-primary');
             
             let $no = document.createElement("button");
             $no.innerText = "NO";
-            $no.setAttribute("id", "noButton");
+            $no.setAttribute("id", "no-button");
             $no.classList.add('btn', 'btn-primary');
 
             $statusText.style.color = "black";
@@ -276,8 +269,11 @@
 
         connection.on("DrawOfferRejected", function (player) {
             let oldText = $statusText.innerText;
-            $statusText.innerText = `REJECTED BY ${player.name.toUpperCase()}!`;
+            let oldColor = $statusText.style.color;
+            $statusText.style.color = "black";
+            $statusText.innerText = `Rejected by ${player.name}!`;
             sleep(1500).then(() => {
+                $statusText.style.color = oldColor;
                 $statusText.innerText = oldText;
             })
         })
