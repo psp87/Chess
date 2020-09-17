@@ -106,12 +106,13 @@
                 this.MovingPlayer.Color == this.Move.Source.Piece.Color &&
                 this.Move.Source.Piece.Move(this.Move.Target.Position, this.ChessBoard.Matrix, this.Turn, this.Move))
             {
-                if (!this.TryMove())
+                if (!this.TryMove(this.MovingPlayer, this.Move))
                 {
                     this.MovingPlayer.IsCheck = true;
                     return false;
                 }
 
+                this.MovingPlayer.IsCheck = false;
                 this.Move.Target.Piece.IsFirstMove = false;
                 return true;
             }
@@ -128,12 +129,13 @@
             {
                 var piece = this.Move.Target.Piece;
 
-                if (!this.TryMove())
+                if (!this.TryMove(this.MovingPlayer, this.Move))
                 {
                     this.MovingPlayer.IsCheck = true;
                     return false;
                 }
 
+                this.MovingPlayer.IsCheck = false;
                 this.Move.Target.Piece.IsFirstMove = false;
                 this.MovingPlayer.TakeFigure(piece.Name);
                 this.MovingPlayer.Points += piece.Points;
@@ -162,6 +164,7 @@
                         return false;
                     }
 
+                    this.MovingPlayer.IsCheck = false;
                     this.MovingPlayer.TakeFigure(this.Move.Target.Piece.Name);
                     this.MovingPlayer.Points += this.Move.Target.Piece.Points;
                     this.OnTakePiece?.Invoke(this.MovingPlayer, new TakePieceEventArgs(this.Move.Target.Piece.Name, this.MovingPlayer.Points));
@@ -173,19 +176,18 @@
             return false;
         }
 
-        private bool TryMove()
+        private bool TryMove(Player player, Move move)
         {
-            this.ChessBoard.ShiftPiece(this.Move);
+            this.ChessBoard.ShiftPiece(move);
             this.ChessBoard.CalculateAttackedSquares();
 
-            if (this.IsPlayerChecked(this.MovingPlayer))
+            if (this.IsPlayerChecked(player))
             {
-                this.ChessBoard.ReversePiece(this.Move);
+                this.ChessBoard.ReversePiece(move);
                 this.ChessBoard.CalculateAttackedSquares();
                 return false;
             }
 
-            this.MovingPlayer.IsCheck = false;
             return true;
         }
 
@@ -199,14 +201,12 @@
             {
                 this.ChessBoard.ReverseEnPassant(this.Move, offsetX);
                 this.ChessBoard.CalculateAttackedSquares();
-                this.MovingPlayer.IsCheck = true;
                 return false;
             }
 
             var square = this.ChessBoard.GetSquareByCoordinates(this.Move.Source.Position.Rank, this.Move.Source.Position.File + offsetX);
             this.Move.EnPassantArgs.SquareTakenPiece = square;
             this.Move.Type = MoveType.EnPassant;
-            this.MovingPlayer.IsCheck = false;
             return true;
         }
 
@@ -432,7 +432,14 @@
 
                         if (this.IsSquareAvailable(checkedSquare))
                         {
-                            return true;
+                            var move = Factory.GetMove(opponentKingSquare, checkedSquare);
+
+                            if (this.TryMove(this.Opponent, move))
+                            {
+                                this.ChessBoard.ReversePiece(move);
+                                this.ChessBoard.CalculateAttackedSquares();
+                                return true;
+                            }
                         }
                     }
                 }
@@ -445,13 +452,24 @@
         {
             if (this.Move.Target.IsAttacked.Where(x => x.Color == this.Opponent.Color).Any())
             {
-                if (this.Move.Target.IsAttacked.Count(x => x.Color == this.Opponent.Color) > 1)
+                if (this.Move.Target.IsAttacked.Count(x => x.Color == this.Opponent.Color) > 1 ||
+                    !(this.Move.Target.IsAttacked.Where(x => x.Color == this.Opponent.Color).First() is King))
                 {
-                    return true;
-                }
-                else if (!(this.Move.Target.IsAttacked.Where(x => x.Color == this.Opponent.Color).First() is King))
-                {
-                    return true;
+                    var defendPieces = this.Move.Target.IsAttacked.Where(x => x.Color == this.Opponent.Color).ToArray();
+
+                    for (int i = 0; i < defendPieces.Length; i++)
+                    {
+                        var currentDefendPosition = defendPieces[i].Position;
+                        var currentDefendSquare = this.ChessBoard.Matrix.SelectMany(x => x).Where(y => y.Position.Equals(currentDefendPosition)).FirstOrDefault();
+                        var move = Factory.GetMove(currentDefendSquare, this.Move.Target);
+
+                        if (this.TryMove(this.Opponent, move))
+                        {
+                            this.ChessBoard.ReversePiece(move);
+                            this.ChessBoard.CalculateAttackedSquares();
+                            return true;
+                        }
+                    }
                 }
             }
 

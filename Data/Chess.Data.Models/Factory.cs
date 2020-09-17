@@ -99,5 +99,10 @@
         {
             return new Move();
         }
+
+        public static Move GetMove(Square source, Square target)
+        {
+            return new Move(source, target);
+        }
     }
 }

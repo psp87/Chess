@@ -17,6 +17,13 @@
             this.Type = MoveType.Normal;
         }
 
+        public Move(Square source, Square target)
+            : this()
+        {
+            this.Source = source;
+            this.Target = target;
+        }
+
         public Square Source { get; set; }
 
         public Square Target { get; set; }
