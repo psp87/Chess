@@ -178,14 +178,21 @@
 
         private bool TryMove(Player player, Move move)
         {
+            var oldPiece = move.Target.Piece;
             this.ChessBoard.ShiftPiece(move);
             this.ChessBoard.CalculateAttackedSquares();
 
             if (this.IsPlayerChecked(player))
             {
-                this.ChessBoard.ReversePiece(move);
+                this.ChessBoard.ReversePiece(move, oldPiece);
                 this.ChessBoard.CalculateAttackedSquares();
                 return false;
+            }
+
+            if (player == this.Opponent)
+            {
+                this.ChessBoard.ReversePiece(move, oldPiece);
+                this.ChessBoard.CalculateAttackedSquares();
             }
 
             return true;
@@ -436,8 +443,6 @@
 
                             if (this.TryMove(this.Opponent, move))
                             {
-                                this.ChessBoard.ReversePiece(move);
-                                this.ChessBoard.CalculateAttackedSquares();
                                 return true;
                             }
                         }
@@ -450,23 +455,26 @@
 
         private bool IsAbleToTakeAttackingPiece()
         {
-            if (this.Move.Target.IsAttacked.Where(x => x.Color == this.Opponent.Color).Any())
+            var opponentKingSquare = this.ChessBoard.GetKingSquare(this.Opponent.Color);
+            var attackPiece = opponentKingSquare.IsAttacked.Where(x => x.Color == this.MovingPlayer.Color).FirstOrDefault();
+            var attackSquare = this.ChessBoard.Matrix.SelectMany(x => x).Where(y => y.Position.Equals(attackPiece.Position)).FirstOrDefault();
+
+            if (attackSquare.IsAttacked.Where(x => x.Color == this.Opponent.Color).Any())
             {
-                if (this.Move.Target.IsAttacked.Count(x => x.Color == this.Opponent.Color) > 1 ||
-                    !(this.Move.Target.IsAttacked.Where(x => x.Color == this.Opponent.Color).First() is King))
+                if (attackSquare.IsAttacked.Count(x => x.Color == this.Opponent.Color) > 1 ||
+                    !(attackSquare.IsAttacked.Where(x => x.Color == this.Opponent.Color).First() is King))
                 {
-                    var defendPieces = this.Move.Target.IsAttacked.Where(x => x.Color == this.Opponent.Color).ToArray();
+                    var defendPieces = attackSquare.IsAttacked.Where(x => x.Color == this.Opponent.Color).ToArray();
 
                     for (int i = 0; i < defendPieces.Length; i++)
                     {
                         var currentDefendPosition = defendPieces[i].Position;
                         var currentDefendSquare = this.ChessBoard.Matrix.SelectMany(x => x).Where(y => y.Position.Equals(currentDefendPosition)).FirstOrDefault();
-                        var move = Factory.GetMove(currentDefendSquare, this.Move.Target);
+
+                        var move = Factory.GetMove(currentDefendSquare, attackSquare);
 
                         if (this.TryMove(this.Opponent, move))
                         {
-                            this.ChessBoard.ReversePiece(move);
-                            this.ChessBoard.CalculateAttackedSquares();
                             return true;
                         }
                     }
@@ -479,14 +487,16 @@
         private bool CanOtherPieceBlockTheCheck()
         {
             var opponentKingSquare = this.ChessBoard.GetKingSquare(this.Opponent.Color);
+            var attackPiece = opponentKingSquare.IsAttacked.Where(x => x.Color == this.MovingPlayer.Color).FirstOrDefault();
+            var attackSquare = this.ChessBoard.Matrix.SelectMany(x => x).Where(y => y.Position.Equals(attackPiece.Position)).FirstOrDefault();
 
-            if (!(this.Move.Target.Piece is Knight) && !(this.Move.Target.Piece is Pawn))
+            if (!(attackPiece is Knight) && !(attackPiece is Pawn))
             {
                 int kingRank = opponentKingSquare.Position.Rank;
                 int kingFile = opponentKingSquare.Position.File;
 
-                int attackRank = this.Move.Target.Position.Rank;
-                int attackFile = this.Move.Target.Position.File;
+                int attackRank = attackSquare.Position.Rank;
+                int attackFile = attackSquare.Position.File;
 
                 if (attackRank == kingRank)
                 {

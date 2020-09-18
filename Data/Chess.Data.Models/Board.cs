@@ -88,10 +88,10 @@
             move.Source.Piece = null;
         }
 
-        public void ReversePiece(Move move)
+        public void ReversePiece(Move move, IPiece piece)
         {
             move.Source.Piece = move.Target.Piece;
-            move.Target.Piece = null;
+            move.Target.Piece = piece;
         }
 
         public void ShiftEnPassant(Move move, int offsetX)
@@ -103,7 +103,7 @@
 
         public void ReverseEnPassant(Move move, int offsetX)
         {
-            this.ReversePiece(move);
+            this.ReversePiece(move, null);
             var square = this.GetSquareByCoordinates(move.Source.Position.Rank, move.Source.Position.File + offsetX);
             var color = move.Source.Piece.Color == Color.White ? Color.Black : Color.White;
             square.Piece = Factory.GetPawn(color);
