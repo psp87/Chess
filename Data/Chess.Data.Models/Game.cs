@@ -266,7 +266,7 @@
 
         private bool IsCheckmate()
         {
-            if (!this.IsKingAbleToMove() && !this.IsAbleToTakeAttackingPiece() && !this.CanOtherPieceBlockTheCheck())
+            if (!this.IsAbleToMoveKing() && !this.IsAbleToTakeAttackingPiece() && !this.IsAbleToBlockCheck())
             {
                 this.Opponent.IsCheckMate = true;
                 return true;
@@ -417,7 +417,7 @@
             }
         }
 
-        private bool IsKingAbleToMove()
+        private bool IsAbleToMoveKing()
         {
             var opponentKingSquare = this.ChessBoard.GetKingSquare(this.Opponent.Color);
 
@@ -464,19 +464,9 @@
                 if (attackSquare.IsAttacked.Count(x => x.Color == this.Opponent.Color) > 1 ||
                     !(attackSquare.IsAttacked.Where(x => x.Color == this.Opponent.Color).First() is King))
                 {
-                    var defendPieces = attackSquare.IsAttacked.Where(x => x.Color == this.Opponent.Color).ToArray();
-
-                    for (int i = 0; i < defendPieces.Length; i++)
+                    if (this.IsMoveLegal(attackSquare))
                     {
-                        var currentDefendPosition = defendPieces[i].Position;
-                        var currentDefendSquare = this.ChessBoard.Matrix.SelectMany(x => x).Where(y => y.Position.Equals(currentDefendPosition)).FirstOrDefault();
-
-                        var move = Factory.GetMove(currentDefendSquare, attackSquare);
-
-                        if (this.TryMove(this.Opponent, move))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
             }
@@ -484,19 +474,19 @@
             return false;
         }
 
-        private bool CanOtherPieceBlockTheCheck()
+        private bool IsAbleToBlockCheck()
         {
             var opponentKingSquare = this.ChessBoard.GetKingSquare(this.Opponent.Color);
             var attackPiece = opponentKingSquare.IsAttacked.Where(x => x.Color == this.MovingPlayer.Color).FirstOrDefault();
             var attackSquare = this.ChessBoard.Matrix.SelectMany(x => x).Where(y => y.Position.Equals(attackPiece.Position)).FirstOrDefault();
 
-            if (!(attackPiece is Knight) && !(attackPiece is Pawn))
+            if (!(attackPiece is Knight || attackPiece is Pawn))
             {
                 int kingRank = opponentKingSquare.Position.Rank;
                 int kingFile = opponentKingSquare.Position.File;
-
                 int attackRank = attackSquare.Position.Rank;
                 int attackFile = attackSquare.Position.File;
+                var offsetPlayer = this.Opponent.Color == Color.White ? 1 : -1;
 
                 if (attackRank == kingRank)
                 {
@@ -505,17 +495,29 @@
                     for (int i = 1; i <= squaresBetween; i++)
                     {
                         int offsetX = attackFile - kingFile < 0 ? i : -i;
-                        var offsetPlayer = this.Opponent.Color == Color.White ? 1 : -1;
-
                         var currentSquare = this.ChessBoard.GetSquareByCoordinates(kingRank, attackFile + offsetX);
 
-                        // Check offsetPlayer?
-                        var neighbourSquare = this.ChessBoard.GetSquareByCoordinates(kingRank, attackFile + offsetX + offsetPlayer);
-
-                        if (currentSquare.IsAttacked.Where(x => x.Color == this.Opponent.Color && !(x is King) && !(x is Pawn)).Any() ||
-                           (neighbourSquare.Piece is Pawn && neighbourSquare.Piece.Color == this.Opponent.Color))
+                        if (currentSquare.IsAttacked.Where(piece => piece.Color == this.Opponent.Color && !(piece is King) && !(piece is Pawn)).Any())
                         {
-                            return true;
+                            if (this.IsMoveLegal(currentSquare))
+                            {
+                                return true;
+                            }
+                        }
+                        else if ((this.Opponent.Color == Color.White && kingRank < 6) ||
+                                (this.Opponent.Color == Color.Black && kingRank > 1))
+                        {
+                            var currentNeighbourSquare = this.ChessBoard.GetSquareByCoordinates(kingRank + offsetPlayer, attackFile + offsetX);
+
+                            if (currentNeighbourSquare.Piece is Pawn && currentNeighbourSquare.Piece.Color == this.Opponent.Color)
+                            {
+                                var move = Factory.GetMove(currentNeighbourSquare, currentSquare);
+
+                                if (this.TryMove(this.Opponent, move))
+                                {
+                                    return true;
+                                }
+                            }
                         }
                     }
                 }
@@ -527,12 +529,15 @@
                     for (int i = 1; i <= squaresBetween; i++)
                     {
                         int offsetY = attackRank - kingRank < 0 ? i : -i;
-                        var checkedSquare = this.ChessBoard.GetSquareByCoordinates(attackRank + offsetY, kingFile);
+                        var currentSquare = this.ChessBoard.GetSquareByCoordinates(attackRank + offsetY, kingFile);
 
-                        if (checkedSquare.IsAttacked.Where(x => x.Color == this.Opponent.Color &&
-                            !(x is King) && !(x is Pawn)).Any())
+                        if (currentSquare.IsAttacked.Where(piece => piece.Color == this.Opponent.Color &&
+                            !(piece is King) && !(piece is Pawn)).Any())
                         {
-                            return true;
+                            if (this.IsMoveLegal(currentSquare))
+                            {
+                                return true;
+                            }
                         }
                     }
                 }
@@ -545,17 +550,47 @@
                     {
                         int offsetY = attackRank - kingRank < 0 ? i : -i;
                         int offsetX = attackFile - kingFile < 0 ? i : -i;
-                        var offsetPlayer = this.Opponent.Color == Color.White ? 1 : -1;
 
                         var currentSquare = this.ChessBoard.GetSquareByCoordinates(attackRank + offsetY, attackFile + offsetX);
-                        var neighbourSquare = this.ChessBoard.GetSquareByCoordinates(attackRank + offsetY + offsetPlayer, attackFile + offsetX);
+                        var currentNeighbourSquare = this.ChessBoard.GetSquareByCoordinates(attackRank + offsetY + offsetPlayer, attackFile + offsetX);
 
-                        if (currentSquare.IsAttacked.Where(x => x.Color == this.Opponent.Color && !(x is King) && !(x is Pawn)).Any() ||
-                            (neighbourSquare.Piece is Pawn && neighbourSquare.Piece.Color == this.Opponent.Color))
+                        if (currentSquare.IsAttacked.Where(x => x.Color == this.Opponent.Color && !(x is King) && !(x is Pawn)).Any())
                         {
-                            return true;
+                            if (this.IsMoveLegal(currentSquare))
+                            {
+                                return true;
+                            }
+                        }
+                        else if (currentNeighbourSquare.Piece is Pawn && currentNeighbourSquare.Piece.Color == this.Opponent.Color)
+                        {
+                            var move = Factory.GetMove(currentNeighbourSquare, currentSquare);
+
+                            if (this.TryMove(this.Opponent, move))
+                            {
+                                return true;
+                            }
                         }
                     }
+                }
+            }
+
+            return false;
+        }
+
+        private bool IsMoveLegal(Square square)
+        {
+            var defendPieces = square.IsAttacked.Where(piece => piece.Color == this.Opponent.Color).ToArray();
+
+            for (int i = 0; i < defendPieces.Length; i++)
+            {
+                var currentDefendPosition = defendPieces[i].Position;
+                var currentDefendSquare = this.ChessBoard.Matrix.SelectMany(x => x).Where(y => y.Position.Equals(currentDefendPosition)).FirstOrDefault();
+
+                var move = Factory.GetMove(currentDefendSquare, square);
+
+                if (this.TryMove(this.Opponent, move))
+                {
+                    return true;
                 }
             }
 
