@@ -61,7 +61,7 @@
     background-color: #454a52;
     color: white;
     border: none;
-    width: 150px;
+    width: 160px;
 }
 
 #game-options button:hover {
@@ -199,6 +199,10 @@
 }
 
 #about-image {
+    width: 100%;
+}
+
+#game-gif {
     width: 100%;
 }
 
