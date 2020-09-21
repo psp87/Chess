@@ -657,28 +657,26 @@
                     for (int i = 1; i <= squaresBetween; i++)
                     {
                         int offsetX = attackPiece.Position.File - king.Position.File < 0 ? i : -i;
-                        int offsetY = 0;
                         var current = this.ChessBoard.GetSquareByCoordinates(attackPiece.Position.Rank, attackPiece.Position.File + offsetX);
 
                         if (this.IsAbleToBlockWithAttackingPiece(current))
                         {
                             return true;
                         }
-                        else if (this.IsAbleToBlockWithPawn(current, king, attackPiece, offsetY, offsetX))
+                        else if (this.IsAbleToBlockWithPawn(current))
                         {
                             return true;
                         }
                     }
                 }
-
-                if (attackPiece.Position.File == king.Position.File)
+                else if (attackPiece.Position.File == king.Position.File)
                 {
                     int squaresBetween = Math.Abs(attackPiece.Position.Rank - king.Position.Rank) - 1;
 
                     for (int i = 1; i <= squaresBetween; i++)
                     {
                         int offsetY = attackPiece.Position.Rank - king.Position.Rank < 0 ? i : -i;
-                        var current = this.ChessBoard.GetSquareByCoordinates(attackPiece.Position.Rank + offsetY, king.Position.File);
+                        var current = this.ChessBoard.GetSquareByCoordinates(attackPiece.Position.Rank + offsetY, attackPiece.Position.File);
 
                         if (this.IsAbleToBlockWithAttackingPiece(current))
                         {
@@ -686,8 +684,7 @@
                         }
                     }
                 }
-
-                if (attackPiece.Position.Rank != king.Position.Rank && attackPiece.Position.File != king.Position.File)
+                else if (attackPiece.Position.Rank != king.Position.Rank && attackPiece.Position.File != king.Position.File)
                 {
                     int squaresBetween = Math.Abs(attackPiece.Position.Rank - king.Position.Rank) - 1;
 
@@ -701,7 +698,7 @@
                         {
                             return true;
                         }
-                        else if (this.IsAbleToBlockWithPawn(current, king, attackPiece, offsetY, offsetX))
+                        else if (this.IsAbleToBlockWithPawn(current))
                         {
                             return true;
                         }
@@ -730,27 +727,27 @@
             return false;
         }
 
-        private bool IsAbleToBlockWithPawn(Square current, Square king, IPiece attackPiece, int offsetY, int offsetX)
+        private bool IsAbleToBlockWithPawn(Square current)
         {
-            if ((this.Opponent.Color == Color.White && king.Position.Rank > 1) ||
-                (this.Opponent.Color == Color.Black && king.Position.Rank < 6))
+            if ((this.Opponent.Color == Color.White && current.Position.Rank > 1) ||
+                (this.Opponent.Color == Color.Black && current.Position.Rank < 6))
             {
                 var offsetPlayer = this.Opponent.Color == Color.White ? 1 : -1;
-                var neighbour = this.ChessBoard.GetSquareByCoordinates(attackPiece.Position.Rank + offsetY + offsetPlayer, attackPiece.Position.File + offsetX);
+                var source = this.ChessBoard.GetSquareByCoordinates(current.Position.Rank + offsetPlayer, current.Position.File);
 
-                if (this.IsOpponentPawn(neighbour) &&
-                    !this.DoesOpenCheck(neighbour, current))
+                if (this.IsOpponentPawn(source) &&
+                    !this.DoesOpenCheck(source, current))
                 {
                     return true;
                 }
 
-                if ((this.Opponent.Color == Color.White && king.Position.Rank == 3) ||
-                    (this.Opponent.Color == Color.Black && king.Position.Rank == 4))
+                if ((this.Opponent.Color == Color.White && current.Position.Rank == 4) ||
+                    (this.Opponent.Color == Color.Black && current.Position.Rank == 3))
                 {
-                    neighbour = this.ChessBoard.GetSquareByCoordinates(king.Position.Rank + (offsetPlayer * 2), attackPiece.Position.File + offsetX);
+                    source = this.ChessBoard.GetSquareByCoordinates(current.Position.Rank + (offsetPlayer * 2), current.Position.File);
 
-                    if (this.IsOpponentPawn(neighbour) &&
-                        !this.DoesOpenCheck(neighbour, current))
+                    if (this.IsOpponentPawn(source) &&
+                        !this.DoesOpenCheck(source, current))
                     {
                         return true;
                     }
