@@ -168,22 +168,15 @@
         {
             var player = sender as Player;
             var game = this.games[player.GameId];
-            var notification = e as MoveEventArgs;
+            var message = e as MoveEventArgs;
 
-            switch (notification.Type)
+            if (message.Type == Message.CheckOpponent || message.Type == Message.CheckClear)
             {
-                case Notification.InvalidMove:
-                    this.Clients.Caller.SendAsync("InvalidMessage");
-                    break;
-                case Notification.CheckClear:
-                    this.Clients.Group(game.Id).SendAsync("ClearCheckStatus");
-                    break;
-                case Notification.CheckOpponent:
-                    this.Clients.Group(game.Id).SendAsync("CheckOpponent");
-                    break;
-                case Notification.CheckSelf:
-                    this.Clients.Caller.SendAsync("CheckSelf");
-                    break;
+                this.Clients.Group(game.Id).SendAsync("CheckStatus", message.Type);
+            }
+            else
+            {
+                this.Clients.Caller.SendAsync("InvalidMove", message.Type);
             }
         }
 

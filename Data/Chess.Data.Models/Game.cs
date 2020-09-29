@@ -9,7 +9,6 @@
     using Chess.Common.Enums;
     using Chess.Data.Models.EventArgs;
     using Chess.Data.Models.Pieces;
-    using Chess.Data.Models.Pieces.Contracts;
 
     public class Game
     {
@@ -74,6 +73,7 @@
             var oldSource = this.Move.Source.Clone() as Square;
             var oldTarget = this.Move.Target.Clone() as Square;
             var oldBoard = this.ChessBoard.Clone() as Board;
+            var oldIsCheck = this.MovingPlayer.IsCheck;
 
             if (this.MovePiece() || this.TakePiece() || this.EnPassantTake())
             {
@@ -87,16 +87,7 @@
             }
             else
             {
-                if (this.MovingPlayer.IsCheck)
-                {
-                    this.OnMoveEvent?.Invoke(this.MovingPlayer, new MoveEventArgs(Notification.CheckSelf));
-                }
-                else
-                {
-                    this.OnMoveEvent?.Invoke(this.MovingPlayer, new MoveEventArgs(Notification.InvalidMove));
-                }
-
-                this.MovingPlayer.IsCheck = false;
+                this.InvalidMove(oldIsCheck);
                 return false;
             }
         }
@@ -222,7 +213,7 @@
         {
             if (this.IsPlayerChecked(this.Opponent))
             {
-                this.OnMoveEvent?.Invoke(this.Opponent, new MoveEventArgs(Notification.CheckOpponent));
+                this.OnMoveEvent?.Invoke(this.Opponent, new MoveEventArgs(Message.CheckOpponent));
                 if (this.IsCheckmate())
                 {
                     this.GameOver = GameOver.Checkmate;
@@ -396,11 +387,31 @@
             }
         }
 
+        private void InvalidMove(bool oldIsCheck)
+        {
+            if (this.MovingPlayer.IsCheck)
+            {
+                if (oldIsCheck)
+                {
+                    this.OnMoveEvent?.Invoke(this.MovingPlayer, new MoveEventArgs(Message.CheckSelf));
+                }
+                else
+                {
+                    this.OnMoveEvent?.Invoke(this.MovingPlayer, new MoveEventArgs(Message.CheckOpen));
+                    this.MovingPlayer.IsCheck = false;
+                }
+            }
+            else
+            {
+                this.OnMoveEvent?.Invoke(this.MovingPlayer, new MoveEventArgs(Message.InvalidMove));
+            }
+        }
+
         private void ClearCheckMessage()
         {
             if (!this.MovingPlayer.IsCheck && !this.Opponent.IsCheck)
             {
-                this.OnMoveEvent?.Invoke(this.MovingPlayer, new MoveEventArgs(Notification.CheckClear));
+                this.OnMoveEvent?.Invoke(this.MovingPlayer, new MoveEventArgs(Message.CheckClear));
             }
         }
 

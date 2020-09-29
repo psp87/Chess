@@ -6,11 +6,11 @@
 
     public class MoveEventArgs : EventArgs
     {
-        public MoveEventArgs(Notification type)
+        public MoveEventArgs(Message type)
         {
             this.Type = type;
         }
 
-        public Notification Type { get; set; }
+        public Message Type { get; set; }
     }
 }

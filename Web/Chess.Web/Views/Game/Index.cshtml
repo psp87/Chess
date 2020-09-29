@@ -172,15 +172,6 @@
             board.move(`${target}-${pawnPosition}`, `${pawnPosition}-${target}`);
         })
 
-        connection.on("InvalidMessage", function () {
-            $statusText.innerText = "Invalid Move!";
-            $statusText.style.color = "red";
-            sleep(1500).then(() => {
-                $statusText.innerText = "Your Turn!";
-                $statusText.style.color = "green";
-            })
-        })
-
         connection.on("GameOver", function (player, gameOver) {
             $statusText.style.color = "purple";
             document.querySelector('#board').style.pointerEvents = "none";
@@ -213,22 +204,29 @@
             }
         })
 
-        connection.on("CheckOpponent", function () {
-            $statusCheck.style.display = "block";
-            $statusCheck.innerText = "CHECK!";
+        connection.on("CheckStatus", function (type) {
+            if (type == 2) {
+                $statusCheck.style.display = "block";
+                $statusCheck.innerText = "CHECK!";
+            } else {
+                $statusCheck.style.display = "none";
+            }
         })
 
-        connection.on("CheckSelf", function () {
+        connection.on("InvalidMove", function (type) {
             $statusText.style.color = "red";
-            $statusText.innerText = "Will open a check!";
-            sleep(1500).then(() => {
+            switch (type) {
+                case 3: $statusText.innerText = "King is in check!";
+                    break;
+                case 4: $statusText.innerText = "Will open a check!";
+                    break;
+                default: $statusText.innerText = "Invalid Move!";
+                    break;
+            }
+            sleep(1200).then(() => {
                 $statusText.innerText = "Your Turn!";
                 $statusText.style.color = "green";
             })
-        })
-
-        connection.on("ClearCheckStatus", function () {
-            $statusCheck.style.display = "none";
         })
 
         connection.on("DrawOffered", function (player) {
