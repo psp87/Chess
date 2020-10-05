@@ -1,0 +1,61 @@
+﻿.chess-text {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: justify;
+}
+
+.chess-image {
+    position: relative;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.chess-image img {
+    width: 100%;
+    height: auto;
+}
+
+.chess-image .btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    background-color: #454a52;
+    color: white;
+    font-size: 18px;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 15%;
+}
+
+.chess-image .btn:hover {
+    background-color: #a2d1a1;
+    color: black;
+}
+
+#title {
+    text-align: center;
+    background-color: #454a52;
+    color: white;
+    margin: 0px;
+    padding: 5px;
+    font-variant: small-caps;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+#by-text {
+    text-align: center;
+    background-color: black;
+    color: white;
+    margin: 0px;
+    padding: 5px;
+    font-variant: small-caps;
+    letter-spacing: 1px;
+    font-size: small;
+}

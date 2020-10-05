@@ -1,0 +1,26 @@
+﻿.about {
+    width: 66.6%;
+    text-align: justify;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.about h2 {
+    text-align: center;
+    font-variant: small-caps;
+}
+
+#about-image {
+    width: 100%;
+}
+
+#game-gif {
+    width: 100%;
+}
+
+#about-head {
+    background-color: #454a52;
+    color: white;
+    padding: 3px;
+    letter-spacing: 1px;
+}
