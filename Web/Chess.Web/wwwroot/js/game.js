@@ -2,54 +2,53 @@
     var connection = new signalR.HubConnectionBuilder().withUrl("/hub").build();
     connection.start();
 
-    let playerId;
-    let playerName;
-    let playerColor;
-    let playerOneName;
-    let playerTwoName;
+    const playerId;
+    const playerName;
+    const playerColor;
+    const playerOneName;
+    const playerTwoName;
+    const elements = {
+        playground: document.querySelector('.playground'),
+        statusText = document.querySelector('#status-text'),
+        statusCheck = document.querySelector('#status-check'),
+        whitePointsValue = document.querySelector('#white-points-value'),
+        whiteMoveHistory = document.querySelector('#white-move-history'),
+        blackPawnsTaken = document.querySelector('#black-pawns-taken'),
+        blackKnightsTaken = document.querySelector('#black-knights-taken'),
+        blackBishopsTaken = document.querySelector('#black-bishops-taken'),
+        blackRooksTaken = document.querySelector('#black-rooks-taken'),
+        blackQueensTaken = document.querySelector('#black-queens-taken'),
+        blackPointsValue = document.querySelector('#black-points-value'),
+        blackMoveHistory = document.querySelector('#black-move-history'),
+        whitePawnsTaken = document.querySelector('#white-pawns-taken'),
+        whiteKnightsTaken = document.querySelector('#white-knights-taken'),
+        whiteBishopsTaken = document.querySelector('#white-bishops-taken'),
+        whiteRooksTaken = document.querySelector('#white-rooks-taken'),
+        whiteQueensTaken = document.querySelector('#white-queens-taken'),
+    }
 
-    let $playground = document.querySelector('.playground');
-    let $statusText = document.querySelector('#status-text');
-    let $statusCheck = document.querySelector('#status-check');
-
-    let $whitePointsValue = document.querySelector('#white-points-value');
-    let $whiteMoveHistory = document.querySelector('#white-move-history');
-    let $blackPawnsTaken = document.querySelector('#black-pawns-taken');
-    let $blackKnightsTaken = document.querySelector('#black-knights-taken');
-    let $blackBishopsTaken = document.querySelector('#black-bishops-taken');
-    let $blackRooksTaken = document.querySelector('#black-rooks-taken');
-    let $blackQueensTaken = document.querySelector('#black-queens-taken');
-
-    let $blackPointsValue = document.querySelector('#black-points-value');
-    let $blackMoveHistory = document.querySelector('#black-move-history');
-    let $whitePawnsTaken = document.querySelector('#white-pawns-taken');
-    let $whiteKnightsTaken = document.querySelector('#white-knights-taken');
-    let $whiteBishopsTaken = document.querySelector('#white-bishops-taken');
-    let $whiteRooksTaken = document.querySelector('#white-rooks-taken');
-    let $whiteQueensTaken = document.querySelector('#white-queens-taken');
-
-    $('#find-game').click(function () {
+    $('#find-game').addEventListener('click', function () {
         let name = $('#username').val();
         connection.invoke("FindGame", name);
         document.querySelector('#find-game').disabled = true;
     })
 
-    $('#threefold-draw').click(function () {
+    $('#threefold-draw').addEventListener('click', function () {
         connection.invoke("IsThreefoldDraw");
     })
 
-    $('#resign').click(function () {
+    $('#resign').addEventListener('click', function () {
         connection.invoke("Resign");
     })
 
-    $('#offer-draw').click(function () {
-        let oldText = $statusText.innerText;
-        let oldColor = $statusText.style.color;
-        $statusText.style.color = "black";
-        $statusText.innerText = `Draw request sent!`;
+    $('#offer-draw').addEventListener('click', function () {
+        let oldText = elements.statusText.innerText;
+        let oldColor = elements.statusText.style.color;
+        elements.statusText.style.color = "black";
+        elements.statusText.innerText = `Draw request sent!`;
         sleep(1500).then(() => {
-            $statusText.style.color = oldColor;
-            $statusText.innerText = oldText;
+            elements.statusText.style.color = oldColor;
+            elements.statusText.innerText = oldText;
         })
         connection.invoke("OfferDrawRequest");
     })
@@ -65,13 +64,11 @@
     connection.on("Start", function (game) {
         if (game.id != "") {
             document.querySelector('.find-box').style.display = "none";
-            $playground.style.display = "block";
-
+            elements.playground.style.display = "block";
             playerColor = (playerId == game.player1.id) ? game.player1.color : game.player2.color;
             playerName = (playerId == game.player1.id) ? game.player1.name : game.player2.name;
             playerOneName = game.player1.name;
             playerTwoName = game.player2.name;
-
             document.querySelector('#white-name').innerText = playerOneName;
             document.querySelector('#black-name').innerText = playerTwoName;
             updateStatus(game.movingPlayer.name);
@@ -99,23 +96,23 @@
     })
 
     connection.on("GameOver", function (player, gameOver) {
-        $statusText.style.color = "purple";
+        elements.statusText.style.color = "purple";
         document.querySelector('#board').style.pointerEvents = "none";
         switch (gameOver) {
             case 1: {
-                $statusText.innerText = `CHECKMATE! ${player.name.toUpperCase()} WON THE GAME!`;
-                $statusCheck.style.display = "none";
+                elements.statusText.innerText = `CHECKMATE! ${player.name.toUpperCase()} WON THE GAME!`;
+                elements.statusCheck.style.display = "none";
             }
                 break;
-            case 2: $statusText.innerText = `STALEMATE!`;
+            case 2: elements.statusText.innerText = `STALEMATE!`;
                 break;
-            case 3: $statusText.innerText = `DRAW!`;
+            case 3: elements.statusText.innerText = `DRAW!`;
                 break;
-            case 4: $statusText.innerText = `DECLARED THREEFOLD REPETITION DRAW BY ${player.name.toUpperCase()}!`;
+            case 4: elements.statusText.innerText = `DECLARED THREEFOLD REPETITION DRAW BY ${player.name.toUpperCase()}!`;
                 break;
-            case 5: $statusText.innerText = `FIVEFOLD REPETITION DRAW!`;
+            case 5: elements.statusText.innerText = `FIVEFOLD REPETITION DRAW!`;
                 break;
-            case 6: $statusText.innerText = `${player.name.toUpperCase()} RESIGNED!`;
+            case 6: elements.statusText.innerText = `${player.name.toUpperCase()} RESIGNED!`;
                 break;
         }
         $('#offer-draw').prop("disabled", true);
@@ -132,32 +129,32 @@
 
     connection.on("CheckStatus", function (type) {
         if (type == 2) {
-            $statusCheck.style.display = "block";
-            $statusCheck.innerText = "CHECK!";
+            elements.statusCheck.style.display = "block";
+            elements.statusCheck.innerText = "CHECK!";
         } else {
-            $statusCheck.style.display = "none";
+            elements.statusCheck.style.display = "none";
         }
     })
 
     connection.on("InvalidMove", function (type) {
-        $statusText.style.color = "red";
+        elements.statusText.style.color = "red";
         switch (type) {
-            case 3: $statusText.innerText = "King is in check!";
+            case 3: elements.statusText.innerText = "King is in check!";
                 break;
-            case 4: $statusText.innerText = "Will open a check!";
+            case 4: elements.statusText.innerText = "Will open a check!";
                 break;
-            default: $statusText.innerText = "Invalid Move!";
+            default: elements.statusText.innerText = "Invalid Move!";
                 break;
         }
         sleep(1200).then(() => {
-            $statusText.innerText = "Your Turn!";
-            $statusText.style.color = "green";
+            elements.statusText.innerText = "Your Turn!";
+            elements.statusText.style.color = "green";
         })
     })
 
     connection.on("DrawOffered", function (player) {
-        let oldText = $statusText.innerText;
-        let oldColor = $statusText.style.color;
+        let oldText = elements.statusText.innerText;
+        let oldColor = elements.statusText.style.color;
 
         let $yes = document.createElement("button");
         $yes.innerText = "YES";
@@ -169,66 +166,66 @@
         $no.setAttribute("id", "no-button");
         $no.classList.add('btn', 'btn-primary');
 
-        $statusText.style.color = "black";
-        $statusText.innerText = `Draw offer by ${player.name}! Do you accept?`;
+        elements.statusText.style.color = "black";
+        elements.statusText.innerText = `Draw offer by ${player.name}! Do you accept?`;
 
         let $div = document.createElement("div");
         $div.setAttribute("id", "yes-no-buttons")
         $div.appendChild($yes);
         $div.appendChild($no);
-        $statusText.appendChild($div);
+        elements.statusText.appendChild($div);
 
         $yes.addEventListener("click", function () {
             connection.invoke("OfferDrawAnswer", true);
-            $statusText.innerText = oldText;
-            $statusText.style.color = oldColor;
+            elements.statusText.innerText = oldText;
+            elements.statusText.style.color = oldColor;
         });
 
         $no.addEventListener("click", function () {
             connection.invoke("OfferDrawAnswer", false);
-            $statusText.innerText = oldText;
-            $statusText.style.color = oldColor;
+            elements.statusText.innerText = oldText;
+            elements.statusText.style.color = oldColor;
         });
     })
 
     connection.on("DrawOfferRejected", function (player) {
-        let oldText = $statusText.innerText;
-        let oldColor = $statusText.style.color;
-        $statusText.style.color = "black";
-        $statusText.innerText = `Rejected by ${player.name}!`;
+        let oldText = elements.statusText.innerText;
+        let oldColor = elements.statusText.style.color;
+        elements.statusText.style.color = "black";
+        elements.statusText.innerText = `Rejected by ${player.name}!`;
         sleep(1500).then(() => {
-            $statusText.style.color = oldColor;
-            $statusText.innerText = oldText;
+            elements.statusText.style.color = oldColor;
+            elements.statusText.innerText = oldText;
         })
     })
 
     connection.on("UpdateTakenFigures", function (movingPlayer, pieceName, points) {
         if (movingPlayer.name == playerOneName) {
-            $whitePointsValue.innerText = points;
+            elements.whitePointsValue.innerText = points;
             switch (pieceName) {
-                case "Pawn": $blackPawnsTaken.innerText++;
+                case "Pawn": elements.blackPawnsTaken.innerText++;
                     break;
-                case "Knight": $blackKnightsTaken.innerText++;
+                case "Knight": elements.blackKnightsTaken.innerText++;
                     break;
-                case "Bishop": $blackBishopsTaken.innerText++;
+                case "Bishop": elements.blackBishopsTaken.innerText++;
                     break;
-                case "Rook": $blackRooksTaken.innerText++;
+                case "Rook": elements.blackRooksTaken.innerText++;
                     break;
-                case "Queen": $blackQueensTaken.innerText++;
+                case "Queen": elements.blackQueensTaken.innerText++;
                     break;
             }
         } else {
-            $blackPointsValue.innerText = points;
+            elements.blackPointsValue.innerText = points;
             switch (pieceName) {
-                case "Pawn": $whitePawnsTaken.innerText++;
+                case "Pawn": elements.whitePawnsTaken.innerText++;
                     break;
-                case "Knight": $whiteKnightsTaken.innerText++;
+                case "Knight": elements.whiteKnightsTaken.innerText++;
                     break;
-                case "Bishop": $whiteBishopsTaken.innerText++;
+                case "Bishop": elements.whiteBishopsTaken.innerText++;
                     break;
-                case "Rook": $whiteRooksTaken.innerText++;
+                case "Rook": elements.whiteRooksTaken.innerText++;
                     break;
-                case "Queen": $whiteQueensTaken.innerText++;
+                case "Queen": elements.whiteQueensTaken.innerText++;
                     break;
             }
         }
@@ -240,14 +237,14 @@
         li.innerText = moveNotation;
 
         if (movingPlayer.name == playerOneName) {
-            $whiteMoveHistory.appendChild(li);
-            if ($whiteMoveHistory.getElementsByTagName("li").length > 13) {
-                $whiteMoveHistory.removeChild($whiteMoveHistory.childNodes[0]);
+            elements.whiteMoveHistory.appendChild(li);
+            if (elements.whiteMoveHistory.getElementsByTagName("li").length > 13) {
+                elements.whiteMoveHistory.removeChild(elements.whiteMoveHistory.childNodes[0]);
             }
         } else {
-            $blackMoveHistory.appendChild(li);
-            if ($blackMoveHistory.getElementsByTagName("li").length > 13) {
-                $blackMoveHistory.removeChild($blackMoveHistory.childNodes[0]);
+            elements.blackMoveHistory.appendChild(li);
+            if (elements.blackMoveHistory.getElementsByTagName("li").length > 13) {
+                elements.blackMoveHistory.removeChild(elements.blackMoveHistory.childNodes[0]);
             }
         }
     })
@@ -279,11 +276,11 @@
 
     function updateStatus(name) {
         if (name == playerName) {
-            $statusText.innerText = "Your turn!";
-            $statusText.style.color = "green";
+            elements.statusText.innerText = "Your turn!";
+            elements.statusText.style.color = "green";
         } else {
-            $statusText.innerText = `${name}'s turn!`;
-            $statusText.style.color = "red";
+            elements.statusText.innerText = `${name}'s turn!`;
+            elements.statusText.style.color = "red";
         }
     }
 
@@ -296,7 +293,6 @@
             playerColor === 1 && piece.search(/w/) !== -1) {
             return 'snapback';
         }
-
         if (target.length === 2) {
             let sourceFen = Chessboard.objToFen(oldPos);
             let targetFen = Chessboard.objToFen(newPos);
