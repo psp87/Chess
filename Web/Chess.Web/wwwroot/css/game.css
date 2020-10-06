@@ -8,8 +8,8 @@
 }
 
 .points {
-    font-size: 20px;
-    font-weight: bold;
+    font-size: 18px;
+    margin: 8px;
 }
 
 .pieces {
@@ -18,7 +18,15 @@
 }
 
 .move-history {
+    clear: left;
+    padding: 10px;
     align-items: center;
+}
+
+#black-move-history .list-group-item {
+    background-color: black;
+    color: white;
+    border-color: lightgray;
 }
 
 .list-group-item {
@@ -26,12 +34,6 @@
     text-align: left;
     width: 50%;
     text-indent: 10px;
-}
-
-#black-move-history .list-group-item {
-    background-color: black;
-    color: white;
-    border-color: lightgray;
 }
 
 .highlight-white {
@@ -60,35 +62,32 @@
     }
 
 #yes-button {
-    margin: 1px;
-    text-align: center;
     background-color: #557d5f;
-    color: white;
-    border: none;
-    width: 65px;
-    font-weight: 600;
 }
 
 #yes-button:hover {
-        background-color: #78b086;
-    }
+    background-color: #78b086;
+}
 
 #no-button {
+    background-color: #e84d4d;
+}
+
+#no-button:hover {
+    background-color: #ff5454;
+}
+
+#yes-no-buttons {
+    margin: 4px;
+}
+
+#yes-no-buttons button {
     margin: 1px;
     text-align: center;
-    background-color: #d15a5a;
     color: white;
     border: none;
     width: 65px;
     font-weight: 600;
-}
-
-#no-button:hover {
-        background-color: #eb0c0c;
-    }
-
-#yes-no-buttons {
-    margin: 4px;
 }
 
 #find-game {
