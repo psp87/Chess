@@ -8,6 +8,19 @@
     box-sizing: border-box;
 }
 
+.navbar {
+    padding: 0px;
+    margin: 0px;
+}
+
+.nav-item:hover {
+    background-color: #f0f0f0;
+}
+
+.nav-item {
+    padding: 5px;
+}
+
 html {
     font-size: 14px;
 }
