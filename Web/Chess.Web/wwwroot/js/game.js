@@ -2,46 +2,46 @@
     var connection = new signalR.HubConnectionBuilder().withUrl("/hub").build();
     connection.start();
 
-    const playerId;
-    const playerName;
-    const playerColor;
-    const playerOneName;
-    const playerTwoName;
+    let playerId;
+    let playerName;
+    let playerColor;
+    let playerOneName;
+    let playerTwoName;
     const elements = {
         playground: document.querySelector('.playground'),
-        statusText = document.querySelector('#status-text'),
-        statusCheck = document.querySelector('#status-check'),
-        whitePointsValue = document.querySelector('#white-points-value'),
-        whiteMoveHistory = document.querySelector('#white-move-history'),
-        blackPawnsTaken = document.querySelector('#black-pawns-taken'),
-        blackKnightsTaken = document.querySelector('#black-knights-taken'),
-        blackBishopsTaken = document.querySelector('#black-bishops-taken'),
-        blackRooksTaken = document.querySelector('#black-rooks-taken'),
-        blackQueensTaken = document.querySelector('#black-queens-taken'),
-        blackPointsValue = document.querySelector('#black-points-value'),
-        blackMoveHistory = document.querySelector('#black-move-history'),
-        whitePawnsTaken = document.querySelector('#white-pawns-taken'),
-        whiteKnightsTaken = document.querySelector('#white-knights-taken'),
-        whiteBishopsTaken = document.querySelector('#white-bishops-taken'),
-        whiteRooksTaken = document.querySelector('#white-rooks-taken'),
-        whiteQueensTaken = document.querySelector('#white-queens-taken'),
+        statusText: document.querySelector('#status-text'),
+        statusCheck: document.querySelector('#status-check'),
+        whitePointsValue: document.querySelector('#white-points-value'),
+        whiteMoveHistory: document.querySelector('#white-move-history'),
+        blackPawnsTaken: document.querySelector('#black-pawns-taken'),
+        blackKnightsTaken: document.querySelector('#black-knights-taken'),
+        blackBishopsTaken: document.querySelector('#black-bishops-taken'),
+        blackRooksTaken: document.querySelector('#black-rooks-taken'),
+        blackQueensTaken: document.querySelector('#black-queens-taken'),
+        blackPointsValue: document.querySelector('#black-points-value'),
+        blackMoveHistory: document.querySelector('#black-move-history'),
+        whitePawnsTaken: document.querySelector('#white-pawns-taken'),
+        whiteKnightsTaken: document.querySelector('#white-knights-taken'),
+        whiteBishopsTaken: document.querySelector('#white-bishops-taken'),
+        whiteRooksTaken: document.querySelector('#white-rooks-taken'),
+        whiteQueensTaken: document.querySelector('#white-queens-taken'),
     }
 
-    $('#find-game').addEventListener('click', function () {
+    $('#find-game').click(function () {
         let name = $('#username').val();
         connection.invoke("FindGame", name);
         document.querySelector('#find-game').disabled = true;
     })
 
-    $('#threefold-draw').addEventListener('click', function () {
+    $('#threefold-draw').click(function () {
         connection.invoke("IsThreefoldDraw");
     })
 
-    $('#resign').addEventListener('click', function () {
+    $('#resign').click(function () {
         connection.invoke("Resign");
     })
 
-    $('#offer-draw').addEventListener('click', function () {
+    $('#offer-draw').click(function () {
         let oldText = elements.statusText.innerText;
         let oldColor = elements.statusText.style.color;
         elements.statusText.style.color = "black";

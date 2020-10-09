@@ -6,15 +6,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@this.ViewData["Title"] - @GlobalConstants.SystemName</title>
+
     <environment names="Development">
-        <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" asp-append-version="true" />
-        <link href="~/css/site.css" rel="stylesheet" asp-append-version="true" />
-        <script src="~/lib/jquery/dist/jquery.js" asp-append-version="true"></script>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        <script type="text/javascript" src="~/lib/jquery/dist/jquery.js" asp-append-version="true"></script>
     </environment>
     <environment names="Staging,Production">
-        <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
-        <link href="~/css/site.min.css" rel="stylesheet" asp-append-version="true" />
-        <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        <script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
     </environment>
 </head>
 <body>
@@ -63,16 +64,16 @@
     </footer>
 
     <environment names="Development">
-        <script src="~/lib/jquery-validation/dist/jquery.validate.js" asp-append-version="true"></script>
-        <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js" asp-append-version="true"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js" asp-append-version="true"></script>
-        <script src="https://kit.fontawesome.com/67c59dfcad.js" asp-append-version="true" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="~/lib/bootstrap/dist/js/bootstrap.js" asp-append-version="true"></script>
+        <script type="text/javascript" src="~/lib/jquery-validation/dist/jquery.validate.js" asp-append-version="true"></script>
+        <script type="text/javascript" src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js" asp-append-version="true"></script>
+        <script type="text/javascript" src="https://kit.fontawesome.com/67c59dfcad.js" asp-append-version="true" crossorigin="anonymous"></script>
     </environment>
     <environment names="Staging,Production">
-        <script src="~/lib/jquery-validation/dist/jquery.validate.min.js" asp-append-version="true"></script>
-        <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js" asp-append-version="true"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-append-version="true"></script>
-        <script src="https://kit.fontawesome.com/67c59dfcad.js" asp-append-version="true" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-append-version="true"></script>
+        <script type="text/javascript" src="~/lib/jquery-validation/dist/jquery.validate.min.js" asp-append-version="true"></script>
+        <script type="text/javascript" src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
+        <script type="text/javascript" src="https://kit.fontawesome.com/67c59dfcad.js" asp-append-version="true" crossorigin="anonymous"></script>
     </environment>
 
     @this.RenderSection("Scripts", required: false)

@@ -35,6 +35,11 @@
         "dist/jquery.validate.unobtrusive.js",
         "dist/jquery.validate.unobtrusive.min.js"
       ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "chessboard-js@1.0.0",
+      "destination": "wwwroot/lib/chessboard-js/"
     }
   ]
 }

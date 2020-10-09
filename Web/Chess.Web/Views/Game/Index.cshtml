@@ -2,11 +2,18 @@
     this.ViewData["Title"] = "Game Room";
 }
 
-<link href="~/css/chessboard-1.0.0.min.css" asp-append-version="true" rel="stylesheet">
-<link href="~/css/game.css" asp-append-version="true" rel="stylesheet">
-<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js" asp-append-version="true"></script>
-<script src="~/js/chessboard-1.0.0.min.js" asp-append-version="true"></script>
-<script src="~/js/game.min.js" asp-append-version="true"></script>
+<environment names="Development">
+    <link rel="stylesheet" href="~/css/game.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/lib/chessboard-js/chessboard-1.0.0.css" asp-append-version="true">
+    <script type="text/javascript" src="~/lib/microsoft/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/lib/chessboard-js/chessboard-1.0.0.js" asp-append-version="true"></script>
+</environment>
+<environment names="Staging,Production">
+    <link rel="stylesheet" href="~/css/game.min.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/lib/chessboard-js/chessboard-1.0.0.min.css" asp-append-version="true">
+    <script type="text/javascript" src="~/lib/microsoft/signalr/dist/browser/signalr.min.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/lib/chessboard-js/chessboard-1.0.0.min.js" asp-append-version="true"></script>
+</environment>
 
 <main id="main" class="container-fluid text-center">
     <div class="row playground">
@@ -69,3 +76,10 @@
         </div>
     </div>
 </main>
+
+<environment names="Development">
+    <script type="text/javascript" src="~/js/game.js" asp-append-version="true"></script>
+</environment>
+<environment names="Staging,Production">
+    <script type="text/javascript" src="~/js/game.min.js" asp-append-version="true"></script>
+</environment>
