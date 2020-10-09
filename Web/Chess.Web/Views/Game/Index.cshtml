@@ -19,7 +19,7 @@
     <div class="row playground">
         <div class="column left">
             <div id="white-stats" class="stats">
-                <h1><i class="far fa-user fa-sm"></i> <span id="white-name"></span></h1>
+                <h1 id="white-name" class="name"><i class="far fa-user fa-sm"></i> </h1>
                 <div id="white-points" class="points"><span id="white-points-value">0</span> pts</div>
                 <div id="white-taken-pieces">
                     <div id="black-pawn" class="pieces"><img src="~/img/chesspieces/wikipedia/bP.png" alt="Pawn: " width="33" height="33" /><span id="black-pawns-taken">0</span></div>
@@ -46,7 +46,7 @@
         </div>
         <div class="column right">
             <div id="black-stats" class="stats">
-                <h1><i class="fas fa-user fa-sm"></i> <span id="black-name"></span></h1>
+                <h1 id="black-name" class="name"><i class="fas fa-user fa-sm"></i> </h1>
                 <div id="black-points" class="points"><span id="black-points-value">0</span> pts</div>
                 <div id="black-taken-pieces">
                     <div id="white-pawn" class="pieces"><img src="~/img/chesspieces/wikipedia/wP.png" alt="Pawn: " width="33" height="33" style="align-content: center" /><span id="white-pawns-taken">0</span></div>
@@ -68,7 +68,7 @@
             <div class="form-inline">
                 <div class="form-group mr-2" id="username-group">
                     <label class="sr-only control-label" for="username">Username</label>
-                    <input type="text" class="form-control" id="username" value="@this.User.Identity.Name" autofocus />
+                    <input type="text" class="form-control" id="username" placeholder="Your name" autofocus />
                 </div>
                 <button type="submit" id="find-game" class="btn btn-primary">Find Game</button>
                 <p id="hidden" class="help-block" style="visibility:hidden"></p>

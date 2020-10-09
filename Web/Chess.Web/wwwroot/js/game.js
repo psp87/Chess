@@ -69,8 +69,8 @@
             playerName = (playerId == game.player1.id) ? game.player1.name : game.player2.name;
             playerOneName = game.player1.name;
             playerTwoName = game.player2.name;
-            document.querySelector('#white-name').innerText = playerOneName;
-            document.querySelector('#black-name').innerText = playerTwoName;
+            document.querySelector('#white-name').innerHTML += playerOneName;
+            document.querySelector('#black-name').innerHTML += playerTwoName;
             updateStatus(game.movingPlayer.name);
         }
     })
@@ -115,8 +115,8 @@
             case 6: elements.statusText.innerText = `${player.name.toUpperCase()} RESIGNED!`;
                 break;
         }
-        $('#offer-draw').prop("disabled", true);
-        $('#resign').prop("disabled", true);
+
+        $('#game-options button').prop("disabled", true);
     })
 
     connection.on("ThreefoldAvailable", function (player, isAvailable) {

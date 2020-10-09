@@ -57,9 +57,9 @@
     width: 160px;
 }
 
-#game-options button:hover {
-        background-color: #557d5f;
-    }
+#game-options button:not([disabled]):hover {
+    background-color: #557d5f;
+}
 
 #yes-button {
     background-color: #557d5f;
@@ -112,4 +112,14 @@
     content: "";
     display: table;
     clear: both;
+}
+
+.name {
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    align-content: center;
+}
+
+[disabled] {
+    cursor: not-allowed;
 }
