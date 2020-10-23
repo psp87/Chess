@@ -10,10 +10,6 @@ body {
     background-attachment: fixed;
 }
 
-* {
-    box-sizing: border-box;
-}
-
 .navbar {
     padding: 0px;
     margin: 0px;

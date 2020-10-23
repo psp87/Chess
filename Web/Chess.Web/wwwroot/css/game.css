@@ -3,27 +3,31 @@
     margin: auto;
 }
 
-.playground {
+.main-playground {
     display: none;
 }
 
-.points {
-    font-size: 18px;
-    margin: 8px;
+.player-points {
+    font-size: 1.2rem;
+    margin: 10px;
 }
 
-.pieces {
+.player-name {
+    font-size: 2.5rem;
+}
+
+.taken-pieces {
     float: left;
     width: 20.00%;
 }
 
-.move-history {
+.player-move-history {
     clear: left;
     padding: 10px;
     align-items: center;
 }
 
-#black-move-history .list-group-item {
+.main-playground-black-move-history .list-group-item {
     background-color: black;
     color: white;
     border-color: lightgray;
@@ -48,7 +52,7 @@
     box-shadow: inset 0 0 3px 3px blue;
 }
 
-#game-options button {
+.main-playground-board-field-game-options .btn {
     margin-top: 10px;
     text-align: center;
     background-color: #454a52;
@@ -57,7 +61,7 @@
     width: 160px;
 }
 
-#game-options button:not([disabled]):hover {
+.main-playground-board-field-game-options button:not([disabled]):hover {
     background-color: #557d5f;
 }
 
@@ -66,8 +70,8 @@
 }
 
 #yes-button:hover {
-    background-color: #78b086;
-}
+        background-color: #78b086;
+    }
 
 #no-button {
     background-color: #e84d4d;
@@ -116,10 +120,14 @@
 
 .name {
     overflow: hidden;
-    text-overflow: ellipsis; 
+    text-overflow: ellipsis;
     align-content: center;
 }
 
 [disabled] {
     cursor: not-allowed;
+}
+
+.taken-pieces img {
+    width: 72%;
 }

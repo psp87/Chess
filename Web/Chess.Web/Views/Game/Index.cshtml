@@ -11,49 +11,75 @@
     <script type="text/javascript" src="~/lib/chessboard-js/chessboard-1.0.0.min.js" asp-append-version="true"></script>
 </environment>
 
-<main id="main" class="container-fluid text-center">
-    <div class="row playground">
-        <div class="column left">
-            <div id="white-stats" class="stats">
-                <h1 id="white-name" class="name"><i class="far fa-user fa-sm"></i> </h1>
-                <div id="white-points" class="points"><span id="white-points-value">0</span> pts</div>
-                <div id="white-taken-pieces">
-                    <div id="black-pawn" class="pieces"><img src="~/img/chesspieces/wikipedia/bP.png" alt="Pawn: " width="33" height="33" /><span id="black-pawns-taken">0</span></div>
-                    <div id="black-knight" class="pieces"><img src="~/img/chesspieces/wikipedia/bN.png" alt="Knight: " width="33" height="33" /><span id="black-knights-taken">0</span></div>
-                    <div id="black-bishop" class="pieces"><img src="~/img/chesspieces/wikipedia/bB.png" alt="Bishop: " width="33" height="33" /><span id="black-bishops-taken">0</span></div>
-                    <div id="black-rook" class="pieces"><img src="~/img/chesspieces/wikipedia/bR.png" alt="Rook: " width="33" height="33" /><span id="black-rooks-taken">0</span></div>
-                    <div id="black-queen" class="pieces"><img src="~/img/chesspieces/wikipedia/bQ.png" alt="Queen: " width="33" height="33" /><span id="black-queens-taken">0</span></div>
+<main class="main container-fluid text-center">
+    <div class="main-playground row">
+        <div class="main-playground-white player-stats column left">
+            <h1 class="main-playground-white-name player-name"><i class="far fa-user fa-sm"></i> </h1>
+            <div class="main-playground-white-points player-points"><span class="white-points-value player-points-value">0</span> pts</div>
+            <div class="main-playground-white-taken-pieces taken-pieces-container">
+                <div class="taken-pieces">
+                    <img src="~/img/chesspieces/wikipedia/bP.png" alt="Pawn: " />
+                    <span class="taken-pieces-black-pawn-value">0</span>
                 </div>
-                <div>
-                    <ul id="white-move-history" class="list-group move-history"></ul>
+                <div class="taken-pieces">
+                    <img src="~/img/chesspieces/wikipedia/bN.png" alt="Knight: " />
+                    <span class="taken-pieces-black-knight-value">0</span>
+                </div>
+                <div class="taken-pieces">
+                    <img src="~/img/chesspieces/wikipedia/bB.png" alt="Bishop: " />
+                    <span class="taken-pieces-black-bishop-value">0</span>
+                </div>
+                <div class="taken-pieces">
+                    <img src="~/img/chesspieces/wikipedia/bR.png" alt="Rook: " />
+                    <span class="taken-pieces-black-rook-value">0</span>
+                </div>
+                <div class="taken-pieces">
+                    <img src="~/img/chesspieces/wikipedia/bQ.png" alt="Queen: " />
+                    <span class="taken-pieces-black-queen-value">0</span>
                 </div>
             </div>
-        </div>
-        <div class="column middle">
-            <div id="board-main" class="board-box">
-                <h6 id="status"><i class="fas fa-arrow-alt-circle-right"></i> <span id="status-text"></span><span id="status-check"></span> </h6>
-                <div id="board"></div>
-                <div id="game-options" class="option-buttons">
-                    <button type="submit" id="threefold-draw" class="btn btn-primary" disabled><i class="fas fa-equals"></i> Declare 3F Draw</button>
-                    <button type="submit" id="offer-draw" class="btn btn-primary"><i class="far fa-handshake"></i> Offer Draw</button>
-                    <button type="submit" id="resign" class="btn btn-primary"><i class="far fa-flag"></i> Resign</button>
-                </div>
+            <div>
+                <ul class="main-playground-white-move-history player-move-history list-group"></ul>
             </div>
         </div>
-        <div class="column right">
-            <div id="black-stats" class="stats">
-                <h1 id="black-name" class="name"><i class="fas fa-user fa-sm"></i> </h1>
-                <div id="black-points" class="points"><span id="black-points-value">0</span> pts</div>
-                <div id="black-taken-pieces">
-                    <div id="white-pawn" class="pieces"><img src="~/img/chesspieces/wikipedia/wP.png" alt="Pawn: " width="33" height="33" style="align-content: center" /><span id="white-pawns-taken">0</span></div>
-                    <div id="white-knight" class="pieces"><img src="~/img/chesspieces/wikipedia/wN.png" alt="Knight: " width="33" height="33" style="align-content: center" /><span id="white-knights-taken">0</span></div>
-                    <div id="white-bishop" class="pieces"><img src="~/img/chesspieces/wikipedia/wB.png" alt="Bishop: " width="33" height="33" style="align-content: center" /><span id="white-bishops-taken">0</span></div>
-                    <div id="white-rook" class="pieces"><img src="~/img/chesspieces/wikipedia/wR.png" alt="Rook: " width="33" height="33" style="align-content: center" /><span id="white-rooks-taken">0</span></div>
-                    <div id="white-queen" class="pieces"><img src="~/img/chesspieces/wikipedia/wQ.png" alt="Queen: " width="33" height="33" style="align-content: center" /><span id="white-queens-taken">0</span></div>
+
+        <div class="main-playground-board-field column middle">
+            <h6 class="main-playground-board-field-status-bar"><i class="fas fa-arrow-alt-circle-right"></i> <span class="status-bar-text"></span><span class="status-bar-check-notification"></span> </h6>
+            <div id="board"></div>
+            <div class="main-playground-board-field-game-options">
+                <button type="submit" class="game-options-threefold-draw btn btn-primary" disabled><i class="fas fa-equals"></i> Declare 3F Draw</button>
+                <button type="submit" class="game-options-offer-draw btn btn-primary"><i class="far fa-handshake"></i> Offer Draw</button>
+                <button type="submit" class="game-options-resign btn btn-primary"><i class="far fa-flag"></i> Resign</button>
+            </div>
+        </div>
+
+        <div class="main-playground-black player-stats column right">
+            <h1 class="main-playground-black-name player-name"><i class="fas fa-user fa-sm"></i> </h1>
+            <div class="main-playground-black-points player-points"><span class="black-points-value player-points-value">0</span> pts</div>
+            <div class="main-playground-black-taken-pieces taken-pieces-container">
+                <div class="taken-pieces">
+                    <img src="~/img/chesspieces/wikipedia/wP.png" alt="Pawn: " />
+                    <span class="taken-pieces-white-pawn-value">0</span>
                 </div>
-                <div>
-                    <ul id="black-move-history" class="list-group move-history"></ul>
+                <div class="taken-pieces">
+                    <img src="~/img/chesspieces/wikipedia/wN.png" alt="Knight: " />
+                    <span class="taken-pieces-white-knight-value">0</span>
                 </div>
+                <div class="taken-pieces">
+                    <img src="~/img/chesspieces/wikipedia/wB.png" alt="Bishop: " />
+                    <span class="taken-pieces-white-bishop-value">0</span>
+                </div>
+                <div class="taken-pieces">
+                    <img src="~/img/chesspieces/wikipedia/wR.png" alt="Rook: " />
+                    <span class="taken-pieces-white-rook-value">0</span>
+                </div>
+                <div class="taken-pieces">
+                    <img src="~/img/chesspieces/wikipedia/wQ.png" alt="Queen: " />
+                    <span class="taken-pieces-white-queen-value">0</span>
+                </div>
+            </div>
+            <div>
+                <ul class="main-playground-black-move-history player-move-history list-group"></ul>
             </div>
         </div>
     </div>

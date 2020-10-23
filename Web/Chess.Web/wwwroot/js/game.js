@@ -8,23 +8,27 @@
     let playerOneName;
     let playerTwoName;
     const elements = {
-        playground: document.querySelector('.playground'),
-        statusText: document.querySelector('#status-text'),
-        statusCheck: document.querySelector('#status-check'),
-        whitePointsValue: document.querySelector('#white-points-value'),
-        whiteMoveHistory: document.querySelector('#white-move-history'),
-        blackPawnsTaken: document.querySelector('#black-pawns-taken'),
-        blackKnightsTaken: document.querySelector('#black-knights-taken'),
-        blackBishopsTaken: document.querySelector('#black-bishops-taken'),
-        blackRooksTaken: document.querySelector('#black-rooks-taken'),
-        blackQueensTaken: document.querySelector('#black-queens-taken'),
-        blackPointsValue: document.querySelector('#black-points-value'),
-        blackMoveHistory: document.querySelector('#black-move-history'),
-        whitePawnsTaken: document.querySelector('#white-pawns-taken'),
-        whiteKnightsTaken: document.querySelector('#white-knights-taken'),
-        whiteBishopsTaken: document.querySelector('#white-bishops-taken'),
-        whiteRooksTaken: document.querySelector('#white-rooks-taken'),
-        whiteQueensTaken: document.querySelector('#white-queens-taken'),
+        playground: document.querySelector('.main-playground'),
+        board: document.querySelector('#board'),
+        threefoldDraw: document.querySelector('.game-options-threefold-draw'),
+        statusText: document.querySelector('.status-bar-text'),
+        statusCheck: document.querySelector('.status-bar-check-notification'),
+        whiteName: document.querySelector('.main-playground-white-name'),
+        whitePointsValue: document.querySelector('.white-points-value'),
+        whiteMoveHistory: document.querySelector('.main-playground-white-move-history'),
+        blackPawnsTaken: document.querySelector('.taken-pieces-black-pawn-value'),
+        blackKnightsTaken: document.querySelector('.taken-pieces-black-knight-value'),
+        blackBishopsTaken: document.querySelector('.taken-pieces-black-bishop-value'),
+        blackRooksTaken: document.querySelector('.taken-pieces-black-rook-value'),
+        blackQueensTaken: document.querySelector('.taken-pieces-black-queen-value'),
+        blackName: document.querySelector('.main-playground-black-name'),
+        blackPointsValue: document.querySelector('.black-points-value'),
+        blackMoveHistory: document.querySelector('.main-playground-black-move-history'),
+        whitePawnsTaken: document.querySelector('.taken-pieces-white-pawn-value'),
+        whiteKnightsTaken: document.querySelector('.taken-pieces-white-knight-value'),
+        whiteBishopsTaken: document.querySelector('.taken-pieces-white-bishop-value'),
+        whiteRooksTaken: document.querySelector('.taken-pieces-white-rook-value'),
+        whiteQueensTaken: document.querySelector('.taken-pieces-white-queen-value'),
     }
 
     $('#find-game').click(function () {
@@ -33,15 +37,15 @@
         document.querySelector('#find-game').disabled = true;
     })
 
-    $('#threefold-draw').click(function () {
+    $('.game-options-threefold-draw').click(function () {
         connection.invoke("IsThreefoldDraw");
     })
 
-    $('#resign').click(function () {
+    $('.game-options-resign').click(function () {
         connection.invoke("Resign");
     })
 
-    $('#offer-draw').click(function () {
+    $('.game-options-offer-draw').click(function () {
         let oldText = elements.statusText.innerText;
         let oldColor = elements.statusText.style.color;
         elements.statusText.style.color = "black";
@@ -69,8 +73,8 @@
             playerName = (playerId == game.player1.id) ? game.player1.name : game.player2.name;
             playerOneName = game.player1.name;
             playerTwoName = game.player2.name;
-            document.querySelector('#white-name').innerHTML += playerOneName;
-            document.querySelector('#black-name').innerHTML += playerTwoName;
+            elements.whiteName.innerHTML += playerOneName;
+            elements.blackName.innerHTML += playerTwoName;
             updateStatus(game.movingPlayer.name);
         }
     })
@@ -97,7 +101,7 @@
 
     connection.on("GameOver", function (player, gameOver) {
         elements.statusText.style.color = "purple";
-        document.querySelector('#board').style.pointerEvents = "none";
+        elements.board.style.pointerEvents = "none";
         switch (gameOver) {
             case 1: {
                 elements.statusText.innerText = `CHECKMATE! ${player.name.toUpperCase()} WON THE GAME!`;
@@ -116,14 +120,14 @@
                 break;
         }
 
-        $('#game-options button').prop("disabled", true);
+        $('.main-playground-board-field-game-options .btn').prop("disabled", true);
     })
 
     connection.on("ThreefoldAvailable", function (player, isAvailable) {
         if (isAvailable) {
-            $('#threefold-draw').removeAttr('disabled');
+            elements.threefoldDraw.removeAttr('disabled');
         } else {
-            $('#threefold-draw').attr('disabled', 'disabled');
+            elements.threefoldDraw.attr('disabled', 'disabled');
         }
     })
 

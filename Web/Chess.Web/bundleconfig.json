@@ -2,28 +2,10 @@
 // More info at https://go.microsoft.com/fwlink/?LinkId=808241
 [
   {
-    "outputFileName": "wwwroot/css/site.min.css",
+    "outputFileName": "wwwroot/css/style.min.css",
     // An array of relative input file paths. Globbing patterns supported
     "inputFiles": [
-      "wwwroot/css/site.css"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/css/about.min.css",
-    "inputFiles": [
-      "wwwroot/css/about.css"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/css/game.min.css",
-    "inputFiles": [
-      "wwwroot/css/game.css"
-    ]
-  },
-  {
-    "outputFileName": "wwwroot/css/home.min.css",
-    "inputFiles": [
-      "wwwroot/css/home.css"
+      "wwwroot/css/style.css"
     ]
   },
   {
