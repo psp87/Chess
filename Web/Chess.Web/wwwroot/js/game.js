@@ -62,13 +62,13 @@
     })
 
     connection.on("WaitingList", function () {
-        $('#label').html("Waiting for an opponent!");
+        $('.label').html("Waiting for an opponent!");
     })
 
     connection.on("Start", function (game) {
         if (game.id != "") {
-            document.querySelector('.find-box').style.display = "none";
-            elements.playground.style.display = "block";
+            document.querySelector('.find-container').style.display = "none";
+            elements.playground.style.display = "flex";
             playerColor = (playerId == game.player1.id) ? game.player1.color : game.player2.color;
             playerName = (playerId == game.player1.id) ? game.player1.name : game.player2.name;
             playerOneName = game.player1.name;
@@ -242,12 +242,12 @@
 
         if (movingPlayer.name == playerOneName) {
             elements.whiteMoveHistory.appendChild(li);
-            if (elements.whiteMoveHistory.getElementsByTagName("li").length > 13) {
+            if (elements.whiteMoveHistory.getElementsByTagName("li").length > 24) {
                 elements.whiteMoveHistory.removeChild(elements.whiteMoveHistory.childNodes[0]);
             }
         } else {
             elements.blackMoveHistory.appendChild(li);
-            if (elements.blackMoveHistory.getElementsByTagName("li").length > 13) {
+            if (elements.blackMoveHistory.getElementsByTagName("li").length > 24) {
                 elements.blackMoveHistory.removeChild(elements.blackMoveHistory.childNodes[0]);
             }
         }

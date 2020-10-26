@@ -14,7 +14,10 @@
 <main class="main container-fluid text-center">
     <div class="main-playground row">
         <div class="main-playground-white player-stats column left">
-            <h1 class="main-playground-white-name player-name"><i class="far fa-user fa-sm"></i> </h1>
+            <div class="player-name-container">
+                <i class="far fa-user fa-sm"></i>
+                <h1 class="main-playground-white-name player-name"></h1>
+            </div>
             <div class="main-playground-white-points player-points"><span class="white-points-value player-points-value">0</span> pts</div>
             <div class="main-playground-white-taken-pieces taken-pieces-container">
                 <div class="taken-pieces">
@@ -38,9 +41,7 @@
                     <span class="taken-pieces-black-queen-value">0</span>
                 </div>
             </div>
-            <div>
-                <ul class="main-playground-white-move-history player-move-history list-group"></ul>
-            </div>
+            <ul class="main-playground-white-move-history player-move-history list-group"></ul>
         </div>
 
         <div class="main-playground-board-field column middle">
@@ -54,7 +55,10 @@
         </div>
 
         <div class="main-playground-black player-stats column right">
-            <h1 class="main-playground-black-name player-name"><i class="fas fa-user fa-sm"></i> </h1>
+            <div class="player-name-container">
+                <i class="fas fa-user fa-sm"></i>
+                <h1 class="main-playground-black-name player-name"></h1>
+            </div>
             <div class="main-playground-black-points player-points"><span class="black-points-value player-points-value">0</span> pts</div>
             <div class="main-playground-black-taken-pieces taken-pieces-container">
                 <div class="taken-pieces">
@@ -78,22 +82,18 @@
                     <span class="taken-pieces-white-queen-value">0</span>
                 </div>
             </div>
-            <div>
-                <ul class="main-playground-black-move-history player-move-history list-group"></ul>
-            </div>
+            <ul class="main-playground-black-move-history player-move-history list-group"></ul>
         </div>
     </div>
 
-    <div id="find-opponent" class="row m-5 find-box">
+    <div class="find-container row m-5">
         <div class="mx-auto my-auto text-center">
-            <p id="label" class="row help-block m-3 text-center">Enter your game nickname:</p>
+            <p class="label row help-block m-3 text-center">Enter your game nickname:</p>
             <div class="form-inline">
-                <div class="form-group mr-2" id="username-group">
-                    <label class="sr-only control-label" for="username">Username</label>
-                    <input type="text" class="form-control" id="username" placeholder="Your name" autofocus />
+                <div class="username-group form-group mr-2">
+                    <input type="text" id="username" class="form-control" placeholder="Your name" autofocus />
+                    <button type="submit" id="find-game" class="btn btn-primary">Find Game</button>
                 </div>
-                <button type="submit" id="find-game" class="btn btn-primary">Find Game</button>
-                <p id="hidden" class="help-block" style="visibility:hidden"></p>
             </div>
         </div>
     </div>
