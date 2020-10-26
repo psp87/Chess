@@ -10,22 +10,41 @@ body {
     background-attachment: fixed;
 }
 
+.body-renderer {
+    padding-top: 52px;
+}
+
 .navbar {
     padding: 0px;
     margin: 0px;
-}
-
-.nav-item:hover {
-    background-color: #f0f0f0;
+    position: fixed;
+    width: 100%;
+    z-index: 1;
 }
 
 .nav-item {
     padding: 5px;
 }
 
-html {
-    font-size: 14px;
+li.nav-item {
+    height: 52px;
 }
+
+.nav-item:hover {
+    background-color: #454a52;
+}
+
+#link {
+    color: black;
+}
+
+.nav-item:hover #link {
+    color: white;
+}
+
+html {
+        font-size: 14px;
+    }
 
 @media (min-width: 768px) {
     html {

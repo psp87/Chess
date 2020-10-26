@@ -31,16 +31,16 @@
                     <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a id="link" class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Game" asp-action="Index">Play</a>
+                            <a id="link" class="nav-link" asp-area="" asp-controller="Game" asp-action="Index">Play</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Stats" asp-action="Index">Stats</a>
+                            <a id="link" class="nav-link" asp-area="" asp-controller="Stats" asp-action="Index">Stats</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="About" asp-action="Index">About</a>
+                            <a id="link" class="nav-link" asp-area="" asp-controller="About" asp-action="Index">About</a>
                         </li>
                     </ul>
                 </div>
@@ -48,7 +48,7 @@
         </nav>
     </header>
 
-    <div class="container">
+    <div class="body-renderer container">
         <partial name="_CookieConsentPartial" />
         <main role="main" class="pb-3">
             @this.RenderBody()
