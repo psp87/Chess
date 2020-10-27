@@ -117,6 +117,8 @@
                 break;
             case 6: elements.statusText.innerText = `${player.name.toUpperCase()} RESIGNED!`;
                 break;
+            case 7: elements.statusText.innerText = `${player.name.toUpperCase()} HAS LEFT. YOU WON!`;
+                break;
         }
 
         $('.game-btn').prop("disabled", true);

@@ -123,6 +123,14 @@
             }
         }
 
+        public override Task OnDisconnectedAsync(Exception exception)
+        {
+            var leavingPlayer = this.players[this.Context.ConnectionId];
+            this.Clients.Group(leavingPlayer.GameId).SendAsync("GameOver", leavingPlayer, GameOver.Disconnected);
+
+            return base.OnDisconnectedAsync(exception);
+        }
+
         private async Task StartGame(Player joiningPlayer, Player opponent)
         {
             joiningPlayer.Color = Color.Black;

@@ -9,5 +9,6 @@
         ThreefoldDraw = 4,
         FivefoldDraw = 5,
         Resign = 6,
+        Disconnected = 7,
     }
 }
