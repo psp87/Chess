@@ -77,13 +77,18 @@
     box-shadow: inset 0 0 3px 3px blue;
 }
 
+.game-btn-container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    margin-top: 7px;
+}
+
 .game-btn {
     background-color: #454a52;
     color: white;
-    width: 160px;
-    text-align: center;
-    border: none;
-    margin-top: 10px;
+    width: 30%;
+    margin: 1px;
 }
 
 .game-btn:not([disabled]):hover {
@@ -96,27 +101,11 @@
     cursor: not-allowed;
 }
 
-#yes-button {
-        background-color: #557d5f;
-    }
-
-#yes-button:hover {
-        background-color: #78b086;
-    }
-
-#no-button {
-    background-color: #e84d4d;
-}
-
-#no-button:hover {
-    background-color: #ff5454;
-}
-
-#yes-no-buttons {
+.draw-offer-container {
     margin: 4px;
 }
 
-#yes-no-buttons button {
+.draw-offer-button {
     margin: 1px;
     text-align: center;
     color: white;
@@ -125,10 +114,20 @@
     font-weight: 600;
 }
 
-#find-game {
-    background-color: #454a52;
-    color: white;
-    margin: 0px 5px;
+.draw-offer-yes-btn {
+    background-color: #557d5f;
+}
+
+.draw-offer-yes-btn:hover {
+    background-color: #78b086;
+}
+
+.draw-offer-no-btn {
+    background-color: #e84d4d;
+}
+
+.draw-offer-no-btn:hover {
+    background-color: #ff5454;
 }
 
 .column {
@@ -141,4 +140,10 @@
 
 .middle {
     width: 50%;
+}
+
+#find-game {
+    background-color: #454a52;
+    color: white;
+    margin: 0px 5px;
 }

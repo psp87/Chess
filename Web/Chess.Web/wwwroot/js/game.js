@@ -161,21 +161,18 @@
 
         let $yes = document.createElement("button");
         $yes.innerText = "YES";
-        $yes.setAttribute("id", "yes-button");
-        $yes.classList.add('btn', 'btn-primary');
+        $yes.classList.add('draw-offer-yes-btn', 'draw-offer-button', 'btn', 'btn-primary');
 
         let $no = document.createElement("button");
         $no.innerText = "NO";
-        $no.setAttribute("id", "no-button");
-        $no.classList.add('btn', 'btn-primary');
+        $no.classList.add('draw-offer-no-btn', 'draw-offer-button', 'btn', 'btn-primary');
 
         elements.statusText.style.color = "black";
         elements.statusText.innerText = `Draw offer by ${player.name}! Do you accept?`;
 
         let $div = document.createElement("div");
-        $div.setAttribute("id", "yes-no-buttons")
-        $div.appendChild($yes);
-        $div.appendChild($no);
+        $div.classList.add('draw-offer-container');
+        $div.append($yes, $no);
         elements.statusText.appendChild($div);
 
         $yes.addEventListener("click", function () {
