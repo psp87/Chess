@@ -42,6 +42,10 @@ li.nav-item {
     color: white;
 }
 
+[disabled] {
+    cursor: default;
+}
+
 html {
         font-size: 14px;
     }

@@ -10,7 +10,6 @@
     const elements = {
         playground: document.querySelector('.main-playground'),
         board: document.querySelector('#board'),
-        threefoldDraw: document.querySelector('.game-options-threefold-draw'),
         statusText: document.querySelector('.status-bar-text'),
         statusCheck: document.querySelector('.status-bar-check-notification'),
         whiteName: document.querySelector('.main-playground-white-name'),
@@ -37,15 +36,11 @@
         document.querySelector('#find-game').disabled = true;
     })
 
-    $('.game-options-threefold-draw').click(function () {
+    $('.threefold-draw-btn').click(function () {
         connection.invoke("IsThreefoldDraw");
     })
 
-    $('.game-options-resign').click(function () {
-        connection.invoke("Resign");
-    })
-
-    $('.game-options-offer-draw').click(function () {
+    $('.offer-draw-btn').click(function () {
         let oldText = elements.statusText.innerText;
         let oldColor = elements.statusText.style.color;
         elements.statusText.style.color = "black";
@@ -55,6 +50,10 @@
             elements.statusText.innerText = oldText;
         })
         connection.invoke("OfferDrawRequest");
+    })
+
+    $('.resign-btn').click(function () {
+        connection.invoke("Resign");
     })
 
     connection.on("PlayerJoined", function (player) {
@@ -120,14 +119,14 @@
                 break;
         }
 
-        $('.main-playground-board-field-game-options .btn').prop("disabled", true);
+        $('.game-btn').prop("disabled", true);
     })
 
     connection.on("ThreefoldAvailable", function (player, isAvailable) {
         if (isAvailable) {
-            elements.threefoldDraw.removeAttr('disabled');
+            $('.threefold-draw-btn').prop('disabled', false);
         } else {
-            elements.threefoldDraw.attr('disabled', 'disabled');
+            $('.threefold-draw-btn').prop('disabled', true);
         }
     })
 
