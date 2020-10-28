@@ -1,44 +1,38 @@
-﻿.chess-text {
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: justify;
+﻿.home-title-container {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
 }
 
-#title {
-    text-align: center;
+.home-title {
     background-color: #454a52;
-    color: white;
-    margin: 0px;
-    padding: 5px;
     font-variant: small-caps;
-    letter-spacing: 1px;
-    font-weight: 500;
 }
 
-#by-text {
-    text-align: center;
+.home-author {
     background-color: black;
+    font-size: small;
+    font-weight: 900;
+}
+
+.title-text {
+    display: flex;
+    justify-content: center;
     color: white;
     margin: 0px;
     padding: 5px;
     letter-spacing: 1px;
-    font-size: small;
 }
 
-.chess-image {
+.home-image {
     position: relative;
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
 }
 
-.chess-image img {
+.home-image img {
     width: 100%;
-    height: auto;
 }
 
-.chess-image .btn {
+.home-image .btn {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -54,17 +48,22 @@
     width: 12%;
 }
 
-.chess-image .btn:hover {
+.home-image .btn:hover {
     background-color: #557d5f;
-    animation-name: example;
+    animation-name: color;
     animation-duration: 1s;
 }
 
-@keyframes example {
+@keyframes color {
     from {
         background-color: #454a52;
     }
+
     to {
         background-color: #557d5f;
     }
+}
+
+.text-chess-info {
+    text-align: justify;
 }

@@ -2,15 +2,19 @@
     this.ViewData["Title"] = "Home";
 }
 
-<h1 id="title">Chess</h1>
-<h6 id="by-text">by Plamen Petrov</h6>
-<div class="chess-image">
-    <img src="~/img/chess.jpg" alt="Chess" class="center" />
-    <a asp-controller="Game" asp-action="Index" class="btn col-2"><i class="fas fa-play"></i> Play</a>
-</div>
+<section class="home-title-container">
+    <h1 class="home-title title-text">Chess</h1>
+    <h6 class="home-author title-text">by Plamen Petrov</h6>
+    <div class="home-image">
+        <img src="~/img/chess.jpg" alt="Chess" class="center" />
+        <a asp-controller="Game" asp-action="Index" class="btn col-2"><i class="fas fa-play"></i> Play</a>
+    </div>
+</section>
 <hr />
-<p class="chess-text">
-    The history of chess can be traced back nearly 1500 years, although the earliest origins are uncertain. The earliest predecessor of the game probably originated in India, before the 6th century AD. From India, the game spread to Persia. When the Arabs conquered Persia, chess was taken up by the Muslim world and subsequently spread to Southern Europe. In Europe, chess evolved into roughly its current form in the 15th century.
+<section class="text-container">
+    <p class="text-chess-info">
+        The history of chess can be traced back nearly 1500 years, although the earliest origins are uncertain. The earliest predecessor of the game probably originated in India, before the 6th century AD. From India, the game spread to Persia. When the Arabs conquered Persia, chess was taken up by the Muslim world and subsequently spread to Southern Europe. In Europe, chess evolved into roughly its current form in the 15th century.
 
-    "Romantic chess" was the predominant chess playing style from the late 15th century to the 1880s. Chess games of this period emphasised more on quick, tactical maneuvers rather than long-term strategic planning. The Romantic era of play was followed by the Scientific, Hypermodern, and New Dynamism eras. In the second half of the 19th century, modern chess tournament play began, and the first official World Chess Championship was held in 1886. The 20th century saw great leaps forward in chess theory and the establishment of the World Chess Federation (FIDE). In 1997, a computer first beat a chess world champion in the famous Deep Blue versus Garry Kasparov match, ushering in an era of computer domination. Since then, computer analysis – which originated in the 1970s with the first programmed chess games on the market – has contributed to much of the development in chess theory and has become an important part of preparation in professional human chess. Later developments in the 21st century made the use of computer analysis far surpassing the ability of any human player accessible to the public. Online gaming, which first appeared in the mid-1990s, also became popular in the 21st century.
-</p>
+        "Romantic chess" was the predominant chess playing style from the late 15th century to the 1880s. Chess games of this period emphasised more on quick, tactical maneuvers rather than long-term strategic planning. The Romantic era of play was followed by the Scientific, Hypermodern, and New Dynamism eras. In the second half of the 19th century, modern chess tournament play began, and the first official World Chess Championship was held in 1886. The 20th century saw great leaps forward in chess theory and the establishment of the World Chess Federation (FIDE). In 1997, a computer first beat a chess world champion in the famous Deep Blue versus Garry Kasparov match, ushering in an era of computer domination. Since then, computer analysis – which originated in the 1970s with the first programmed chess games on the market – has contributed to much of the development in chess theory and has become an important part of preparation in professional human chess. Later developments in the 21st century made the use of computer analysis far surpassing the ability of any human player accessible to the public. Online gaming, which first appeared in the mid-1990s, also became popular in the 21st century.
+    </p>
+</section>
