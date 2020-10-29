@@ -1,26 +1,21 @@
-﻿.about {
-    width: 66.6%;
+﻿.about-container {
+    display: flex;
+    flex-flow: column wrap;
+    width: 75%;
     text-align: justify;
     margin-left: auto;
     margin-right: auto;
 }
 
-.about h2 {
-    text-align: center;
+.about-container img {
+    width: 100%;
+}
+
+.about-title {
+    background-color: #454a52;
     font-variant: small-caps;
 }
 
-#about-image {
-    width: 100%;
-}
-
-#game-gif {
-    width: 100%;
-}
-
-#about-head {
-    background-color: #454a52;
-    color: white;
-    padding: 3px;
-    letter-spacing: 1px;
+.about-description {
+    margin-top: 5px;
 }

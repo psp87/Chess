@@ -15,15 +15,6 @@
     font-weight: 900;
 }
 
-.title-text {
-    display: flex;
-    justify-content: center;
-    color: white;
-    margin: 0px;
-    padding: 5px;
-    letter-spacing: 1px;
-}
-
 .home-image {
     position: relative;
 }

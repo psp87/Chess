@@ -4,10 +4,26 @@
 @import url("game.css");
 @import url("about.css");
 
+html {
+    font-size: 16px;
+    position: relative;
+    min-height: 100%;
+}
+
 body {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     background-image: url("../img/background-image.jpg");
     background-attachment: fixed;
+    margin-bottom: 60px;
+}
+
+.title-text {
+    display: flex;
+    justify-content: center;
+    color: white;
+    margin: 0px;
+    padding: 5px;
+    letter-spacing: 1px;
 }
 
 .body-renderer {
@@ -46,10 +62,6 @@ li.nav-item {
     cursor: default;
 }
 
-html {
-        font-size: 14px;
-    }
-
 @media (min-width: 768px) {
     html {
         font-size: 16px;
@@ -73,22 +85,11 @@ button.accept-policy {
     line-height: inherit;
 }
 
-html {
-    position: relative;
-    min-height: 100%;
-}
-
-body {
-    /* Margin bottom by footer height */
-    margin-bottom: 60px;
-}
-
 .footer {
     position: absolute;
     bottom: 0;
     width: 100%;
     white-space: nowrap;
-    /* Set the fixed height of the footer here */
     height: 60px;
-    line-height: 60px; /* Vertically center the text there */
+    line-height: 60px;
 }
