@@ -123,6 +123,15 @@
             }
         }
 
+        public async Task SendMessage(string message)
+        {
+            var player = this.players[this.Context.ConnectionId];
+            var game = this.games[player.GameId];
+            var dt = DateTime.Now;
+
+            await this.Clients.Group(game.Id).SendAsync("UpdateChat", message, player, dt.ToString("HH:mm"));
+        }
+
         public override Task OnDisconnectedAsync(Exception exception)
         {
             var leavingPlayer = this.players[this.Context.ConnectionId];

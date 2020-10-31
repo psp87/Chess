@@ -28,6 +28,7 @@
         whiteBishopsTaken: document.querySelector('.taken-pieces-white-bishop-value'),
         whiteRooksTaken: document.querySelector('.taken-pieces-white-rook-value'),
         whiteQueensTaken: document.querySelector('.taken-pieces-white-queen-value'),
+        chatWindow: document.querySelector('.chat-window'),
     }
 
     $('#find-game').click(function () {
@@ -54,6 +55,11 @@
 
     $('.resign-btn').click(function () {
         connection.invoke("Resign");
+    })
+
+    $('.chat-send-btn').click(function () {
+        let message = $('.chat-input').val();
+        connection.invoke('SendMessage', message);
     })
 
     connection.on("PlayerJoined", function (player) {
@@ -267,6 +273,21 @@
             $source[0].className += " highlight-black";
             $target[0].className += " highlight-black";
         }
+    })
+
+    connection.on("UpdateChat", function (message, player, clock) {
+        let li = document.createElement('li');
+        li.innerText = `${clock}, ${player.name}: ${message}`;
+
+        if (player.name == playerOneName) {
+            li.classList.add('white-chat-msg', 'chat-msg', 'flex-start');
+        } else {
+            li.classList.add('black-chat-msg', 'chat-msg', 'flex-end');
+        }
+
+        elements.chatWindow.appendChild(li);
+        elements.chatWindow.scrollTop = elements.chatWindow.scrollHeight
+        document.querySelector('.chat-input').value = "";
     })
 
     function removeHighlight(color) {

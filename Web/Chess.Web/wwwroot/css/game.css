@@ -84,11 +84,14 @@
     margin-top: 7px;
 }
 
+.option-btn {
+    width: 30%;
+    margin: 1px;
+}
+
 .game-btn {
     background-color: #454a52;
     color: white;
-    width: 30%;
-    margin: 1px;
 }
 
 .game-btn:not([disabled]):hover {
@@ -128,6 +131,69 @@
 
 .draw-offer-no-btn:hover {
     background-color: #ff5454;
+}
+
+.chat-container {
+    display: flex;
+    flex-flow: column wrap;
+    margin-top: 20px;
+}
+
+.chat-window-wrapper {
+    width: 100%;
+    border: 1px solid;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 3px;
+}
+
+.chat-window {
+    display: flex;
+    flex-flow: column;
+    height: 20vh;
+    overflow-y: auto;
+    padding: 5px;
+}
+
+.flex-start {
+    align-self: flex-start;
+}
+
+.flex-end {
+    align-self: flex-end;
+}
+
+.chat-msg {
+    max-width: 85%;
+    text-align: left;
+    word-break: break-all;
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin-bottom: 2px;
+    padding: 2px 7px;
+}
+
+.white-chat-msg {
+    background-color: white;
+}
+
+.black-chat-msg {
+    background-color: black;
+    color: white;
+}
+
+.chat-input-wrapper {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.chat-input {
+    flex-grow: 1;
+    margin-right: 2px;
+    padding-left: 10px;
+    border-radius: 5px;
+    border: 1px solid;
+    border-color: gray;
 }
 
 .column {

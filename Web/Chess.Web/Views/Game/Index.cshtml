@@ -12,8 +12,8 @@
 </environment>
 
 <main class="main container-fluid text-center">
-    <div class="main-playground row">
-        <div class="main-playground-white player-stats column left">
+    <article class="main-playground row">
+        <section class="main-playground-white player-stats column left">
             <div class="player-name-container">
                 <i class="far fa-user fa-sm"></i>
                 <h1 class="main-playground-white-name player-name"></h1>
@@ -42,19 +42,28 @@
                 </div>
             </div>
             <ul class="main-playground-white-move-history player-move-history list-group"></ul>
-        </div>
+        </section>
 
-        <div class="main-playground-board-container column middle">
+        <section class="main-playground-board-container column middle">
             <h6 class="status-bar-container"><i class="fas fa-arrow-alt-circle-right"></i> <span class="status-bar-text"></span><span class="status-bar-check-notification"></span> </h6>
             <div id="board"></div>
             <div class="game-btn-container">
-                <button type="submit" class="threefold-draw-btn game-btn btn" disabled><i class="fas fa-equals"></i> Declare 3F Draw</button>
-                <button type="submit" class="offer-draw-btn game-btn btn"><i class="far fa-handshake"></i> Offer Draw</button>
-                <button type="submit" class="resign-btn game-btn btn"><i class="far fa-flag"></i> Resign</button>
+                <button type="submit" class="threefold-draw-btn option-btn game-btn btn" disabled><i class="fas fa-equals"></i> Declare 3F Draw</button>
+                <button type="submit" class="offer-draw-btn option-btn game-btn btn"><i class="far fa-handshake"></i> Offer Draw</button>
+                <button type="submit" class="resign-btn option-btn game-btn btn"><i class="far fa-flag"></i> Resign</button>
             </div>
-        </div>
+            <div class="chat-container">
+                <div class="chat-window-wrapper">
+                    <ul class="chat-window"></ul>
+                </div>
+                <div class="chat-input-wrapper">
+                    <input type="text" class="chat-input" placeholder="Type a message" autofocus />
+                    <button type="submit" class="chat-send-btn game-btn btn">Send</button>
+                </div>
+            </div>
+        </section>
 
-        <div class="main-playground-black player-stats column right">
+        <section class="main-playground-black player-stats column right">
             <div class="player-name-container">
                 <i class="fas fa-user fa-sm"></i>
                 <h1 class="main-playground-black-name player-name"></h1>
@@ -83,8 +92,8 @@
                 </div>
             </div>
             <ul class="main-playground-black-move-history player-move-history list-group"></ul>
-        </div>
-    </div>
+        </section>
+    </article>
 
     <div class="find-container row m-5">
         <div class="mx-auto my-auto text-center">
