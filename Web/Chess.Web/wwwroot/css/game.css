@@ -180,6 +180,7 @@
 .black-chat-msg {
     background-color: black;
     color: white;
+    list-style-type: none;
 }
 
 .chat-input-wrapper {

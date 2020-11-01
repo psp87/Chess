@@ -246,12 +246,12 @@
 
         if (movingPlayer.name == playerOneName) {
             elements.whiteMoveHistory.appendChild(li);
-            if (elements.whiteMoveHistory.getElementsByTagName("li").length > 24) {
+            if (elements.whiteMoveHistory.getElementsByTagName("li").length > 40) {
                 elements.whiteMoveHistory.removeChild(elements.whiteMoveHistory.childNodes[0]);
             }
         } else {
             elements.blackMoveHistory.appendChild(li);
-            if (elements.blackMoveHistory.getElementsByTagName("li").length > 24) {
+            if (elements.blackMoveHistory.getElementsByTagName("li").length > 40) {
                 elements.blackMoveHistory.removeChild(elements.blackMoveHistory.childNodes[0]);
             }
         }
