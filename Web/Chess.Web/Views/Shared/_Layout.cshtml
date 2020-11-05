@@ -9,11 +9,11 @@
 
     <environment names="Development">
         <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
-        <script type="text/javascript" src="~/lib/jquery/dist/jquery.js" asp-append-version="true"></script>
+        <script src="~/lib/jquery/dist/jquery.js" asp-append-version="true"></script>
     </environment>
     <environment names="Staging,Production">
         <link rel="stylesheet" href="~/css/style.min.css" asp-append-version="true" />
-        <script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+        <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
     </environment>
 </head>
 <body>
@@ -31,16 +31,16 @@
                     <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a id="link" class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a id="link" class="nav-link" asp-area="" asp-controller="Game" asp-action="Index">Play</a>
+                            <a class="nav-link" asp-area="" asp-controller="Game" asp-action="Index">Play</a>
                         </li>
                         <li class="nav-item">
-                            <a id="link" class="nav-link" asp-area="" asp-controller="Stats" asp-action="Index">Stats</a>
+                            <a class="nav-link" asp-area="" asp-controller="Stats" asp-action="Index">Stats</a>
                         </li>
                         <li class="nav-item">
-                            <a id="link" class="nav-link" asp-area="" asp-controller="About" asp-action="Index">About</a>
+                            <a class="nav-link" asp-area="" asp-controller="About" asp-action="Index">About</a>
                         </li>
                     </ul>
                 </div>
@@ -62,16 +62,16 @@
     </footer>
 
     <environment names="Development">
-        <script type="text/javascript" src="~/lib/bootstrap/dist/js/bootstrap.js" asp-append-version="true"></script>
-        <script type="text/javascript" src="~/lib/jquery-validation/dist/jquery.validate.js" asp-append-version="true"></script>
-        <script type="text/javascript" src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js" asp-append-version="true"></script>
-        <script type="text/javascript" src="https://kit.fontawesome.com/67c59dfcad.js" asp-append-version="true" crossorigin="anonymous"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js" asp-append-version="true"></script>
+        <script src="~/lib/jquery-validation/dist/jquery.validate.js" asp-append-version="true"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js" asp-append-version="true"></script>
+        <script src="https://kit.fontawesome.com/67c59dfcad.js" asp-append-version="true" crossorigin="anonymous"></script>
     </environment>
     <environment names="Staging,Production">
-        <script type="text/javascript" src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-append-version="true"></script>
-        <script type="text/javascript" src="~/lib/jquery-validation/dist/jquery.validate.min.js" asp-append-version="true"></script>
-        <script type="text/javascript" src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
-        <script type="text/javascript" src="https://kit.fontawesome.com/67c59dfcad.js" asp-append-version="true" crossorigin="anonymous"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-append-version="true"></script>
+        <script src="~/lib/jquery-validation/dist/jquery.validate.min.js" asp-append-version="true"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
+        <script src="https://kit.fontawesome.com/67c59dfcad.js" asp-append-version="true" crossorigin="anonymous"></script>
     </environment>
 
     @this.RenderSection("Scripts", required: false)

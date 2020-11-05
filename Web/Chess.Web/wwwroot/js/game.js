@@ -33,8 +33,10 @@
 
     $('#find-game').click(function () {
         let name = $('#username').val();
-        connection.invoke("FindGame", name);
-        document.querySelector('#find-game').disabled = true;
+        if (name !== "") {
+            connection.invoke("FindGame", name);
+            document.querySelector('#find-game').disabled = true;
+        }
     })
 
     $('.threefold-draw-btn').click(function () {
@@ -59,7 +61,9 @@
 
     $('.chat-send-btn').click(function () {
         let message = $('.chat-input').val();
-        connection.invoke('SendMessage', message);
+        if (message !== "") {
+            connection.invoke('SendMessage', message);
+        }
     })
 
     connection.on("PlayerJoined", function (player) {
@@ -71,17 +75,15 @@
     })
 
     connection.on("Start", function (game) {
-        if (game.id != "") {
-            document.querySelector('.find-container').style.display = "none";
-            elements.playground.style.display = "flex";
-            playerColor = (playerId == game.player1.id) ? game.player1.color : game.player2.color;
-            playerName = (playerId == game.player1.id) ? game.player1.name : game.player2.name;
-            playerOneName = game.player1.name;
-            playerTwoName = game.player2.name;
-            elements.whiteName.innerHTML += playerOneName;
-            elements.blackName.innerHTML += playerTwoName;
-            updateStatus(game.movingPlayer.name);
-        }
+        document.querySelector('.game-lobby').style.display = "none";
+        elements.playground.style.display = "flex";
+        playerColor = (playerId == game.player1.id) ? game.player1.color : game.player2.color;
+        playerName = (playerId == game.player1.id) ? game.player1.name : game.player2.name;
+        playerOneName = game.player1.name;
+        playerTwoName = game.player2.name;
+        elements.whiteName.innerHTML += playerOneName;
+        elements.blackName.innerHTML += playerTwoName;
+        updateStatus(game.movingPlayer.name);
     })
 
     connection.on("ChangeOrientation", function () {

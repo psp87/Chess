@@ -214,3 +214,24 @@
     color: white;
     margin: 0px 5px;
 }
+
+.games-list-container {
+    display: flex;
+    border: 1px solid;
+    border-radius: 5px;
+    width: 100%;
+    justify-content: center;
+    flex-flow: column wrap;
+    align-items: center;
+    height: 500px;
+}
+
+.games-list-container li {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid;
+    border-radius: 5px;
+    list-style-type: none;
+}

@@ -50,11 +50,11 @@ li.nav-item {
     background-color: #454a52;
 }
 
-#link {
+.navbar-light .navbar-nav .nav-link {
     color: black;
 }
 
-.nav-item:hover #link {
+.navbar-light .navbar-nav .nav-item:hover .nav-link {
     color: white;
 }
 
