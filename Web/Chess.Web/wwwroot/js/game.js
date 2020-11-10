@@ -94,34 +94,36 @@
     })
 
     connection.on("AddRoom", function (player) {
-        let li = document.createElement('li');
+        let div = document.createElement('div');
         let span = document.createElement("span");
         let button = document.createElement("button");
 
-        span.innerText = `Game room by ${player.name}`;
-        button.innerText = "JOIN";
+        span.innerText = `${player.name}`;
+        span.classList.add('room-text');
+        button.innerText = "Join";
         button.classList.add('join-btn', 'game-btn', 'btn', 'btn-primary');
 
-        li.append(span, button);
-        li.classList.add(`${player.id}`);
-        elements.gamesList.appendChild(li);
+        div.append(span, button);
+        div.classList.add(`${player.id}`);
+        elements.gamesList.appendChild(div);
     })
 
     connection.on("ListRooms", function (waitingPlayers) {
         $('.games-list-container').empty();
 
         waitingPlayers.forEach(player => {
-            let li = document.createElement('li');
+            let div = document.createElement('div');
             let span = document.createElement("span");
             let button = document.createElement("button");
 
-            span.innerText = `Game room by ${player.name}`;
-            button.innerText = "JOIN";
+            span.innerText = `${player.name}`;
+            span.classList.add('room-text');
+            button.innerText = "Join";
             button.classList.add('join-btn', 'game-btn', 'btn', 'btn-primary');
 
-            li.append(span, button);
-            li.classList.add(`${player.id}`);
-            elements.gamesList.appendChild(li);
+            div.append(span, button);
+            div.classList.add(`${player.id}`);
+            elements.gamesList.appendChild(div);
         });
     })
 

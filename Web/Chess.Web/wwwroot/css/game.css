@@ -95,7 +95,7 @@
 }
 
 .join-btn {
-    width: 10%;
+    width: 15%;
     border: none;
 }
 
@@ -223,15 +223,43 @@
 .games-list-container {
     display: flex;
     flex-flow: column nowrap;
-    height: 500px;
     border: 1px solid;
-    border-radius: 5px;
+    border-radius: 7px 0 0 7px;
+    background-color: slategray;
+    width: 66.66%;
 }
 
-.games-list-container li {
+    .games-list-container div {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid;
+        border-radius: 5px;
+        padding: 3px;
+        margin: 2px 2px 0px 2px;
+        background-color: #f0d9b5;
+    }
+
+.room-text {
+    font-weight: bold;
+    text-indent: 5px;
+}
+
+.game-list-and-chat-container {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-flow: row wrap;
+    height: 500px;
+}
+
+.chat {
+    width: 33.33%;
     border: 1px solid;
-    border-radius: 5px;
+    background-color: teal;
+    border-radius: 0 7px 7px 0;
+}
+
+.lobby-container {
+    display: flex;
+    flex-flow: column wrap;
+    width: 66.66%;
 }
