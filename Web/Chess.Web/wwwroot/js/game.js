@@ -2,6 +2,10 @@
     var connection = new signalR.HubConnectionBuilder().withUrl("/hub").build();
     connection.start();
 
+    sleep(500).then(() => {
+        connection.invoke("GetRooms");
+    })
+
     let playerId;
     let playerName;
     let playerColor;
@@ -29,13 +33,21 @@
         whiteRooksTaken: document.querySelector('.taken-pieces-white-rook-value'),
         whiteQueensTaken: document.querySelector('.taken-pieces-white-queen-value'),
         chatWindow: document.querySelector('.chat-window'),
+        gamesList: document.querySelector('.games-list-container'),
     }
 
     $('#find-game').click(function () {
         let name = $('#username').val();
         if (name !== "") {
-            connection.invoke("FindGame", name);
-            document.querySelector('#find-game').disabled = true;
+            connection.invoke("CreateRoom", name);
+        }
+    })
+
+    $(document).on('click', '.join-btn', function () {
+        let id = $(this).parent().attr('class');
+        let name = $('#username').val();
+        if (name !== "") {
+            connection.invoke("JoinGame", name, id);
         }
     })
 
@@ -70,19 +82,60 @@
         playerId = player.id;
     })
 
-    connection.on("WaitingList", function () {
-        $('.label').html("Waiting for an opponent!");
+    connection.on("EnterRoom", function (name) {
+        document.querySelector('.game-lobby').style.display = "none";
+        elements.playground.style.display = "flex";
+        elements.board.style.pointerEvents = "none";
+        $('.game-btn').prop("disabled", true);
+        elements.whiteName.innerHTML = name;
+        elements.blackName.innerHTML = "?";
+        elements.statusText.style.color = "red";
+        elements.statusText.innerText = "WAITING FOR OPPONENT...";
+    })
+
+    connection.on("AddRoom", function (player) {
+        let li = document.createElement('li');
+        let span = document.createElement("span");
+        let button = document.createElement("button");
+
+        span.innerText = `Game room by ${player.name}`;
+        button.innerText = "JOIN";
+        button.classList.add('join-btn', 'game-btn', 'btn', 'btn-primary');
+
+        li.append(span, button);
+        li.classList.add(`${player.id}`);
+        elements.gamesList.appendChild(li);
+    })
+
+    connection.on("ListRooms", function (waitingPlayers) {
+        $('.games-list-container').empty();
+
+        waitingPlayers.forEach(player => {
+            let li = document.createElement('li');
+            let span = document.createElement("span");
+            let button = document.createElement("button");
+
+            span.innerText = `Game room by ${player.name}`;
+            button.innerText = "JOIN";
+            button.classList.add('join-btn', 'game-btn', 'btn', 'btn-primary');
+
+            li.append(span, button);
+            li.classList.add(`${player.id}`);
+            elements.gamesList.appendChild(li);
+        });
     })
 
     connection.on("Start", function (game) {
         document.querySelector('.game-lobby').style.display = "none";
         elements.playground.style.display = "flex";
+        elements.board.style.pointerEvents = "auto";
+        $('.game-btn').prop("disabled", false);
         playerColor = (playerId == game.player1.id) ? game.player1.color : game.player2.color;
         playerName = (playerId == game.player1.id) ? game.player1.name : game.player2.name;
         playerOneName = game.player1.name;
         playerTwoName = game.player2.name;
-        elements.whiteName.innerHTML += playerOneName;
-        elements.blackName.innerHTML += playerTwoName;
+        elements.whiteName.innerHTML = playerOneName;
+        elements.blackName.innerHTML = playerTwoName;
         updateStatus(game.movingPlayer.name);
     })
 

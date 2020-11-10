@@ -94,6 +94,11 @@
     color: white;
 }
 
+.join-btn {
+    width: 10%;
+    border: none;
+}
+
 .game-btn:not([disabled]):hover {
     background-color: #557d5f;
     color: white;
@@ -217,21 +222,16 @@
 
 .games-list-container {
     display: flex;
+    flex-flow: column nowrap;
+    height: 500px;
     border: 1px solid;
     border-radius: 5px;
-    width: 100%;
-    justify-content: center;
-    flex-flow: column wrap;
-    align-items: center;
-    height: 500px;
 }
 
 .games-list-container li {
     display: flex;
-    flex-flow: row wrap;
     justify-content: space-between;
     align-items: center;
     border: 1px solid;
     border-radius: 5px;
-    list-style-type: none;
 }

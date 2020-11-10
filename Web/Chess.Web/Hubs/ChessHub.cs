@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Concurrent;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Chess.Common.Enums;
@@ -14,32 +15,38 @@
     {
         private readonly ConcurrentDictionary<string, Player> players;
         private readonly ConcurrentDictionary<string, Game> games;
-        private readonly ConcurrentQueue<Player> waitingPlayers;
+        private readonly List<Player> waitingPlayers;
 
         public ChessHub()
         {
             this.players = new ConcurrentDictionary<string, Player>(StringComparer.OrdinalIgnoreCase);
             this.games = new ConcurrentDictionary<string, Game>(StringComparer.OrdinalIgnoreCase);
-            this.waitingPlayers = new ConcurrentQueue<Player>();
+            this.waitingPlayers = new List<Player>();
+
         }
 
-        public async Task FindGame(string name)
+        public async Task CreateRoom(string name)
+        {
+            Player player = Factory.GetPlayer(name, this.Context.ConnectionId);
+            this.players[player.Id] = player;
+            this.waitingPlayers.Add(player);
+            await this.Clients.Caller.SendAsync("PlayerJoined", player);
+            await this.Clients.Caller.SendAsync("EnterRoom", name);
+            await this.Clients.All.SendAsync("AddRoom", player);
+        }
+
+        public async Task JoinGame(string name, string id)
         {
             Player joiningPlayer = Factory.GetPlayer(name, this.Context.ConnectionId);
             this.players[joiningPlayer.Id] = joiningPlayer;
             await this.Clients.Caller.SendAsync("PlayerJoined", joiningPlayer);
+            var opponent = this.players[id];
+            await this.StartGame(opponent, joiningPlayer);
+        }
 
-            this.waitingPlayers.TryDequeue(out Player opponent);
-
-            if (opponent == null)
-            {
-                this.waitingPlayers.Enqueue(joiningPlayer);
-                await this.Clients.Caller.SendAsync("WaitingList");
-            }
-            else
-            {
-                await this.StartGame(joiningPlayer, opponent);
-            }
+        public async Task GetRooms()
+        {
+            await this.Clients.Caller.SendAsync("ListRooms", this.waitingPlayers);
         }
 
         public async Task MoveSelected(string source, string target, string sourceFen, string targetFen)
@@ -135,18 +142,24 @@
         public override Task OnDisconnectedAsync(Exception exception)
         {
             var leavingPlayer = this.players[this.Context.ConnectionId];
-            this.Clients.Group(leavingPlayer.GameId).SendAsync("GameOver", leavingPlayer, GameOver.Disconnected);
+            if (leavingPlayer.GameId != null)
+            {
+                this.Clients.Group(leavingPlayer.GameId).SendAsync("GameOver", leavingPlayer, GameOver.Disconnected);
+            }
+
+            this.waitingPlayers.Remove(leavingPlayer);
+            this.Clients.All.SendAsync("ListRooms", this.waitingPlayers);
 
             return base.OnDisconnectedAsync(exception);
         }
 
-        private async Task StartGame(Player joiningPlayer, Player opponent)
+        private async Task StartGame(Player player1, Player player2)
         {
-            joiningPlayer.Color = Color.Black;
-            opponent.Color = Color.White;
-            opponent.HasToMove = true;
+            player1.Color = Color.White;
+            player2.Color = Color.Black;
+            player1.HasToMove = true;
 
-            var game = Factory.GetGame(opponent, joiningPlayer);
+            var game = Factory.GetGame(player1, player2);
             this.games[game.Id] = game;
 
             game.OnGameOver += this.Game_OnGameOver;
@@ -161,6 +174,9 @@
                 this.Clients.Group(game.Id).SendAsync("Start", game));
 
             await this.Clients.Caller.SendAsync("ChangeOrientation");
+
+            this.waitingPlayers.Remove(player1);
+            await this.Clients.All.SendAsync("ListRooms", this.waitingPlayers);
         }
 
         private void Game_OnGameOver(object sender, EventArgs e)
