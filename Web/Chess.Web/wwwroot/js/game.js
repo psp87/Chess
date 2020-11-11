@@ -36,8 +36,8 @@
         gamesList: document.querySelector('.games-list-container'),
     }
 
-    $('#find-game').click(function () {
-        let name = $('#username').val();
+    $('.find-game').click(function () {
+        let name = $('.nickname').val();
         if (name !== "") {
             connection.invoke("CreateRoom", name);
         }
@@ -45,7 +45,7 @@
 
     $(document).on('click', '.join-btn', function () {
         let id = $(this).parent().attr('class');
-        let name = $('#username').val();
+        let name = $('.nickname').val();
         if (name !== "") {
             connection.invoke("JoinGame", name, id);
         }
@@ -101,7 +101,7 @@
         span.innerText = `${player.name}`;
         span.classList.add('room-text');
         button.innerText = "Join";
-        button.classList.add('join-btn', 'game-btn', 'btn', 'btn-primary');
+        button.classList.add('join-btn', 'game-btn', 'btn');
 
         div.append(span, button);
         div.classList.add(`${player.id}`);
@@ -119,7 +119,7 @@
             span.innerText = `${player.name}`;
             span.classList.add('room-text');
             button.innerText = "Join";
-            button.classList.add('join-btn', 'game-btn', 'btn', 'btn-primary');
+            button.classList.add('join-btn', 'game-btn', 'btn');
 
             div.append(span, button);
             div.classList.add(`${player.id}`);

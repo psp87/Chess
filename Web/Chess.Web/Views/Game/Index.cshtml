@@ -52,13 +52,13 @@
                 <button type="submit" class="offer-draw-btn option-btn game-btn btn"><i class="far fa-handshake"></i> Offer Draw</button>
                 <button type="submit" class="resign-btn option-btn game-btn btn"><i class="far fa-flag"></i> Resign</button>
             </div>
-            <div class="chat-container">
-                <div class="chat-window-wrapper">
-                    <ul class="chat-window"></ul>
+            <div class="game-chat-container chat-container">
+                <div class="game-chat-window-wrapper chat-window-wrapper">
+                    <ul class="game-chat-window chat-window"></ul>
                 </div>
-                <div class="chat-input-wrapper">
-                    <input type="text" class="chat-input" placeholder="Type a message" autofocus />
-                    <button type="submit" class="chat-send-btn game-btn btn">Send</button>
+                <div class="game-chat-input-wrapper chat-input-wrapper">
+                    <input type="text" class="game-chat-input chat-input" placeholder="Type a message" autofocus />
+                    <button type="submit" class="game-chat-send-btn chat-send-btn game-btn btn">Send</button>
                 </div>
             </div>
         </section>
@@ -96,21 +96,25 @@
     </article>
 
     <article class="game-lobby">
-        <div class="find-container row">
-            <div class="mx-auto my-auto text-center">
-                <p class="label row help-block m-3 text-center">Enter your game nickname:</p>
-                <div class="form-inline">
-                    <div class="username-group form-group mr-2">
-                        <input type="text" id="username" class="form-control" placeholder="Your name" autofocus />
-                        <button type="submit" id="find-game" class="btn btn-primary">Start Game</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <hr />
+        <section class="form name-create-container">
+            <input type="text" class="nickname" placeholder="Enter your game name" autofocus />
+            <button type="submit" class="find-game game-btn">CREATE ROOM</button>
+        </section>
+        <section id="test" claas="test">
+            <div class="game-list-title">GAME ROOMS</div>
+            <div class="chat-title">CHAT</div>
+        </section>
         <section class="game-list-and-chat-container">
             <div class="games-list-container"></div>
-            <div class="chat"></div>
+            <div class="lobby-chat-container chat-container">
+                <div class="lobby-chat-window-wrapper chat-window-wrapper">
+                    <ul class="lobby-chat-window chat-window"></ul>
+                </div>
+                <div class="lobby-chat-input-wrapper chat-input-wrapper">
+                    <input type="text" class="lobby-chat-input chat-input" placeholder="Type a message" autofocus />
+                    <button type="submit" class="lobby-chat-send-btn chat-send-btn game-btn">Send</button>
+                </div>
+            </div>
         </section>
     </article>
 </main>
