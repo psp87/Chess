@@ -256,8 +256,11 @@
     flex-flow: column nowrap;
     border: 1px solid;
     border-radius: 0 0 0 7px;
-    background-color: seagreen;
+    background-color: darkseagreen;
     width: 66.66%;
+    height: inherit;
+    overflow: hidden;
+    overflow-y: auto;
 }
 
 .games-list-container div {
@@ -268,7 +271,7 @@
     border-radius: 5px;
     padding: 3px;
     margin: 2px 2px 0px 2px;
-    background-color: palegreen;
+    background-color: azure;
 }
 
 .room-text {
@@ -303,6 +306,7 @@
 }
 
 .lobby-chat-container {
+    height: inherit;
     width: 33.33%;
     border: 1px solid;
     background-color: ghostwhite;
@@ -319,14 +323,15 @@
 }
 
 .lobby-chat-window-wrapper {
+    height: 94%;
 }
 
 .lobby-chat-window {
-
+    height: inherit;
 }
 
 .lobby-chat-input-wrapper {
-    height: 5vh;
+    height: 6%;
 }
 
 .lobby-chat-input {

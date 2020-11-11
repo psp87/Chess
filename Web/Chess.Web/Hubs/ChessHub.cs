@@ -130,13 +130,17 @@
             }
         }
 
-        public async Task SendMessage(string message)
+        public async Task GameSendMessage(string message)
         {
             var player = this.players[this.Context.ConnectionId];
             var game = this.games[player.GameId];
-            var dt = DateTime.Now;
 
-            await this.Clients.Group(game.Id).SendAsync("UpdateChat", message, player, dt.ToString("HH:mm"));
+            await this.Clients.Group(game.Id).SendAsync("UpdateGameChat", message, player, DateTime.Now.ToString("HH:mm"));
+        }
+
+        public async Task LobbySendMessage(string message)
+        {
+            await this.Clients.All.SendAsync("UpdateLobbyChat", message, this.Context.User.Identity.Name, DateTime.Now.ToString("HH:mm"));
         }
 
         public override Task OnDisconnectedAsync(Exception exception)

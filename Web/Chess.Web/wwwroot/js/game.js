@@ -32,7 +32,8 @@
         whiteBishopsTaken: document.querySelector('.taken-pieces-white-bishop-value'),
         whiteRooksTaken: document.querySelector('.taken-pieces-white-rook-value'),
         whiteQueensTaken: document.querySelector('.taken-pieces-white-queen-value'),
-        chatWindow: document.querySelector('.chat-window'),
+        gameChatWindow: document.querySelector('.game-chat-window'),
+        lobbyChatWindow: document.querySelector('.lobby-chat-window'),
         gamesList: document.querySelector('.games-list-container'),
     }
 
@@ -71,10 +72,18 @@
         connection.invoke("Resign");
     })
 
-    $('.chat-send-btn').click(function () {
-        let message = $('.chat-input').val();
+    $('.game-chat-send-btn').click(function () {
+        let message = $('.game-chat-input').val();
         if (message !== "") {
-            connection.invoke('SendMessage', message);
+            connection.invoke('GameSendMessage', message);
+        }
+    })
+
+    $('.lobby-chat-send-btn').click(function () {
+        let message = $('.lobby-chat-input').val();
+        if (message !== "") {
+            console.log(message);
+            connection.invoke('LobbySendMessage', message);
         }
     })
 
@@ -332,7 +341,7 @@
         }
     })
 
-    connection.on("UpdateChat", function (message, player, clock) {
+    connection.on("UpdateGameChat", function (message, player, clock) {
         let li = document.createElement('li');
         li.innerText = `${clock}, ${player.name}: ${message}`;
 
@@ -342,9 +351,20 @@
             li.classList.add('black-chat-msg', 'chat-msg', 'flex-end');
         }
 
-        elements.chatWindow.appendChild(li);
-        elements.chatWindow.scrollTop = elements.chatWindow.scrollHeight
-        document.querySelector('.chat-input').value = "";
+        elements.gameChatWindow.appendChild(li);
+        elements.gameChatWindow.scrollTop = elements.gameChatWindow.scrollHeight;
+        document.querySelector('.game-chat-input').value = "";
+    })
+
+    connection.on("UpdateLobbyChat", function (message, player, clock) {
+        let li = document.createElement('li');
+        li.innerText = `${clock}, ${player}: ${message}`;
+
+        li.classList.add('white-chat-msg', 'chat-msg', 'flex-start');
+
+        elements.lobbyChatWindow.appendChild(li);
+        elements.lobbyChatWindow.scrollTop = elements.lobbyChatWindow.scrollHeight;
+        document.querySelector('.lobby-chat-input').value = "";
     })
 
     function removeHighlight(color) {
