@@ -79,12 +79,24 @@
         }
     })
 
+    document.querySelector('.game-chat-input').addEventListener("keyup", function (e) {
+        if (e.keyCode === 13) {
+            $('.game-chat-send-btn').click();
+        }
+    });
+
     $('.game-lobby-chat-send-btn').click(function () {
         let message = $('.game-lobby-chat-input').val();
         if (message !== "") {
             connection.invoke('LobbySendMessage', message);
         }
     })
+
+    document.querySelector('.game-lobby-chat-input').addEventListener("keyup", function (e) {
+        if (e.keyCode === 13) {
+            $('.game-lobby-chat-send-btn').click();
+        }
+    });
 
     connection.on("EnterRoom", function (name) {
         document.querySelector('.game-lobby').style.display = "none";
