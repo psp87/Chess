@@ -33,12 +33,12 @@
         whiteRooksTaken: document.querySelector('.taken-pieces-white-rook-value'),
         whiteQueensTaken: document.querySelector('.taken-pieces-white-queen-value'),
         gameChatWindow: document.querySelector('.game-chat-window'),
-        lobbyChatWindow: document.querySelector('.lobby-chat-window'),
-        gamesList: document.querySelector('.games-list-container'),
+        lobbyChatWindow: document.querySelector('.game-lobby-chat-window'),
+        gamesList: document.querySelector('.game-lobby-room-container'),
     }
 
-    $('.find-game').click(function () {
-        let name = $('.nickname').val();
+    $('.game-lobby-input-create-btn').click(function () {
+        let name = $('.game-lobby-input-name').val();
         if (name !== "") {
             connection.invoke("CreateRoom", name);
         }
@@ -46,7 +46,7 @@
 
     $(document).on('click', '.join-btn', function () {
         let id = $(this).parent().attr('class');
-        let name = $('.nickname').val();
+        let name = $('.game-lobby-input-name').val();
         if (name !== "") {
             connection.invoke("JoinGame", name, id);
         }
@@ -79,8 +79,8 @@
         }
     })
 
-    $('.lobby-chat-send-btn').click(function () {
-        let message = $('.lobby-chat-input').val();
+    $('.game-lobby-chat-send-btn').click(function () {
+        let message = $('.game-lobby-chat-input').val();
         if (message !== "") {
             console.log(message);
             connection.invoke('LobbySendMessage', message);
@@ -108,7 +108,7 @@
         let button = document.createElement("button");
 
         span.innerText = `${player.name}`;
-        span.classList.add('room-text');
+        span.classList.add('game-lobby-room-name');
         button.innerText = "Join";
         button.classList.add('join-btn', 'game-btn', 'btn');
 
@@ -118,7 +118,7 @@
     })
 
     connection.on("ListRooms", function (waitingPlayers) {
-        $('.games-list-container').empty();
+        $('.game-lobby-room-container').empty();
 
         waitingPlayers.forEach(player => {
             let div = document.createElement('div');
@@ -126,7 +126,7 @@
             let button = document.createElement("button");
 
             span.innerText = `${player.name}`;
-            span.classList.add('room-text');
+            span.classList.add('game-lobby-room-name');
             button.innerText = "Join";
             button.classList.add('join-btn', 'game-btn', 'btn');
 
@@ -359,12 +359,11 @@
     connection.on("UpdateLobbyChat", function (message, player, clock) {
         let li = document.createElement('li');
         li.innerText = `${clock}, ${player}: ${message}`;
-
         li.classList.add('white-chat-msg', 'chat-msg', 'flex-start');
 
         elements.lobbyChatWindow.appendChild(li);
         elements.lobbyChatWindow.scrollTop = elements.lobbyChatWindow.scrollHeight;
-        document.querySelector('.lobby-chat-input').value = "";
+        document.querySelector('.game-lobby-chat-input').value = "";
     })
 
     function removeHighlight(color) {

@@ -1,5 +1,5 @@
 ﻿@{
-    this.ViewData["Title"] = "Game Room";
+    this.ViewData["Title"] = "Game Lobby";
 }
 
 <environment names="Development">
@@ -96,23 +96,25 @@
     </article>
 
     <article class="game-lobby">
-        <section class="form name-create-container">
-            <input type="text" class="nickname" placeholder="Enter your game name" autofocus />
-            <button type="submit" class="find-game game-btn">CREATE ROOM</button>
+        <section class="game-lobby-input-container form">
+            <input type="text" class="game-lobby-input-name" placeholder="Enter your name" autofocus />
+            <button type="submit" class="game-lobby-input-create-btn game-btn">CREATE ROOM</button>
         </section>
-        <section id="test" claas="test">
-            <div class="game-list-title">GAME ROOMS</div>
-            <div class="chat-title">CHAT</div>
+
+        <section class="game-lobby-title-container">
+            <div class="game-lobby-title-room">GAME ROOMS</div>
+            <div class="game-lobby-title-chat">CHAT</div>
         </section>
-        <section class="game-list-and-chat-container">
-            <div class="games-list-container"></div>
-            <div class="lobby-chat-container chat-container">
-                <div class="lobby-chat-window-wrapper chat-window-wrapper">
-                    <ul class="lobby-chat-window chat-window"></ul>
+
+        <section class="game-lobby-room-chat-container">
+            <div class="game-lobby-room-container"></div>
+            <div class="game-lobby-chat-container chat-container">
+                <div class="game-lobby-chat-window-wrapper chat-window-wrapper">
+                    <ul class="game-lobby-chat-window chat-window"></ul>
                 </div>
-                <div class="lobby-chat-input-wrapper chat-input-wrapper">
-                    <input type="text" class="lobby-chat-input chat-input" placeholder="Type a message" autofocus />
-                    <button type="submit" class="lobby-chat-send-btn chat-send-btn game-btn">Send</button>
+                <div class="game-lobby-chat-input-wrapper chat-input-wrapper">
+                    <input type="text" class="game-lobby-chat-input chat-input" placeholder="Type a message" autofocus />
+                    <button type="submit" class="game-lobby-chat-send-btn chat-send-btn game-btn">Send</button>
                 </div>
             </div>
         </section>
