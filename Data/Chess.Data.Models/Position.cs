@@ -35,6 +35,11 @@
             return this.File == other.File && this.Rank == other.Rank;
         }
 
+        public override int GetHashCode()
+        {
+            return this.File.GetHashCode() + this.Rank.GetHashCode();
+        }
+
         public object Clone()
         {
             return Factory.GetPosition(this.Rank, this.File);

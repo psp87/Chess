@@ -58,6 +58,11 @@
             return this.Position.File == other.Position.File && this.Position.Rank == other.Position.Rank;
         }
 
+        public override int GetHashCode()
+        {
+            return this.Position.File.GetHashCode() + this.Position.Rank.GetHashCode();
+        }
+
         public object Clone()
         {
             return new Square()

@@ -22,7 +22,11 @@
             this.players = new ConcurrentDictionary<string, Player>(StringComparer.OrdinalIgnoreCase);
             this.games = new ConcurrentDictionary<string, Game>(StringComparer.OrdinalIgnoreCase);
             this.waitingPlayers = new List<Player>();
+        }
 
+        public async Task GetRooms()
+        {
+            await this.Clients.Caller.SendAsync("ListRooms", this.waitingPlayers);
         }
 
         public async Task CreateRoom(string name)
@@ -35,7 +39,7 @@
             await this.Clients.All.SendAsync("AddRoom", player);
         }
 
-        public async Task JoinGame(string name, string id)
+        public async Task JoinRoom(string name, string id)
         {
             Player joiningPlayer = Factory.GetPlayer(name, this.Context.ConnectionId);
             this.players[joiningPlayer.Id] = joiningPlayer;
@@ -44,9 +48,9 @@
             await this.StartGame(opponent, joiningPlayer);
         }
 
-        public async Task GetRooms()
+        public async Task LobbySendMessage(string message)
         {
-            await this.Clients.Caller.SendAsync("ListRooms", this.waitingPlayers);
+            await this.Clients.All.SendAsync("UpdateLobbyChat", message, this.Context.User.Identity.Name, DateTime.Now.ToString("HH:mm"));
         }
 
         public async Task MoveSelected(string source, string target, string sourceFen, string targetFen)
@@ -136,11 +140,6 @@
             var game = this.games[player.GameId];
 
             await this.Clients.Group(game.Id).SendAsync("UpdateGameChat", message, player, DateTime.Now.ToString("HH:mm"));
-        }
-
-        public async Task LobbySendMessage(string message)
-        {
-            await this.Clients.All.SendAsync("UpdateLobbyChat", message, this.Context.User.Identity.Name, DateTime.Now.ToString("HH:mm"));
         }
 
         public override Task OnDisconnectedAsync(Exception exception)

@@ -596,7 +596,6 @@
             return positions;
         }
 
-        #region Checkmate Internal Methods
         private bool IsAbleToMoveTheKing()
         {
             var king = this.ChessBoard.GetKingSquare(this.Opponent.Color);
@@ -824,6 +823,5 @@
 
             return false;
         }
-        #endregion
     }
 }

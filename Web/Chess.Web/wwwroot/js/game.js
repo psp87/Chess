@@ -48,7 +48,7 @@
         let id = $(this).parent().attr('class');
         let name = $('.game-lobby-input-name').val();
         if (name !== "") {
-            connection.invoke("JoinGame", name, id);
+            connection.invoke("JoinRoom", name, id);
         }
     })
 
@@ -82,13 +82,8 @@
     $('.game-lobby-chat-send-btn').click(function () {
         let message = $('.game-lobby-chat-input').val();
         if (message !== "") {
-            console.log(message);
             connection.invoke('LobbySendMessage', message);
         }
-    })
-
-    connection.on("PlayerJoined", function (player) {
-        playerId = player.id;
     })
 
     connection.on("EnterRoom", function (name) {
@@ -134,6 +129,20 @@
             div.classList.add(`${player.id}`);
             elements.gamesList.appendChild(div);
         });
+    })
+
+    connection.on("UpdateLobbyChat", function (message, player, clock) {
+        let li = document.createElement('li');
+        li.innerText = `${clock}, ${player}: ${message}`;
+        li.classList.add('white-chat-msg', 'chat-msg', 'flex-start');
+
+        elements.lobbyChatWindow.appendChild(li);
+        elements.lobbyChatWindow.scrollTop = elements.lobbyChatWindow.scrollHeight;
+        document.querySelector('.game-lobby-chat-input').value = "";
+    })
+
+    connection.on("PlayerJoined", function (player) {
+        playerId = player.id;
     })
 
     connection.on("Start", function (game) {
@@ -354,16 +363,6 @@
         elements.gameChatWindow.appendChild(li);
         elements.gameChatWindow.scrollTop = elements.gameChatWindow.scrollHeight;
         document.querySelector('.game-chat-input').value = "";
-    })
-
-    connection.on("UpdateLobbyChat", function (message, player, clock) {
-        let li = document.createElement('li');
-        li.innerText = `${clock}, ${player}: ${message}`;
-        li.classList.add('white-chat-msg', 'chat-msg', 'flex-start');
-
-        elements.lobbyChatWindow.appendChild(li);
-        elements.lobbyChatWindow.scrollTop = elements.lobbyChatWindow.scrollHeight;
-        document.querySelector('.game-lobby-chat-input').value = "";
     })
 
     function removeHighlight(color) {
