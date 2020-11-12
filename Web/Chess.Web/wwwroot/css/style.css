@@ -3,6 +3,7 @@
 @import url("home.css");
 @import url("game.css");
 @import url("about.css");
+@import url("lobby.css");
 
 html {
     font-size: 16px;
@@ -92,4 +93,64 @@ button.accept-policy {
     white-space: nowrap;
     height: 60px;
     line-height: 60px;
+}
+
+.game-btn-container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    margin-top: 7px;
+}
+
+.game-btn {
+    background-color: #454a52;
+    color: white;
+}
+
+.game-btn:not([disabled]):hover {
+    background-color: #557d5f;
+    color: white;
+}
+
+.game-btn[disabled]:hover {
+    color: white;
+    cursor: not-allowed;
+}
+
+.chat-container {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-between;
+}
+
+.chat-window-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+
+.chat-window {
+    display: flex;
+    flex-flow: column;
+    overflow-y: auto;
+    padding: 5px;
+}
+
+.chat-input-wrapper {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.chat-input {
+    flex-grow: 1;
+    padding-left: 10px;
+}
+
+.chat-msg {
+    max-width: 85%;
+    text-align: left;
+    word-break: break-all;
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin-bottom: 2px;
+    padding: 2px 7px;
 }

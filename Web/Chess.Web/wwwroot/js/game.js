@@ -44,7 +44,7 @@
         }
     })
 
-    $(document).on('click', '.join-btn', function () {
+    $(document).on('click', '.game-lobby-room-join-btn', function () {
         let id = $(this).parent().attr('class');
         let name = $('.game-lobby-input-name').val();
         if (name !== "") {
@@ -110,7 +110,7 @@
         span.innerText = `${player.name}`;
         span.classList.add('game-lobby-room-name');
         button.innerText = "Join";
-        button.classList.add('join-btn', 'game-btn', 'btn');
+        button.classList.add('game-lobby-room-join-btn', 'game-btn', 'btn');
 
         div.append(span, button);
         div.classList.add(`${player.id}`);
@@ -128,7 +128,7 @@
             span.innerText = `${player.name}`;
             span.classList.add('game-lobby-room-name');
             button.innerText = "Join";
-            button.classList.add('join-btn', 'game-btn', 'btn');
+            button.classList.add('game-lobby-room-join-btn', 'game-btn', 'btn');
 
             div.append(span, button);
             div.classList.add(`${player.id}`);
