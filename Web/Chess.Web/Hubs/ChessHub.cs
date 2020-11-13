@@ -27,7 +27,9 @@
         public override Task OnConnectedAsync()
         {
             this.Clients.Caller.SendAsync("ListRooms", this.waitingPlayers);
-            this.Clients.All.SendAsync("UpdateInternalMessage", $"{this.Context.User.Identity.Name} joined the lobby");
+
+            var msgFormat = $"{this.Context.User.Identity.Name} joined the lobby";
+            this.Clients.All.SendAsync("UpdateLobbyChatInternalMessage", msgFormat);
 
             return base.OnConnectedAsync();
         }
@@ -38,7 +40,9 @@
             if (leavingPlayer.GameId != null)
             {
                 this.Clients.Group(leavingPlayer.GameId).SendAsync("GameOver", leavingPlayer, GameOver.Disconnected);
-                this.Clients.Group(leavingPlayer.GameId).SendAsync("UpdateGameChatInternalMeesage", $"{leavingPlayer.Name} has left. You won!");
+
+                var msgFormat = $"{leavingPlayer.Name} has left. You won!";
+                this.Clients.Group(leavingPlayer.GameId).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
             }
 
             this.waitingPlayers.Remove(leavingPlayer);
@@ -68,7 +72,8 @@
 
         public async Task LobbySendMessage(string message)
         {
-            await this.Clients.All.SendAsync("UpdateLobbyChat", message, this.Context.User.Identity.Name, DateTime.Now.ToString("HH:mm"));
+            var msgFormat = $"{DateTime.Now.ToString("HH:mm")}, {this.Context.User.Identity.Name}: {message}";
+            await this.Clients.All.SendAsync("UpdateLobbyChat", msgFormat);
         }
 
         public async Task MoveSelected(string source, string target, string sourceFen, string targetFen)
@@ -127,7 +132,9 @@
             var game = this.games[player.GameId];
 
             await this.Clients.Group(game.Id).SendAsync("GameOver", player, GameOver.Resign);
-            await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", $"{player.Name} resigned!");
+
+            var msgFormat = $"{player.Name} resigned!";
+            await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
         }
 
         public async Task OfferDrawRequest()
@@ -146,7 +153,9 @@
             if (isAccepted)
             {
                 await this.Clients.Group(game.Id).SendAsync("GameOver", null, GameOver.Draw);
-                await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", $"{player.Name} accepted the offer. Draw!");
+
+                var msgFormat = $"{player.Name} accepted the offer. Draw!";
+                await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
             }
             else
             {
@@ -159,7 +168,8 @@
             var player = this.players[this.Context.ConnectionId];
             var game = this.games[player.GameId];
 
-            await this.Clients.Group(game.Id).SendAsync("UpdateGameChat", message, player, DateTime.Now.ToString("HH:mm"));
+            var msgFormat = $"{DateTime.Now.ToString("HH:mm")}, {player.Name}: {message}";
+            await this.Clients.Group(game.Id).SendAsync("UpdateGameChat", msgFormat, player);
         }
 
         private async Task StartGame(Player player1, Player player2)
@@ -186,7 +196,9 @@
 
             this.waitingPlayers.Remove(player1);
             await this.Clients.All.SendAsync("ListRooms", this.waitingPlayers);
-            await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", $"{player2.Name} joined. The game started!");
+
+            var msgFormat = $"{player2.Name} joined. The game started!";
+            await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
         }
 
         private void Game_OnGameOver(object sender, EventArgs e)
@@ -196,7 +208,9 @@
             var gameOver = e as GameOverEventArgs;
 
             this.Clients.Group(game.Id).SendAsync("GameOver", player, gameOver.GameOver);
-            this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", $"{player.Name} wins by {gameOver.GameOver.ToString()}");
+
+            var msgFormat = $"{player.Name} wins by {gameOver.GameOver.ToString()}";
+            this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
         }
 
         private void Game_OnMoveComplete(object sender, EventArgs e)

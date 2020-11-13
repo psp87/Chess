@@ -30,7 +30,7 @@
         whiteQueensTaken: document.querySelector('.taken-pieces-white-queen-value'),
         gameChatWindow: document.querySelector('.game-chat-window'),
         lobbyChatWindow: document.querySelector('.game-lobby-chat-window'),
-        gamesList: document.querySelector('.game-lobby-room-container'),
+        rooms: document.querySelector('.game-lobby-room-container'),
     }
 
     $('.game-lobby-input-create-btn').click(function () {
@@ -117,7 +117,7 @@
 
         div.append(span, button);
         div.classList.add(`${player.id}`);
-        elements.gamesList.appendChild(div);
+        elements.rooms.appendChild(div);
     })
 
     connection.on("ListRooms", function (waitingPlayers) {
@@ -135,28 +135,8 @@
 
             div.append(span, button);
             div.classList.add(`${player.id}`);
-            elements.gamesList.appendChild(div);
+            elements.rooms.appendChild(div);
         });
-    })
-
-    connection.on("UpdateLobbyChat", function (message, player, clock) {
-        let li = document.createElement('li');
-        li.innerText = `${clock}, ${player}: ${message}`;
-        li.classList.add('white-chat-msg', 'chat-user-msg', 'chat-msg', 'flex-start');
-
-        elements.lobbyChatWindow.appendChild(li);
-        elements.lobbyChatWindow.scrollTop = elements.lobbyChatWindow.scrollHeight;
-        document.querySelector('.game-lobby-chat-input').value = "";
-    })
-
-    connection.on("UpdateInternalMessage", function (message) {
-        let li = document.createElement('li');
-        li.innerText = `${message}`;
-        li.classList.add('chat-internal-msg', 'chat-msg', 'flex-start');
-
-        elements.lobbyChatWindow.appendChild(li);
-        elements.lobbyChatWindow.scrollTop = elements.lobbyChatWindow.scrollHeight;
-        document.querySelector('.game-lobby-chat-input').value = "";
     })
 
     connection.on("PlayerJoined", function (player) {
@@ -368,29 +348,41 @@
         }
     })
 
-    connection.on("UpdateGameChat", function (message, player, clock) {
-        let li = document.createElement('li');
-        li.innerText = `${clock}, ${player.name}: ${message}`;
-
-        if (player.name == playerOneName) {
-            li.classList.add('white-chat-msg', 'chat-user-msg', 'chat-msg', 'flex-start');
-        } else {
-            li.classList.add('black-chat-msg', 'chat-user-msg', 'chat-msg', 'flex-end');
-        }
-
-        elements.gameChatWindow.appendChild(li);
-        elements.gameChatWindow.scrollTop = elements.gameChatWindow.scrollHeight;
+    connection.on("UpdateGameChat", function (message, player) {
+        let isBlack = player.name === playerOneName ? false : true;
+        updateChat(message, elements.gameChatWindow, false, isBlack);
         document.querySelector('.game-chat-input').value = "";
     })
 
     connection.on("UpdateGameChatInternalMeesage", function (message) {
+        updateChat(message, elements.gameChatWindow, true, false);
+    })
+
+    connection.on("UpdateLobbyChat", function (message) {
+        updateChat(message, elements.lobbyChatWindow, false, false);
+        document.querySelector('.game-lobby-chat-input').value = "";
+    })
+
+    connection.on("UpdateLobbyChatInternalMessage", function (message) {
+        updateChat(message, elements.lobbyChatWindow, true, false);
+    })
+
+    function updateChat(message, chat, isInternalMessage, isBlack) {
         let li = document.createElement('li');
         li.innerText = `${message}`;
-        li.classList.add('chat-internal-msg', 'chat-msg', 'flex-start');
+        if (isInternalMessage) {
+            li.classList.add('chat-internal-msg', 'chat-msg', 'flex-start');
+        } else {
+            if (isBlack) {
+                li.classList.add('black-chat-msg', 'chat-user-msg', 'chat-msg', 'flex-end');
+            } else {
+                li.classList.add('white-chat-msg', 'chat-user-msg', 'chat-msg', 'flex-start');
+            }
+        }
 
-        elements.gameChatWindow.appendChild(li);
-        elements.gameChatWindow.scrollTop = elements.gameChatWindow.scrollHeight;
-    })
+        chat.appendChild(li);
+        chat.scrollTop = elements.gameChatWindow.scrollHeight;
+    }
 
     function removeHighlight(color) {
         let $squares = document.querySelectorAll(`.highlight-${color}`);
