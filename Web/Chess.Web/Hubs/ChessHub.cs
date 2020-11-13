@@ -24,9 +24,27 @@
             this.waitingPlayers = new List<Player>();
         }
 
-        public async Task GetRooms()
+        public override Task OnConnectedAsync()
         {
-            await this.Clients.Caller.SendAsync("ListRooms", this.waitingPlayers);
+            this.Clients.Caller.SendAsync("ListRooms", this.waitingPlayers);
+            this.Clients.All.SendAsync("UpdateInternalMessage", $"{this.Context.User.Identity.Name} joined the lobby");
+
+            return base.OnConnectedAsync();
+        }
+
+        public override Task OnDisconnectedAsync(Exception exception)
+        {
+            var leavingPlayer = this.players[this.Context.ConnectionId];
+            if (leavingPlayer.GameId != null)
+            {
+                this.Clients.Group(leavingPlayer.GameId).SendAsync("GameOver", leavingPlayer, GameOver.Disconnected);
+                this.Clients.Group(leavingPlayer.GameId).SendAsync("UpdateGameChatInternalMeesage", $"{leavingPlayer.Name} has left. You won!");
+            }
+
+            this.waitingPlayers.Remove(leavingPlayer);
+            this.Clients.All.SendAsync("ListRooms", this.waitingPlayers);
+
+            return base.OnDisconnectedAsync(exception);
         }
 
         public async Task CreateRoom(string name)
@@ -109,6 +127,7 @@
             var game = this.games[player.GameId];
 
             await this.Clients.Group(game.Id).SendAsync("GameOver", player, GameOver.Resign);
+            await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", $"{player.Name} resigned!");
         }
 
         public async Task OfferDrawRequest()
@@ -127,6 +146,7 @@
             if (isAccepted)
             {
                 await this.Clients.Group(game.Id).SendAsync("GameOver", null, GameOver.Draw);
+                await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", $"{player.Name} accepted the offer. Draw!");
             }
             else
             {
@@ -140,20 +160,6 @@
             var game = this.games[player.GameId];
 
             await this.Clients.Group(game.Id).SendAsync("UpdateGameChat", message, player, DateTime.Now.ToString("HH:mm"));
-        }
-
-        public override Task OnDisconnectedAsync(Exception exception)
-        {
-            var leavingPlayer = this.players[this.Context.ConnectionId];
-            if (leavingPlayer.GameId != null)
-            {
-                this.Clients.Group(leavingPlayer.GameId).SendAsync("GameOver", leavingPlayer, GameOver.Disconnected);
-            }
-
-            this.waitingPlayers.Remove(leavingPlayer);
-            this.Clients.All.SendAsync("ListRooms", this.waitingPlayers);
-
-            return base.OnDisconnectedAsync(exception);
         }
 
         private async Task StartGame(Player player1, Player player2)
@@ -180,6 +186,7 @@
 
             this.waitingPlayers.Remove(player1);
             await this.Clients.All.SendAsync("ListRooms", this.waitingPlayers);
+            await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", $"{player2.Name} joined. The game started!");
         }
 
         private void Game_OnGameOver(object sender, EventArgs e)
@@ -189,6 +196,7 @@
             var gameOver = e as GameOverEventArgs;
 
             this.Clients.Group(game.Id).SendAsync("GameOver", player, gameOver.GameOver);
+            this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", $"{player.Name} wins by {gameOver.GameOver.ToString()}");
         }
 
         private void Game_OnMoveComplete(object sender, EventArgs e)

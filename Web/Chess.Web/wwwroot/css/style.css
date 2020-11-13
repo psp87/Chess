@@ -147,10 +147,20 @@ button.accept-policy {
 
 .chat-msg {
     max-width: 85%;
-    text-align: left;
     word-break: break-all;
+    margin-bottom: 2px;
+}
+
+.chat-user-msg {
+    text-align: left;
     border: 1px solid gray;
     border-radius: 10px;
-    margin-bottom: 2px;
     padding: 2px 7px;
+}
+
+.chat-internal-msg {
+    color: dimgray;
+    text-indent: 10px;
+    list-style-type: none;
+    font-style: italic;
 }

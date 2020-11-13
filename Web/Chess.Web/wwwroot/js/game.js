@@ -2,10 +2,6 @@
     var connection = new signalR.HubConnectionBuilder().withUrl("/hub").build();
     connection.start();
 
-    sleep(500).then(() => {
-        connection.invoke("GetRooms");
-    })
-
     let playerId;
     let playerName;
     let playerColor;
@@ -146,7 +142,17 @@
     connection.on("UpdateLobbyChat", function (message, player, clock) {
         let li = document.createElement('li');
         li.innerText = `${clock}, ${player}: ${message}`;
-        li.classList.add('white-chat-msg', 'chat-msg', 'flex-start');
+        li.classList.add('white-chat-msg', 'chat-user-msg', 'chat-msg', 'flex-start');
+
+        elements.lobbyChatWindow.appendChild(li);
+        elements.lobbyChatWindow.scrollTop = elements.lobbyChatWindow.scrollHeight;
+        document.querySelector('.game-lobby-chat-input').value = "";
+    })
+
+    connection.on("UpdateInternalMessage", function (message) {
+        let li = document.createElement('li');
+        li.innerText = `${message}`;
+        li.classList.add('chat-internal-msg', 'chat-msg', 'flex-start');
 
         elements.lobbyChatWindow.appendChild(li);
         elements.lobbyChatWindow.scrollTop = elements.lobbyChatWindow.scrollHeight;
@@ -367,14 +373,23 @@
         li.innerText = `${clock}, ${player.name}: ${message}`;
 
         if (player.name == playerOneName) {
-            li.classList.add('white-chat-msg', 'chat-msg', 'flex-start');
+            li.classList.add('white-chat-msg', 'chat-user-msg', 'chat-msg', 'flex-start');
         } else {
-            li.classList.add('black-chat-msg', 'chat-msg', 'flex-end');
+            li.classList.add('black-chat-msg', 'chat-user-msg', 'chat-msg', 'flex-end');
         }
 
         elements.gameChatWindow.appendChild(li);
         elements.gameChatWindow.scrollTop = elements.gameChatWindow.scrollHeight;
         document.querySelector('.game-chat-input').value = "";
+    })
+
+    connection.on("UpdateGameChatInternalMeesage", function (message) {
+        let li = document.createElement('li');
+        li.innerText = `${message}`;
+        li.classList.add('chat-internal-msg', 'chat-msg', 'flex-start');
+
+        elements.gameChatWindow.appendChild(li);
+        elements.gameChatWindow.scrollTop = elements.gameChatWindow.scrollHeight;
     })
 
     function removeHighlight(color) {
