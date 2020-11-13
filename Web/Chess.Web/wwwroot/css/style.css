@@ -145,6 +145,12 @@ button.accept-policy {
     padding-left: 10px;
 }
 
+.chat-send-btn {
+    width: 15%;
+    padding: 5px;
+    border-radius: 0 0 10px 0;
+}
+
 .chat-msg {
     max-width: 85%;
     word-break: break-all;

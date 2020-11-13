@@ -87,12 +87,12 @@
     height: inherit;
     width: 33.33%;
     border: 1px solid;
-    background-color: ghostwhite;
     border-radius: 0 0 7px 0;
 }
 
 .game-lobby-chat-window-wrapper {
     height: 94%;
+    background-color: ghostwhite;
 }
 
 .game-lobby-chat-window {

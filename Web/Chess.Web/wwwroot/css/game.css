@@ -112,13 +112,13 @@
 }
 
 .game-chat-container {
-    margin-top: 20px;
+    margin-top: 7px;
 }
 
 .game-chat-window-wrapper {
     border: 1px solid;
-    border-radius: 10px;
-    margin-bottom: 3px;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
 }
 
 .game-chat-window {
@@ -126,8 +126,7 @@
 }
 
 .game-chat-input {
-    margin-right: 2px;
-    border-radius: 5px;
+    border-radius: 0 0 0 10px;
     border: 1px solid;
     border-color: gray;
 }

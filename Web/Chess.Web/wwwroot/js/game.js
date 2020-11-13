@@ -148,6 +148,7 @@
         elements.playground.style.display = "flex";
         elements.board.style.pointerEvents = "auto";
         $('.game-btn').prop("disabled", false);
+        $('.threefold-draw-btn').prop("disabled", true);
         playerColor = (playerId == game.player1.id) ? game.player1.color : game.player2.color;
         playerName = (playerId == game.player1.id) ? game.player1.name : game.player2.name;
         playerOneName = game.player1.name;

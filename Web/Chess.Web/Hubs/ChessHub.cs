@@ -26,10 +26,9 @@
 
         public override Task OnConnectedAsync()
         {
-            this.Clients.Caller.SendAsync("ListRooms", this.waitingPlayers);
-
             var msgFormat = $"{this.Context.User.Identity.Name} joined the lobby";
             this.Clients.All.SendAsync("UpdateLobbyChatInternalMessage", msgFormat);
+            this.Clients.Caller.SendAsync("ListRooms", this.waitingPlayers);
 
             return base.OnConnectedAsync();
         }
@@ -39,10 +38,9 @@
             var leavingPlayer = this.players[this.Context.ConnectionId];
             if (leavingPlayer.GameId != null)
             {
-                this.Clients.Group(leavingPlayer.GameId).SendAsync("GameOver", leavingPlayer, GameOver.Disconnected);
-
-                var msgFormat = $"{leavingPlayer.Name} has left. You won!";
+                var msgFormat = $"{leavingPlayer.Name} left. You won!";
                 this.Clients.Group(leavingPlayer.GameId).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
+                this.Clients.Group(leavingPlayer.GameId).SendAsync("GameOver", leavingPlayer, GameOver.Disconnected);
             }
 
             this.waitingPlayers.Remove(leavingPlayer);
@@ -56,8 +54,11 @@
             Player player = Factory.GetPlayer(name, this.Context.ConnectionId);
             this.players[player.Id] = player;
             this.waitingPlayers.Add(player);
-            await this.Clients.Caller.SendAsync("PlayerJoined", player);
+
+            var msgFormat = $"{player.Name} created a room";
+            await this.Clients.All.SendAsync("UpdateLobbyChatInternalMessage", msgFormat);
             await this.Clients.Caller.SendAsync("EnterRoom", name);
+            await this.Clients.Caller.SendAsync("PlayerJoined", player);
             await this.Clients.All.SendAsync("AddRoom", player);
         }
 
@@ -122,6 +123,8 @@
 
             if (player.IsThreefoldDrawAvailable && player.HasToMove)
             {
+                var msgFormat = $"{player.Name} declared threefold draw!";
+                await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
                 await this.Clients.Group(game.Id).SendAsync("GameOver", player, GameOver.ThreefoldDraw);
             }
         }
@@ -131,10 +134,9 @@
             var player = this.players[this.Context.ConnectionId];
             var game = this.games[player.GameId];
 
-            await this.Clients.Group(game.Id).SendAsync("GameOver", player, GameOver.Resign);
-
             var msgFormat = $"{player.Name} resigned!";
             await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
+            await this.Clients.Group(game.Id).SendAsync("GameOver", player, GameOver.Resign);
         }
 
         public async Task OfferDrawRequest()
@@ -142,6 +144,8 @@
             var player = this.players[this.Context.ConnectionId];
             var game = this.games[player.GameId];
 
+            var msgFormat = $"{player.Name} requested a draw!";
+            await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
             await this.Clients.GroupExcept(game.Id, this.Context.ConnectionId).SendAsync("DrawOffered", player);
         }
 
@@ -152,13 +156,15 @@
 
             if (isAccepted)
             {
-                await this.Clients.Group(game.Id).SendAsync("GameOver", null, GameOver.Draw);
-
                 var msgFormat = $"{player.Name} accepted the offer. Draw!";
                 await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
+                await this.Clients.Group(game.Id).SendAsync("GameOver", null, GameOver.Draw);
+
             }
             else
             {
+                var msgFormat = $"{player.Name} rejected the offer!";
+                await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
                 await this.Clients.GroupExcept(game.Id, this.Context.ConnectionId).SendAsync("DrawOfferRejected", player);
             }
         }
@@ -207,10 +213,9 @@
             var game = this.games[player.GameId];
             var gameOver = e as GameOverEventArgs;
 
-            this.Clients.Group(game.Id).SendAsync("GameOver", player, gameOver.GameOver);
-
-            var msgFormat = $"{player.Name} wins by {gameOver.GameOver.ToString()}";
+            var msgFormat = $"{gameOver.GameOver.ToString()}!";
             this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
+            this.Clients.Group(game.Id).SendAsync("GameOver", player, gameOver.GameOver);
         }
 
         private void Game_OnMoveComplete(object sender, EventArgs e)
@@ -230,6 +235,12 @@
 
             if (message.Type == Message.CheckOpponent || message.Type == Message.CheckClear)
             {
+                if (message.Type == Message.CheckOpponent)
+                {
+                    var msgFormat = $"{player.Name} checked the opponent!";
+                    this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
+                }
+
                 this.Clients.Group(game.Id).SendAsync("CheckStatus", message.Type);
             }
             else
