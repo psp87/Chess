@@ -3,25 +3,29 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Chess.Common.Enums;
+    using Chess.Data;
     using Chess.Data.Models;
     using Chess.Data.Models.EventArgs;
-
     using Microsoft.AspNetCore.SignalR;
+    using Microsoft.Extensions.DependencyInjection;
 
     public class ChessHub : Hub
     {
         private readonly ConcurrentDictionary<string, Player> players;
         private readonly ConcurrentDictionary<string, Game> games;
         private readonly List<Player> waitingPlayers;
+        private IServiceProvider sp;
 
-        public ChessHub()
+        public ChessHub(IServiceProvider sp)
         {
             this.players = new ConcurrentDictionary<string, Player>(StringComparer.OrdinalIgnoreCase);
             this.games = new ConcurrentDictionary<string, Game>(StringComparer.OrdinalIgnoreCase);
             this.waitingPlayers = new List<Player>();
+            this.sp = sp;
         }
 
         public override Task OnConnectedAsync()
@@ -51,7 +55,7 @@
 
         public async Task CreateRoom(string name)
         {
-            Player player = Factory.GetPlayer(name, this.Context.ConnectionId);
+            Player player = Factory.GetPlayer(name, this.Context.ConnectionId, this.Context.UserIdentifier);
             this.players[player.Id] = player;
             this.waitingPlayers.Add(player);
 
@@ -64,7 +68,7 @@
 
         public async Task JoinRoom(string name, string id)
         {
-            Player joiningPlayer = Factory.GetPlayer(name, this.Context.ConnectionId);
+            Player joiningPlayer = Factory.GetPlayer(name, this.Context.ConnectionId, this.Context.UserIdentifier);
             this.players[joiningPlayer.Id] = joiningPlayer;
             await this.Clients.Caller.SendAsync("PlayerJoined", joiningPlayer);
             var opponent = this.players[id];
@@ -159,7 +163,6 @@
                 var msgFormat = $"{player.Name} accepted the offer. Draw!";
                 await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
                 await this.Clients.Group(game.Id).SendAsync("GameOver", null, GameOver.Draw);
-
             }
             else
             {
@@ -209,13 +212,55 @@
 
         private void Game_OnGameOver(object sender, EventArgs e)
         {
-            var player = sender as Player;
-            var game = this.games[player.GameId];
+            var winner = sender as Player;
+            var game = this.games[winner.GameId];
+            var loser = game.Opponent;
             var gameOver = e as GameOverEventArgs;
 
             var msgFormat = $"{gameOver.GameOver.ToString()}!";
-            this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
-            this.Clients.Group(game.Id).SendAsync("GameOver", player, gameOver.GameOver);
+            this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMessage", msgFormat);
+            this.Clients.Group(game.Id).SendAsync("GameOver", winner, gameOver.GameOver);
+
+            this.UpdateStats(winner);
+            this.UpdateStats(loser);
+        }
+
+        private void UpdateStats(Player player)
+        {
+            using (var scope = this.sp.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+                var stats = dbContext.Stats.Where(x => x.ApplicationUser.Id == player.UserId).FirstOrDefault();
+
+                if (stats == null)
+                {
+                    stats = new Stats
+                    {
+                        Matches = 0,
+                        Wons = 0,
+                        Draws = 0,
+                        Losses = 0,
+                        ApplicationUserId = player.UserId,
+                    };
+                    dbContext.Stats.Add(stats);
+                    dbContext.SaveChanges();
+                }
+
+                stats.Matches += 1;
+
+                if (player.UserId == this.Context.UserIdentifier)
+                {
+                    stats.Wons += 1;
+                }
+                else
+                {
+                    stats.Losses += 1;
+                }
+
+                dbContext.Stats.Update(stats);
+                dbContext.SaveChanges();
+            }
         }
 
         private void Game_OnMoveComplete(object sender, EventArgs e)

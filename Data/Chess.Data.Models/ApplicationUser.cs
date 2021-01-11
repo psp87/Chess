@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-
+    using System.ComponentModel.DataAnnotations.Schema;
     using Chess.Data.Common.Models;
 
     using Microsoft.AspNetCore.Identity;
@@ -32,5 +32,7 @@
         public virtual ICollection<IdentityUserClaim<string>> Claims { get; set; }
 
         public virtual ICollection<IdentityUserLogin<string>> Logins { get; set; }
+
+        public virtual Stats Stats { get; set; }
     }
 }

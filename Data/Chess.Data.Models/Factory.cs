@@ -13,9 +13,9 @@
             return new Board();
         }
 
-        public static Player GetPlayer(string name, string connectionId)
+        public static Player GetPlayer(string name, string connectionId, string userId)
         {
-            return new Player(name, connectionId);
+            return new Player(name, connectionId, userId);
         }
 
         public static IPiece GetPawn(Color color)

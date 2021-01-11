@@ -4,6 +4,7 @@
 @import url("game.css");
 @import url("about.css");
 @import url("lobby.css");
+@import url("stats.css");
 
 html {
     font-size: 16px;

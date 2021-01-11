@@ -7,7 +7,7 @@
 
     public class Player
     {
-        public Player(string name, string connectionId)
+        public Player(string name, string connectionId, string userId)
         {
             this.TakenFigures = new Dictionary<string, int>()
             {
@@ -19,9 +19,12 @@
             };
             this.Name = name;
             this.Id = connectionId;
+            this.UserId = userId;
         }
 
         public string Id { get; set; }
+
+        public string UserId { get; set; }
 
         public string Name { get; }
 

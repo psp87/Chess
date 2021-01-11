@@ -1,8 +1,43 @@
-﻿@using Chess.Common
+﻿@model Chess.Web.ViewModels.StatsViewModel
+
 @{
     this.ViewData["Title"] = "Stats";
 }
 
-<div>
-    <h3 style="text-align: center">Soon!</h3>
-</div>
+<table>
+    <tr class="table-title">
+        <th colspan="5">@Model.Name</th>
+    </tr>
+    <tr>
+        <th class="col-title">MATCHES</th>
+        <th class="col-title">WONS</th>
+        <th class="col-title">DRAWS</th>
+        <th class="col-title">LOSSES</th>
+        <th class="col-title">WON RATIO</th>
+    </tr>
+    <tr>
+        <td>@Model.UserStats.Games</td>
+        <td>@Model.UserStats.Wons</td>
+        <td>@Model.UserStats.Draws</td>
+        <td>@Model.UserStats.Losses</td>
+        <td>@Model.UserStats.WonRatio%</td>
+    </tr>
+</table>
+
+<table>
+    <tr class="table-title">
+        <th colspan="5">ALL USERS</th>
+    </tr>
+    <tr>
+        <th class="col-title">TOTAL USERS</th>
+        <th class="col-title">TOTAL MATCHES</th>
+        <th class="col-title">USER WITH MOST MATCHES</th>
+        <th class="col-title">USER WITH MOST WINS</th>
+    </tr>
+    <tr>
+        <td>@Model.TotalUsers</td>
+        <td>@Model.TotalMatches</td>
+        <td>@Model.MostMatchesUser</td>
+        <td>@Model.MostWonsUser</td>
+    </tr>
+</table>

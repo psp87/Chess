@@ -78,9 +78,9 @@
             if (this.MovePiece() || this.TakePiece() || this.EnPassantTake())
             {
                 this.IsPawnPromotion(targetFen);
-                this.IsGameOver(targetFen);
                 this.ClearCheckMessage();
                 this.UpdateMoveHistory(oldSource, oldTarget, oldBoard);
+                this.IsGameOver(targetFen);
                 this.ChangeTurns();
                 this.Turn++;
                 return true;

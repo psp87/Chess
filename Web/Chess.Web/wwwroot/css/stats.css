@@ -1,0 +1,29 @@
+﻿table, th, td {
+    border: 1px solid black;
+}
+
+th, td {
+    padding: 15px;
+    text-align: center;
+}
+
+table {
+    width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 25px;
+}
+
+.col-title {
+    background-color: darkslategray;
+    color: white;
+}
+
+td {
+    background-color: white;
+}
+
+.table-title {
+    background-color: aqua;
+    text-transform: uppercase;
+}

@@ -355,7 +355,7 @@
         document.querySelector('.game-chat-input').value = "";
     })
 
-    connection.on("UpdateGameChatInternalMeesage", function (message) {
+    connection.on("UpdateGameChatInternalMessage", function (message) {
         updateChat(message, elements.gameChatWindow, true, false);
     })
 

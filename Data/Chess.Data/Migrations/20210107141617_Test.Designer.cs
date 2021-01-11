@@ -4,14 +4,16 @@ using Chess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Chess.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210107141617_Test")]
+    partial class Test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -184,19 +186,19 @@ namespace Chess.Data.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Draws")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Losses")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Matches")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Wons")
+                    b.Property<int?>("TotalDraws")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TotalGames")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TotalLosses")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TotalWons")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
