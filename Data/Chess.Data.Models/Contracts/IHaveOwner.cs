@@ -2,8 +2,8 @@
 {
     public interface IHaveOwner
     {
-        string ApplicationUserId { get; set; }
+        string OwnerId { get; set; }
 
-        ApplicationUser ApplicationUser { get; set; }
+        ApplicationUser Owner { get; set; }
     }
 }

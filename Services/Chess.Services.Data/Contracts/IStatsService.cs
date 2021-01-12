@@ -1,21 +1,21 @@
 ﻿namespace Chess.Services.Data.Contracts
 {
-    using Chess.Data.Models;
-
     public interface IStatsService
     {
         T GetUserStats<T>(string userId);
 
+        int GetUserRating(string userId);
+
         int GetTotalUsers();
 
-        int GetTotalMatches();
+        int GetLastThirtyDaysRegisteredUsers();
 
-        string GetMostMatchesUser();
+        int GetTotalGames();
 
-        string GetMostWonsUser();
+        string GetMostGamesUser();
 
-        Stats GetUserStats(string id);
+        string GetMostWinsUser();
 
-        void InitiateStats(string id);
+        void InitiateStats(string userId);
     }
 }

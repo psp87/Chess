@@ -92,6 +92,11 @@
             }
         }
 
+        public int CalculateRatingPoints(int yourRating, int opponentRating)
+        {
+            return Math.Max(1, ((opponentRating - yourRating) / 25) + 16);
+        }
+
         private bool MovePiece()
         {
             if (this.Move.Target.Piece == null &&

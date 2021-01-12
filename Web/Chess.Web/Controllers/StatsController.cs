@@ -15,7 +15,7 @@
     {
         private readonly IStatsService statsService;
 
-        public StatsController(IStatsService statsService, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public StatsController(IStatsService statsService, UserManager<ApplicationUser> userManager)
         {
             this.statsService = statsService;
         }
@@ -23,7 +23,8 @@
         public IActionResult Index()
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var stats = this.statsService.GetUserStats(userId);
+
+            var stats = this.statsService.GetUserStats<UserStatsViewModel>(userId);
 
             if (stats == null)
             {
@@ -35,12 +36,13 @@
 
             var model = new StatsViewModel
             {
-                Name = this.User.Identity.Name,
+                UserName = this.User.Identity.Name,
                 UserStats = userStats,
                 TotalUsers = this.statsService.GetTotalUsers(),
-                TotalMatches = this.statsService.GetTotalMatches(),
-                MostMatchesUser = this.statsService.GetMostMatchesUser(),
-                MostWonsUser = this.statsService.GetMostWonsUser(),
+                LastThirtyDaysRegisteredUsers = this.statsService.GetLastThirtyDaysRegisteredUsers(),
+                TotalGames = this.statsService.GetTotalGames(),
+                MostGamesUser = this.statsService.GetMostGamesUser(),
+                MostWinsUser = this.statsService.GetMostWinsUser(),
             };
 
             return this.View(model);

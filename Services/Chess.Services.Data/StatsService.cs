@@ -1,5 +1,6 @@
 ﻿namespace Chess.Services.Data
 {
+    using System;
     using System.Linq;
 
     using Chess.Data.Common.Repositories;
@@ -18,46 +19,55 @@
 
         public T GetUserStats<T>(string userId)
         {
-            return this.statsRepository.All().Where(x => x.ApplicationUserId == userId).To<T>().FirstOrDefault();
+            return this.statsRepository.All().Where(x => x.OwnerId == userId).To<T>().FirstOrDefault();
+        }
+
+        public int GetUserRating(string userId)
+        {
+            return this.statsRepository.All().Where(x => x.OwnerId == userId).Select(x => x.Rating).FirstOrDefault();
         }
 
         public int GetTotalUsers()
         {
-            return this.statsRepository.All().Select(x => x.ApplicationUserId).Count();
+            return this.statsRepository.All().Count();
         }
 
-        public int GetTotalMatches()
+        public int GetLastThirtyDaysRegisteredUsers()
         {
-            return this.statsRepository.All().Select(x => x.Matches).Sum() / 2;
+            return this.statsRepository.All().Where(x => x.CreatedOn >= DateTime.Now.AddDays(-30)).Count();
         }
 
-        public string GetMostMatchesUser()
+        public int GetTotalGames()
         {
-            int maxGames = this.statsRepository.All().Max(x => x.Matches);
-            return this.statsRepository.All().Where(x => x.Matches == maxGames).Select(x => x.ApplicationUser.UserName).FirstOrDefault();
+            return this.statsRepository.All().Select(x => x.Games).Sum() / 2;
         }
 
-        public string GetMostWonsUser()
+        public string GetMostGamesUser()
         {
-            int maxWons = this.statsRepository.All().Max(x => x.Wons);
-            return this.statsRepository.All().Where(x => x.Wons == maxWons).Select(x => x.ApplicationUser.UserName).FirstOrDefault();
+            int maxGames = this.statsRepository.All().Max(x => x.Games);
+
+            return this.statsRepository.All().Where(x => x.Games == maxGames).Select(x => x.Owner.UserName).FirstOrDefault();
         }
 
-        public Stats GetUserStats(string id)
+        public string GetMostWinsUser()
         {
-            return this.statsRepository.All().Where(x => x.ApplicationUser.Id == id).FirstOrDefault();
+            int maxWins = this.statsRepository.All().Max(x => x.Wins);
+
+            return this.statsRepository.All().Where(x => x.Wins == maxWins).Select(x => x.Owner.UserName).FirstOrDefault();
         }
 
         public void InitiateStats(string id)
         {
             var stats = new Stats
             {
-                Matches = 0,
-                Wons = 0,
+                Games = 0,
+                Wins = 0,
                 Draws = 0,
                 Losses = 0,
-                ApplicationUserId = id,
+                OwnerId = id,
+                Rating = 1200,
             };
+
             this.statsRepository.AddAsync(stats);
             this.statsRepository.SaveChangesAsync();
         }

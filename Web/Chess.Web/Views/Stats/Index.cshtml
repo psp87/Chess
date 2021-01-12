@@ -6,21 +6,21 @@
 
 <table>
     <tr class="table-title">
-        <th colspan="5">@Model.Name</th>
+        <th colspan="5">@Model.UserName</th>
     </tr>
     <tr>
-        <th class="col-title">MATCHES</th>
-        <th class="col-title">WONS</th>
+        <th class="col-title">GAMES</th>
+        <th class="col-title">WINS</th>
         <th class="col-title">DRAWS</th>
         <th class="col-title">LOSSES</th>
-        <th class="col-title">WON RATIO</th>
+        <th class="col-title">RATING</th>
     </tr>
     <tr>
         <td>@Model.UserStats.Games</td>
-        <td>@Model.UserStats.Wons</td>
+        <td>@Model.UserStats.Wins</td>
         <td>@Model.UserStats.Draws</td>
         <td>@Model.UserStats.Losses</td>
-        <td>@Model.UserStats.WonRatio%</td>
+        <td>@Model.UserStats.Rating</td>
     </tr>
 </table>
 
@@ -30,14 +30,16 @@
     </tr>
     <tr>
         <th class="col-title">TOTAL USERS</th>
-        <th class="col-title">TOTAL MATCHES</th>
-        <th class="col-title">USER WITH MOST MATCHES</th>
+        <th class="col-title">LAST 30 DAYS REGISTERED USERS</th>
+        <th class="col-title">TOTAL GAMES</th>
+        <th class="col-title">USER WITH MOST GAMES</th>
         <th class="col-title">USER WITH MOST WINS</th>
     </tr>
     <tr>
         <td>@Model.TotalUsers</td>
-        <td>@Model.TotalMatches</td>
-        <td>@Model.MostMatchesUser</td>
-        <td>@Model.MostWonsUser</td>
+        <td>@Model.LastThirtyDaysRegisteredUsers</td>
+        <td>@Model.TotalGames</td>
+        <td>@Model.MostGamesUser</td>
+        <td>@Model.MostWinsUser</td>
     </tr>
 </table>
