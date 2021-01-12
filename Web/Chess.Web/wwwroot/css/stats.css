@@ -1,17 +1,49 @@
-﻿table, th, td {
-    border: 1px solid black;
+﻿.elo-rating-container {
+    display: flex;
+    flex-flow: row wrap;
 }
 
-th, td {
-    padding: 15px;
+.elo-rating-text {
+    width: 70%;
+    background-color: darkslategray;
+    color: white;
+    font-size: 2em;
     text-align: center;
+    padding: 4px;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+
+.elo-rating-value {
+    width: 30%;
+    background-color: darkcyan;
+    color: white;
+    font-size: 2em;
+    text-align: center;
+    padding: 4px;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+
+#piechart {
+    width: 100%;
+    height: 600px;
 }
 
 table {
-    width: 75%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 25px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+    width: 20%;
+}
+
+.table-title {
+    background-color: darkcyan;
+    color: white;
 }
 
 .col-title {
@@ -21,9 +53,4 @@ table {
 
 td {
     background-color: white;
-}
-
-.table-title {
-    background-color: aqua;
-    text-transform: uppercase;
 }
