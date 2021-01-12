@@ -1,5 +1,7 @@
 ﻿namespace Chess.Web.Controllers
 {
+    using System;
+    using System.Linq;
     using System.Security.Claims;
     using System.Threading;
 
@@ -14,10 +16,12 @@
     public class StatsController : BaseController
     {
         private readonly IStatsService statsService;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public StatsController(IStatsService statsService, UserManager<ApplicationUser> userManager)
         {
             this.statsService = statsService;
+            this.userManager = userManager;
         }
 
         public IActionResult Index()
@@ -38,8 +42,8 @@
             {
                 UserName = this.User.Identity.Name,
                 UserStats = userStats,
-                TotalUsers = this.statsService.GetTotalUsers(),
-                LastThirtyDaysRegisteredUsers = this.statsService.GetLastThirtyDaysRegisteredUsers(),
+                TotalUsers = this.userManager.Users.Count(),
+                LastThirtyDaysRegisteredUsers = this.userManager.Users.Where(x => x.CreatedOn >= DateTime.Now.AddDays(-30)).Count(),
                 TotalGames = this.statsService.GetTotalGames(),
                 MostGamesUser = this.statsService.GetMostGamesUser(),
                 MostWinsUser = this.statsService.GetMostWinsUser(),

@@ -6,10 +6,6 @@
 
         int GetUserRating(string userId);
 
-        int GetTotalUsers();
-
-        int GetLastThirtyDaysRegisteredUsers();
-
         int GetTotalGames();
 
         string GetMostGamesUser();

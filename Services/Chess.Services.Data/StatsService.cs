@@ -27,16 +27,6 @@
             return this.statsRepository.All().Where(x => x.OwnerId == userId).Select(x => x.Rating).FirstOrDefault();
         }
 
-        public int GetTotalUsers()
-        {
-            return this.statsRepository.All().Count();
-        }
-
-        public int GetLastThirtyDaysRegisteredUsers()
-        {
-            return this.statsRepository.All().Where(x => x.CreatedOn >= DateTime.Now.AddDays(-30)).Count();
-        }
-
         public int GetTotalGames()
         {
             return this.statsRepository.All().Select(x => x.Games).Sum() / 2;
