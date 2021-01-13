@@ -10,6 +10,7 @@
     using Chess.Data;
     using Chess.Data.Models;
     using Chess.Data.Models.EventArgs;
+
     using Microsoft.AspNetCore.SignalR;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -39,21 +40,38 @@
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            var leavingPlayer = this.players[this.Context.ConnectionId];
-            var game = this.games[leavingPlayer.GameId];
-            var winner = game.Opponent;
-
-            if (leavingPlayer.GameId != null)
+            if (this.players.Keys.Contains(this.Context.ConnectionId))
             {
-                var msgFormat = $"{leavingPlayer.Name} left. You won!";
-                this.Clients.Group(leavingPlayer.GameId).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
-                this.Clients.Group(leavingPlayer.GameId).SendAsync("GameOver", leavingPlayer, GameOver.Disconnected);
+                var leavingPlayer = this.players[this.Context.ConnectionId];
 
-                this.UpdateStats(winner, leavingPlayer, game, GameOver.Disconnected);
+                if (leavingPlayer.GameId != null)
+                {
+                    var game = this.games[leavingPlayer.GameId];
+
+                    if (game.GameOver == GameOver.None)
+                    {
+                        var msgFormat = $"{leavingPlayer.Name} left. You won!";
+                        this.Clients.Group(leavingPlayer.GameId).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
+                        this.Clients.Group(leavingPlayer.GameId).SendAsync("GameOver", leavingPlayer, GameOver.Disconnected);
+
+                        if (game.Turn > 30)
+                        {
+                            var winner = game.MovingPlayer.Id != leavingPlayer.Id ? game.MovingPlayer : game.Opponent;
+                            if (this.players.Keys.Contains(winner.Id))
+                            {
+                                this.UpdateStats(winner, leavingPlayer, game, GameOver.Disconnected);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    this.waitingPlayers.Remove(leavingPlayer);
+                    this.Clients.All.SendAsync("ListRooms", this.waitingPlayers);
+                }
+
+                this.players.TryRemove(leavingPlayer.Id, out _);
             }
-
-            this.waitingPlayers.Remove(leavingPlayer);
-            this.Clients.All.SendAsync("ListRooms", this.waitingPlayers);
 
             return base.OnDisconnectedAsync(exception);
         }
@@ -75,8 +93,9 @@
         {
             Player joiningPlayer = Factory.GetPlayer(name, this.Context.ConnectionId, this.Context.UserIdentifier);
             this.players[joiningPlayer.Id] = joiningPlayer;
-            await this.Clients.Caller.SendAsync("PlayerJoined", joiningPlayer);
             var opponent = this.players[id];
+
+            await this.Clients.Caller.SendAsync("PlayerJoined", joiningPlayer);
             await this.StartGame(opponent, joiningPlayer);
         }
 
@@ -127,17 +146,19 @@
 
         public async Task IsThreefoldDraw()
         {
-            var player = this.players[this.Context.ConnectionId];
-            var game = this.games[player.GameId];
+            var movingPlayer = this.players[this.Context.ConnectionId];
+            var game = this.games[movingPlayer.GameId];
             var opponent = game.Opponent;
 
-            if (player.IsThreefoldDrawAvailable && player.HasToMove)
+            if (movingPlayer.IsThreefoldDrawAvailable && movingPlayer.HasToMove)
             {
-                var msgFormat = $"{player.Name} declared threefold draw!";
+                var msgFormat = $"{movingPlayer.Name} declared threefold draw!";
                 await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
-                await this.Clients.Group(game.Id).SendAsync("GameOver", player, GameOver.ThreefoldDraw);
 
-                this.UpdateStats(player, opponent, game, GameOver.Draw);
+                game.GameOver = GameOver.ThreefoldDraw;
+                await this.Clients.Group(game.Id).SendAsync("GameOver", movingPlayer, GameOver.ThreefoldDraw);
+
+                this.UpdateStats(movingPlayer, opponent, game, GameOver.ThreefoldDraw);
             }
         }
 
@@ -145,10 +166,12 @@
         {
             var loser = this.players[this.Context.ConnectionId];
             var game = this.games[loser.GameId];
-            var winner = game.Opponent;
+            var winner = game.MovingPlayer.Id != loser.Id ? game.MovingPlayer : game.Opponent;
 
             var msgFormat = $"{loser.Name} resigned!";
             await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
+
+            game.GameOver = GameOver.Resign;
             await this.Clients.Group(game.Id).SendAsync("GameOver", loser, GameOver.Resign);
 
             this.UpdateStats(winner, loser, game, GameOver.Resign);
@@ -168,12 +191,15 @@
         {
             var player = this.players[this.Context.ConnectionId];
             var game = this.games[player.GameId];
-            var opponent = game.Opponent;
 
             if (isAccepted)
             {
+                var opponent = game.MovingPlayer.Id != player.Id ? game.MovingPlayer : game.Opponent;
+
                 var msgFormat = $"{player.Name} accepted the offer. Draw!";
                 await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
+
+                game.GameOver = GameOver.Draw;
                 await this.Clients.Group(game.Id).SendAsync("GameOver", null, GameOver.Draw);
 
                 this.UpdateStats(player, opponent, game, GameOver.Draw);
@@ -224,6 +250,70 @@
             await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
         }
 
+        private void UpdateStats(Player sender, Player opponent, Game game, GameOver gameOver)
+        {
+            using var scope = this.sp.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var senderStats = dbContext.Stats.Where(x => x.Owner.Id == sender.UserId).FirstOrDefault();
+            var opponentStats = dbContext.Stats.Where(x => x.Owner.Id == opponent.UserId).FirstOrDefault();
+
+            if (senderStats == null)
+            {
+                senderStats = new Stats
+                {
+                    Games = 0,
+                    Wins = 0,
+                    Draws = 0,
+                    Losses = 0,
+                    Rating = 1200,
+                    OwnerId = sender.UserId,
+                };
+
+                dbContext.Stats.Add(senderStats);
+                dbContext.SaveChanges();
+            }
+
+            if (opponentStats == null)
+            {
+                opponentStats = new Stats
+                {
+                    Games = 0,
+                    Wins = 0,
+                    Draws = 0,
+                    Losses = 0,
+                    Rating = 1200,
+                    OwnerId = opponent.UserId,
+                };
+
+                dbContext.Stats.Add(opponentStats);
+                dbContext.SaveChanges();
+            }
+
+            senderStats.Games += 1;
+            opponentStats.Games += 1;
+
+            if (gameOver == GameOver.Checkmate || gameOver == GameOver.Resign || gameOver == GameOver.Disconnected)
+            {
+                int points = game.CalculateRatingPoints(senderStats.Rating, opponentStats.Rating);
+
+                senderStats.Wins += 1;
+                senderStats.Rating += points;
+
+                opponentStats.Losses += 1;
+                opponentStats.Rating -= points;
+            }
+            else if (gameOver == GameOver.Stalemate || gameOver == GameOver.Draw || gameOver == GameOver.ThreefoldDraw || gameOver == GameOver.FivefoldDraw)
+            {
+                senderStats.Draws += 1;
+                opponentStats.Draws += 1;
+            }
+
+            dbContext.Stats.Update(senderStats);
+            dbContext.Stats.Update(opponentStats);
+            dbContext.SaveChanges();
+        }
+
         private void Game_OnGameOver(object sender, EventArgs e)
         {
             var player = sender as Player;
@@ -236,72 +326,6 @@
             this.Clients.Group(game.Id).SendAsync("GameOver", player, gameOver.GameOver);
 
             this.UpdateStats(player, opponent, game, gameOver.GameOver);
-        }
-
-        private void UpdateStats(Player sender, Player opponent, Game game, GameOver gameOver)
-        {
-            using (var scope = this.sp.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-                var senderStats = dbContext.Stats.Where(x => x.Owner.Id == sender.UserId).FirstOrDefault();
-                var opponentStats = dbContext.Stats.Where(x => x.Owner.Id == opponent.UserId).FirstOrDefault();
-
-                if (senderStats == null)
-                {
-                    senderStats = new Stats
-                    {
-                        Games = 0,
-                        Wins = 0,
-                        Draws = 0,
-                        Losses = 0,
-                        Rating = 1200,
-                        OwnerId = sender.UserId,
-                    };
-
-                    dbContext.Stats.Add(senderStats);
-                    dbContext.SaveChanges();
-                }
-
-                if (opponentStats == null)
-                {
-                    opponentStats = new Stats
-                    {
-                        Games = 0,
-                        Wins = 0,
-                        Draws = 0,
-                        Losses = 0,
-                        Rating = 1200,
-                        OwnerId = opponent.UserId,
-                    };
-
-                    dbContext.Stats.Add(opponentStats);
-                    dbContext.SaveChanges();
-                }
-
-                senderStats.Games += 1;
-                opponentStats.Games += 1;
-
-                if (gameOver == GameOver.Checkmate || gameOver == GameOver.Resign || gameOver == GameOver.Disconnected)
-                {
-                    int points = game.CalculateRatingPoints(senderStats.Rating, opponentStats.Rating);
-
-                    senderStats.Wins += 1;
-                    senderStats.Rating += points;
-
-                    opponentStats.Rating -= points;
-                    opponentStats.Losses += 1;
-                }
-                else if (gameOver == GameOver.Stalemate || gameOver == GameOver.Draw || gameOver == GameOver.ThreefoldDraw || gameOver == GameOver.FivefoldDraw)
-                {
-                    senderStats.Draws += 1;
-                    opponentStats.Draws += 1;
-                }
-
-                dbContext.Stats.Update(senderStats);
-                dbContext.Stats.Update(opponentStats);
-                dbContext.SaveChanges();
-            }
         }
 
         private void Game_OnMoveComplete(object sender, EventArgs e)
@@ -350,8 +374,8 @@
             var game = this.games[player.GameId];
             var args = e as ThreefoldDrawEventArgs;
 
-            this.Clients.Caller.SendAsync("ThreefoldAvailable", player, false);
-            this.Clients.GroupExcept(game.Id, this.Context.ConnectionId).SendAsync("ThreefoldAvailable", player, args.IsAvailable);
+            this.Clients.Caller.SendAsync("ThreefoldAvailable", false);
+            this.Clients.GroupExcept(game.Id, this.Context.ConnectionId).SendAsync("ThreefoldAvailable", args.IsAvailable);
         }
     }
 }

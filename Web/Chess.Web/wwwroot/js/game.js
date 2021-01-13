@@ -204,7 +204,7 @@
         $('.game-btn').prop("disabled", true);
     })
 
-    connection.on("ThreefoldAvailable", function (player, isAvailable) {
+    connection.on("ThreefoldAvailable", function (isAvailable) {
         if (isAvailable) {
             $('.threefold-draw-btn').prop('disabled', false);
         } else {
