@@ -79,12 +79,13 @@
         public async Task CreateRoom(string name)
         {
             Player player = Factory.GetPlayer(name, this.Context.ConnectionId, this.Context.UserIdentifier);
+            player.Rating = this.GetUserRating(player);
             this.players[player.Id] = player;
             this.waitingPlayers.Add(player);
 
             var msgFormat = $"{player.Name} created a room";
             await this.Clients.All.SendAsync("UpdateLobbyChatInternalMessage", msgFormat);
-            await this.Clients.Caller.SendAsync("EnterRoom", name);
+            await this.Clients.Caller.SendAsync("EnterRoom", name, player.Rating);
             await this.Clients.Caller.SendAsync("PlayerJoined", player);
             await this.Clients.All.SendAsync("AddRoom", player);
         }
@@ -92,6 +93,7 @@
         public async Task JoinRoom(string name, string id)
         {
             Player joiningPlayer = Factory.GetPlayer(name, this.Context.ConnectionId, this.Context.UserIdentifier);
+            joiningPlayer.Rating = this.GetUserRating(joiningPlayer);
             this.players[joiningPlayer.Id] = joiningPlayer;
             var opponent = this.players[id];
 
@@ -103,6 +105,7 @@
         {
             var msgFormat = $"{DateTime.Now.ToString("HH:mm")}, {this.Context.User.Identity.Name}: {message}";
             await this.Clients.All.SendAsync("UpdateLobbyChat", msgFormat);
+            await this.Clients.Caller.SendAsync("ClearLobbyChatInputText");
         }
 
         public async Task MoveSelected(string source, string target, string sourceFen, string targetFen)
@@ -219,6 +222,7 @@
 
             var msgFormat = $"{DateTime.Now.ToString("HH:mm")}, {player.Name}: {message}";
             await this.Clients.Group(game.Id).SendAsync("UpdateGameChat", msgFormat, player);
+            await this.Clients.Caller.SendAsync("ClearGameChatInputText");
         }
 
         private async Task StartGame(Player player1, Player player2)
@@ -248,6 +252,14 @@
 
             var msgFormat = $"{player2.Name} joined. The game started!";
             await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
+        }
+
+        private int GetUserRating(Player player)
+        {
+            using var scope = this.sp.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            return dbContext.Stats.Where(x => x.Owner.Id == player.UserId).Select(x => x.Rating).FirstOrDefault();
         }
 
         private void UpdateStats(Player sender, Player opponent, Game game, GameOver gameOver)

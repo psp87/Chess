@@ -13,6 +13,10 @@
     font-size: 1.7em;
 }
 
+.game-lobby-input-name:focus {
+    outline: none;
+}
+
 .game-lobby-input-create-btn {
     background-color: #454a52;
     color: white;

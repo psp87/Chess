@@ -28,6 +28,10 @@
     margin: 0px 0px 0px 5px;
 }
 
+.player-rating {
+    color: green;
+}
+
 .player-points {
     font-size: 1.2rem;
     margin: 10px;
@@ -113,22 +117,33 @@
 
 .game-chat-container {
     margin-top: 7px;
+    height: 30vh;
 }
 
 .game-chat-window-wrapper {
     border: 1px solid;
     border-bottom: none;
     border-radius: 10px 10px 0 0;
+    height: 85%;
+    border-color: gray;
+}
+
+.game-chat-input-wrapper {
+    height: 15%;
 }
 
 .game-chat-window {
-    height: 20vh;
-}
+        height: 20vh;
+    }
 
 .game-chat-input {
     border-radius: 0 0 0 10px;
     border: 1px solid;
     border-color: gray;
+}
+
+.game-chat-send-btn {
+    width: 14%;
 }
 
 .flex-start {

@@ -14,6 +14,7 @@
         statusCheck: document.querySelector('.status-bar-check-notification'),
         whiteName: document.querySelector('.main-playground-white-name'),
         whitePointsValue: document.querySelector('.white-points-value'),
+        whiteRating: document.querySelector('.main-playground-white-rating'),
         whiteMoveHistory: document.querySelector('.main-playground-white-move-history'),
         blackPawnsTaken: document.querySelector('.taken-pieces-black-pawn-value'),
         blackKnightsTaken: document.querySelector('.taken-pieces-black-knight-value'),
@@ -21,6 +22,7 @@
         blackRooksTaken: document.querySelector('.taken-pieces-black-rook-value'),
         blackQueensTaken: document.querySelector('.taken-pieces-black-queen-value'),
         blackName: document.querySelector('.main-playground-black-name'),
+        blackRating: document.querySelector('.main-playground-black-rating'),
         blackPointsValue: document.querySelector('.black-points-value'),
         blackMoveHistory: document.querySelector('.main-playground-black-move-history'),
         whitePawnsTaken: document.querySelector('.taken-pieces-white-pawn-value'),
@@ -94,13 +96,15 @@
         }
     });
 
-    connection.on("EnterRoom", function (name) {
+    connection.on("EnterRoom", function (name, rating) {
         document.querySelector('.game-lobby').style.display = "none";
         elements.playground.style.display = "flex";
         elements.board.style.pointerEvents = "none";
         $('.game-btn').prop("disabled", true);
         elements.whiteName.innerHTML = name;
+        elements.whiteRating.innerHTML = rating;
         elements.blackName.innerHTML = "?";
+        elements.blackRating.innerHTML = "ELO";
         elements.statusText.style.color = "red";
         elements.statusText.innerText = "WAITING FOR OPPONENT...";
     })
@@ -155,6 +159,8 @@
         playerTwoName = game.player2.name;
         elements.whiteName.innerHTML = playerOneName;
         elements.blackName.innerHTML = playerTwoName;
+        elements.whiteRating.innerHTML = game.player1.rating;
+        elements.blackRating.innerHTML = game.player2.rating;
         updateStatus(game.movingPlayer.name);
     })
 
@@ -352,7 +358,6 @@
     connection.on("UpdateGameChat", function (message, player) {
         let isBlack = player.name === playerOneName ? false : true;
         updateChat(message, elements.gameChatWindow, false, isBlack);
-        document.querySelector('.game-chat-input').value = "";
     })
 
     connection.on("UpdateGameChatInternalMessage", function (message) {
@@ -361,7 +366,14 @@
 
     connection.on("UpdateLobbyChat", function (message) {
         updateChat(message, elements.lobbyChatWindow, false, false);
+    })
+
+    connection.on("ClearLobbyChatInputText", function () {
         document.querySelector('.game-lobby-chat-input').value = "";
+    })
+
+    connection.on("ClearGameChatInputText", function () {
+        document.querySelector('.game-chat-input').value = "";
     })
 
     connection.on("UpdateLobbyChatInternalMessage", function (message) {

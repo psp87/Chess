@@ -108,6 +108,18 @@ button.accept-policy {
     color: white;
 }
 
+.game-btn:active {
+    outline: none;
+}
+
+.game-btn:focus {
+    outline: none;
+}
+
+.game-btn:disabled {
+    opacity: 0.65;
+}
+
 .game-btn:not([disabled]):hover {
     background-color: #557d5f;
     color: white;
@@ -144,12 +156,17 @@ button.accept-policy {
 .chat-input {
     flex-grow: 1;
     padding-left: 10px;
+    font-size: 1em;
+}
+
+.chat-input:focus {
+    outline: none;
 }
 
 .chat-send-btn {
-    width: 15%;
-    padding: 5px;
-    border-radius: 0 0 10px 0;
+    border-radius: 0px 0px 5px 0px;
+    font-size: 1em;
+    height: 100%;
 }
 
 .chat-msg {

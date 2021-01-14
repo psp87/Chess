@@ -28,6 +28,8 @@
 
         public string Name { get; }
 
+        public int Rating { get; set; }
+
         public Color Color { get; set; }
 
         public string GameId { get; set; }
