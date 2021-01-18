@@ -1,6 +1,5 @@
 ﻿$(function () {
     var connection = new signalR.HubConnectionBuilder().withUrl("/hub").build();
-    connection.start();
 
     let playerId;
     let playerName;
@@ -43,86 +42,6 @@
         offerDrawBtn: document.querySelector('.offer-draw-btn'),
         threefoldDrawBtn: document.querySelector('.threefold-draw-btn'),
     }
-
-    $(document).on('click', '.game-lobby-room-join-btn', function () {
-        let id = $(this).parent().attr('class');
-        let name = elements.lobbyInputName.value;
-        if (name !== "") {
-            connection.invoke("JoinRoom", name, id)
-                .then((player) => {
-                    playerId = player.id;
-                    board.orientation('black');
-                });
-        }
-    })
-
-    elements.lobbyInputCreateBtn.addEventListener("click", function () {
-        let name = elements.lobbyInputName.value;
-        if (name !== "") {
-            connection.invoke("CreateRoom", name)
-                .then((player) => {
-                    playerId = player.id;
-                    document.querySelector('.game-lobby').style.display = "none";
-                    elements.playground.style.display = "flex";
-                    elements.board.style.pointerEvents = "none";
-                    $('.game-btn').prop("disabled", true);
-                    elements.whiteName.innerHTML = player.name;
-                    elements.whiteRating.innerHTML = player.rating;
-                    elements.blackName.innerHTML = "?";
-                    elements.blackRating.innerHTML = "ELO";
-                    elements.statusText.style.color = "red";
-                    elements.statusText.innerText = "WAITING FOR OPPONENT...";
-                });
-        }
-    })
-
-    elements.threefoldDrawBtn.addEventListener("click", function () {
-        connection.invoke("IsThreefoldDraw");
-    })
-
-    elements.offerDrawBtn.addEventListener("click", function () {
-        let oldText = elements.statusText.innerText;
-        let oldColor = elements.statusText.style.color;
-        elements.statusText.style.color = "black";
-        elements.statusText.innerText = `Draw request sent!`;
-        sleep(1500).then(() => {
-            elements.statusText.style.color = oldColor;
-            elements.statusText.innerText = oldText;
-        })
-        connection.invoke("OfferDrawRequest");
-    })
-
-    elements.resignBtn.addEventListener("click", function () {
-        connection.invoke("Resign");
-    })
-
-    elements.lobbyChatSendBtn.addEventListener("click", function () {
-        let message = elements.lobbyChatInput.value;
-        if (message !== "") {
-            connection.invoke('LobbySendMessage', message)
-                .then(elements.lobbyChatInput.value = "");
-        }
-    })
-
-    elements.gameChatSendBtn.addEventListener("click", function () {
-        let message = elements.gameChatInput.value;
-        if (message !== "") {
-            connection.invoke('GameSendMessage', message)
-                .then(elements.gameChatInput.value = "");
-        }
-    })
-
-    elements.lobbyChatInput.addEventListener("keyup", function (e) {
-        if (e.keyCode === 13) {
-            elements.lobbyChatSendBtn.click();
-        }
-    });
-
-    elements.gameChatInput.addEventListener("keyup", function (e) {
-        if (e.keyCode === 13) {
-            elements.gameChatSendBtn.click();
-        }
-    });
 
     connection.on("AddRoom", function (player) {
         let div = document.createElement('div');
@@ -428,6 +347,95 @@
             connection.invoke("MoveSelected", source, target, sourceFen, targetFen);
         }
     }
+
+    connection.start();
+
+    $(document).on('click', '.game-lobby-room-join-btn', function () {
+        let id = $(this).parent().attr('class');
+        let name = elements.lobbyInputName.value;
+        if (name !== "") {
+            connection.invoke("JoinRoom", name, id)
+                .then((player) => {
+                    playerId = player.id;
+                    board.orientation('black');
+                })
+                .catch((err) => alert(err));
+        }
+    })
+
+    elements.lobbyInputCreateBtn.addEventListener("click", function () {
+        let name = elements.lobbyInputName.value;
+        if (name !== "") {
+            connection.invoke("CreateRoom", name)
+                .then((player) => {
+                    playerId = player.id;
+                    document.querySelector('.game-lobby').style.display = "none";
+                    elements.playground.style.display = "flex";
+                    elements.board.style.pointerEvents = "none";
+                    $('.game-btn').prop("disabled", true);
+                    elements.whiteName.innerHTML = player.name;
+                    elements.whiteRating.innerHTML = player.rating;
+                    elements.blackName.innerHTML = "?";
+                    elements.blackRating.innerHTML = "ELO";
+                    elements.statusText.style.color = "red";
+                    elements.statusText.innerText = "WAITING FOR OPPONENT...";
+                })
+                .catch((err) => alert(err));
+        }
+    })
+
+    elements.threefoldDrawBtn.addEventListener("click", function () {
+        connection.invoke("IsThreefoldDraw")
+            .catch((err) => alert(err));
+    })
+
+    elements.offerDrawBtn.addEventListener("click", function () {
+        let oldText = elements.statusText.innerText;
+        let oldColor = elements.statusText.style.color;
+        elements.statusText.style.color = "black";
+        elements.statusText.innerText = `Draw request sent!`;
+        sleep(1500).then(() => {
+            elements.statusText.style.color = oldColor;
+            elements.statusText.innerText = oldText;
+        })
+        connection.invoke("OfferDrawRequest")
+            .catch((err) => alert(err));
+    })
+
+    elements.resignBtn.addEventListener("click", function () {
+        connection.invoke("Resign")
+            .catch((err) => alert(err));
+    })
+
+    elements.lobbyChatSendBtn.addEventListener("click", function () {
+        let message = elements.lobbyChatInput.value;
+        if (message !== "") {
+            connection.invoke('LobbySendMessage', message)
+                .then(elements.lobbyChatInput.value = "")
+                .catch((err) => alert(err));
+        }
+    })
+
+    elements.gameChatSendBtn.addEventListener("click", function () {
+        let message = elements.gameChatInput.value;
+        if (message !== "") {
+            connection.invoke('GameSendMessage', message)
+                .then(elements.gameChatInput.value = "")
+                .catch((err) => alert(err));
+        }
+    })
+
+    elements.lobbyChatInput.addEventListener("keyup", function (e) {
+        if (e.keyCode === 13) {
+            elements.lobbyChatSendBtn.click();
+        }
+    });
+
+    elements.gameChatInput.addEventListener("keyup", function (e) {
+        if (e.keyCode === 13) {
+            elements.gameChatSendBtn.click();
+        }
+    });
 
     var config = {
         pieceTheme: 'img/chesspieces/wikipedia/{piece}.png',

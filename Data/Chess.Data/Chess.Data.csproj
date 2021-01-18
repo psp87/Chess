@@ -10,9 +10,9 @@
     <CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <None Remove="appsettings.json" />
-  </ItemGroup>
+  </ItemGroup>-->
 
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" />
