@@ -33,28 +33,54 @@
         gameChatWindow: document.querySelector('.game-chat-window'),
         lobbyChatWindow: document.querySelector('.game-lobby-chat-window'),
         rooms: document.querySelector('.game-lobby-room-container'),
+        lobbyInputName: document.querySelector('.game-lobby-input-name'),
+        lobbyInputCreateBtn: document.querySelector('.game-lobby-input-create-btn'),
+        lobbyChatInput: document.querySelector('.game-lobby-chat-input'),
+        lobbyChatSendBtn: document.querySelector('.game-lobby-chat-send-btn'),
+        gameChatInput: document.querySelector('.game-chat-input'),
+        gameChatSendBtn: document.querySelector('.game-chat-send-btn'),
+        resignBtn: document.querySelector('.resign-btn'),
+        offerDrawBtn: document.querySelector('.offer-draw-btn'),
+        threefoldDrawBtn: document.querySelector('.threefold-draw-btn'),
     }
-
-    $('.game-lobby-input-create-btn').click(function () {
-        let name = $('.game-lobby-input-name').val();
-        if (name !== "") {
-            connection.invoke("CreateRoom", name);
-        }
-    })
 
     $(document).on('click', '.game-lobby-room-join-btn', function () {
         let id = $(this).parent().attr('class');
-        let name = $('.game-lobby-input-name').val();
+        let name = elements.lobbyInputName.value;
         if (name !== "") {
-            connection.invoke("JoinRoom", name, id);
+            connection.invoke("JoinRoom", name, id)
+                .then((player) => {
+                    playerId = player.id;
+                    board.orientation('black');
+                });
         }
     })
 
-    $('.threefold-draw-btn').click(function () {
+    elements.lobbyInputCreateBtn.addEventListener("click", function () {
+        let name = elements.lobbyInputName.value;
+        if (name !== "") {
+            connection.invoke("CreateRoom", name)
+                .then((player) => {
+                    playerId = player.id;
+                    document.querySelector('.game-lobby').style.display = "none";
+                    elements.playground.style.display = "flex";
+                    elements.board.style.pointerEvents = "none";
+                    $('.game-btn').prop("disabled", true);
+                    elements.whiteName.innerHTML = player.name;
+                    elements.whiteRating.innerHTML = player.rating;
+                    elements.blackName.innerHTML = "?";
+                    elements.blackRating.innerHTML = "ELO";
+                    elements.statusText.style.color = "red";
+                    elements.statusText.innerText = "WAITING FOR OPPONENT...";
+                });
+        }
+    })
+
+    elements.threefoldDrawBtn.addEventListener("click", function () {
         connection.invoke("IsThreefoldDraw");
     })
 
-    $('.offer-draw-btn').click(function () {
+    elements.offerDrawBtn.addEventListener("click", function () {
         let oldText = elements.statusText.innerText;
         let oldColor = elements.statusText.style.color;
         elements.statusText.style.color = "black";
@@ -66,48 +92,37 @@
         connection.invoke("OfferDrawRequest");
     })
 
-    $('.resign-btn').click(function () {
+    elements.resignBtn.addEventListener("click", function () {
         connection.invoke("Resign");
     })
 
-    $('.game-chat-send-btn').click(function () {
-        let message = $('.game-chat-input').val();
+    elements.lobbyChatSendBtn.addEventListener("click", function () {
+        let message = elements.lobbyChatInput.value;
         if (message !== "") {
-            connection.invoke('GameSendMessage', message);
+            connection.invoke('LobbySendMessage', message)
+                .then(elements.lobbyChatInput.value = "");
         }
     })
 
-    document.querySelector('.game-chat-input').addEventListener("keyup", function (e) {
+    elements.gameChatSendBtn.addEventListener("click", function () {
+        let message = elements.gameChatInput.value;
+        if (message !== "") {
+            connection.invoke('GameSendMessage', message)
+                .then(elements.gameChatInput.value = "");
+        }
+    })
+
+    elements.lobbyChatInput.addEventListener("keyup", function (e) {
         if (e.keyCode === 13) {
-            $('.game-chat-send-btn').click();
+            elements.lobbyChatSendBtn.click();
         }
     });
 
-    $('.game-lobby-chat-send-btn').click(function () {
-        let message = $('.game-lobby-chat-input').val();
-        if (message !== "") {
-            connection.invoke('LobbySendMessage', message);
-        }
-    })
-
-    document.querySelector('.game-lobby-chat-input').addEventListener("keyup", function (e) {
+    elements.gameChatInput.addEventListener("keyup", function (e) {
         if (e.keyCode === 13) {
-            $('.game-lobby-chat-send-btn').click();
+            elements.gameChatSendBtn.click();
         }
     });
-
-    connection.on("EnterRoom", function (name, rating) {
-        document.querySelector('.game-lobby').style.display = "none";
-        elements.playground.style.display = "flex";
-        elements.board.style.pointerEvents = "none";
-        $('.game-btn').prop("disabled", true);
-        elements.whiteName.innerHTML = name;
-        elements.whiteRating.innerHTML = rating;
-        elements.blackName.innerHTML = "?";
-        elements.blackRating.innerHTML = "ELO";
-        elements.statusText.style.color = "red";
-        elements.statusText.innerText = "WAITING FOR OPPONENT...";
-    })
 
     connection.on("AddRoom", function (player) {
         let div = document.createElement('div');
@@ -143,10 +158,6 @@
         });
     })
 
-    connection.on("PlayerJoined", function (player) {
-        playerId = player.id;
-    })
-
     connection.on("Start", function (game) {
         document.querySelector('.game-lobby').style.display = "none";
         elements.playground.style.display = "flex";
@@ -162,10 +173,6 @@
         elements.whiteRating.innerHTML = game.player1.rating;
         elements.blackRating.innerHTML = game.player2.rating;
         updateStatus(game.movingPlayer.name);
-    })
-
-    connection.on("ChangeOrientation", function () {
-        board.orientation('black');
     })
 
     connection.on("BoardMove", function (source, target) {
@@ -366,14 +373,6 @@
 
     connection.on("UpdateLobbyChat", function (message) {
         updateChat(message, elements.lobbyChatWindow, false, false);
-    })
-
-    connection.on("ClearLobbyChatInputText", function () {
-        document.querySelector('.game-lobby-chat-input').value = "";
-    })
-
-    connection.on("ClearGameChatInputText", function () {
-        document.querySelector('.game-chat-input').value = "";
     })
 
     connection.on("UpdateLobbyChatInternalMessage", function (message) {

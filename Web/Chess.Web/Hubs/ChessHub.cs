@@ -76,7 +76,7 @@
             return base.OnDisconnectedAsync(exception);
         }
 
-        public async Task CreateRoom(string name)
+        public async Task<Player> CreateRoom(string name)
         {
             Player player = Factory.GetPlayer(name, this.Context.ConnectionId, this.Context.UserIdentifier);
             player.Rating = this.GetUserRating(player);
@@ -85,27 +85,36 @@
 
             var msgFormat = $"{player.Name} created a room";
             await this.Clients.All.SendAsync("UpdateLobbyChatInternalMessage", msgFormat);
-            await this.Clients.Caller.SendAsync("EnterRoom", name, player.Rating);
-            await this.Clients.Caller.SendAsync("PlayerJoined", player);
             await this.Clients.All.SendAsync("AddRoom", player);
+
+            return player;
         }
 
-        public async Task JoinRoom(string name, string id)
+        public async Task<Player> JoinRoom(string name, string id)
         {
             Player joiningPlayer = Factory.GetPlayer(name, this.Context.ConnectionId, this.Context.UserIdentifier);
             joiningPlayer.Rating = this.GetUserRating(joiningPlayer);
             this.players[joiningPlayer.Id] = joiningPlayer;
             var opponent = this.players[id];
 
-            await this.Clients.Caller.SendAsync("PlayerJoined", joiningPlayer);
             await this.StartGame(opponent, joiningPlayer);
+
+            return joiningPlayer;
         }
 
         public async Task LobbySendMessage(string message)
         {
             var msgFormat = $"{DateTime.Now.ToString("HH:mm")}, {this.Context.User.Identity.Name}: {message}";
             await this.Clients.All.SendAsync("UpdateLobbyChat", msgFormat);
-            await this.Clients.Caller.SendAsync("ClearLobbyChatInputText");
+        }
+
+        public async Task GameSendMessage(string message)
+        {
+            var player = this.players[this.Context.ConnectionId];
+            var game = this.games[player.GameId];
+
+            var msgFormat = $"{DateTime.Now.ToString("HH:mm")}, {player.Name}: {message}";
+            await this.Clients.Group(game.Id).SendAsync("UpdateGameChat", msgFormat, player);
         }
 
         public async Task MoveSelected(string source, string target, string sourceFen, string targetFen)
@@ -215,16 +224,6 @@
             }
         }
 
-        public async Task GameSendMessage(string message)
-        {
-            var player = this.players[this.Context.ConnectionId];
-            var game = this.games[player.GameId];
-
-            var msgFormat = $"{DateTime.Now.ToString("HH:mm")}, {player.Name}: {message}";
-            await this.Clients.Group(game.Id).SendAsync("UpdateGameChat", msgFormat, player);
-            await this.Clients.Caller.SendAsync("ClearGameChatInputText");
-        }
-
         private async Task StartGame(Player player1, Player player2)
         {
             player1.Color = Color.White;
@@ -244,8 +243,6 @@
                 this.Groups.AddToGroupAsync(game.Player1.Id, groupName: game.Id),
                 this.Groups.AddToGroupAsync(game.Player2.Id, groupName: game.Id),
                 this.Clients.Group(game.Id).SendAsync("Start", game));
-
-            await this.Clients.Caller.SendAsync("ChangeOrientation");
 
             this.waitingPlayers.Remove(player1);
             await this.Clients.All.SendAsync("ListRooms", this.waitingPlayers);
