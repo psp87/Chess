@@ -5,10 +5,9 @@ Online **ASP.NET Core** multiplayer chess game with **SignalR** and **chessboard
 
 The game is developed main for practicing **C# OOP**, **ASP.NET Core**, **Entity Framework Core**, **JS**, **HTML** and **CSS**. 
 
-**SignalR** is integrated for live multiplayer and **chessboardjs** JS library for board rendering.
+**SignalR** is used for live multiplayer and **chessboardjs** for board rendering.
 
 The following features are implemented:
-
 - [x] Move Validation
 - [x] Check
 - [x] Checkmate
@@ -29,7 +28,8 @@ The following features are implemented:
 - [x] Lobby
 - [x] Lobby Chat
 - [x] Game Chat
-- [ ] Stats Page
+- [x] Stats Page
+- [x] ELO Rating Calculation
 - [ ] Timer Game Mode
 
-The project is inspired by previously written [console version](https://github.com/psp87/Chess.Console) of chess.
+The project is inspired by [console version](https://github.com/psp87/Chess.Console) of chess.
