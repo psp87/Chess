@@ -44,6 +44,7 @@
     }
 
     connection.on("AddRoom", function (player) {
+        console.log("test");
         let div = document.createElement('div');
         let span = document.createElement("span");
         let button = document.createElement("button");
