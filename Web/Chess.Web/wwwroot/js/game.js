@@ -44,7 +44,6 @@
     }
 
     connection.on("AddRoom", function (player) {
-        console.log("test");
         let div = document.createElement('div');
         let span = document.createElement("span");
         let button = document.createElement("button");
@@ -362,6 +361,9 @@
                 })
                 .catch((err) => alert(err));
         }
+        else {
+            elements.lobbyInputName.focus();
+        }
     })
 
     elements.lobbyInputCreateBtn.addEventListener("click", function () {
@@ -382,6 +384,9 @@
                     elements.statusText.innerText = "WAITING FOR OPPONENT...";
                 })
                 .catch((err) => alert(err));
+        }
+        else {
+            elements.lobbyInputName.focus();
         }
     })
 
@@ -414,6 +419,9 @@
             connection.invoke('LobbySendMessage', message)
                 .then(elements.lobbyChatInput.value = "")
                 .catch((err) => alert(err));
+        }
+        else {
+            elements.lobbyChatInput.focus();
         }
     })
 

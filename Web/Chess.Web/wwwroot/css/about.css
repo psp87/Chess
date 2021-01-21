@@ -1,7 +1,7 @@
 ﻿.about-container {
     display: flex;
     flex-flow: column wrap;
-    width: 75%;
+    width: 80%;
     text-align: justify;
     margin-left: auto;
     margin-right: auto;
@@ -18,4 +18,21 @@
 
 .about-description {
     margin-top: 5px;
+}
+
+.about-feature-list {
+    padding-left: 0;
+}
+
+.about-feature-list li {
+    list-style: none;
+    display: inline;
+}
+
+.about-feature-list li:after {
+    content: " \00b7";
+}
+
+.about-feature-list li:last-child:after {
+    content: none;
 }
