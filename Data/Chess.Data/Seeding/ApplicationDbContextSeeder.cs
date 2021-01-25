@@ -2,6 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
     using System.Threading.Tasks;
 
     using Microsoft.Extensions.DependencyInjection;
@@ -23,10 +25,7 @@
 
             var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger(typeof(ApplicationDbContextSeeder));
 
-            var seeders = new List<ISeeder>
-                          {
-                              new RolesSeeder(),
-                          };
+            var seeders = GetInstances<ISeeder>();
 
             foreach (var seeder in seeders)
             {
@@ -34,6 +33,19 @@
                 await dbContext.SaveChangesAsync();
                 logger.LogInformation($"Seeder {seeder.GetType().Name} done.");
             }
+        }
+
+        /// <summary>
+        /// Create a list of all classes in the running Assembly having a particular interface that doesn't match the current
+        /// running class type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        private List<T> GetInstances<T>()
+        {
+            return (from t in Assembly.GetExecutingAssembly().GetTypes()
+                    where t.GetInterfaces().Contains(typeof(T)) && t.GetConstructor(Type.EmptyTypes) != null && t.Name != this.GetType().Name
+                    select (T)Activator.CreateInstance(t)).ToList();
         }
     }
 }
