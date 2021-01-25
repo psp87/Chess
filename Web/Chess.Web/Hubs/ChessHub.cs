@@ -1,122 +1,16 @@
 ﻿namespace Chess.Web.Hubs
 {
     using System;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
 
     using Chess.Common.Enums;
-    using Chess.Data;
     using Chess.Data.Models;
     using Chess.Data.Models.EventArgs;
 
     using Microsoft.AspNetCore.SignalR;
-    using Microsoft.Extensions.DependencyInjection;
 
-    public class ChessHub : Hub
+    public partial class GameHub
     {
-        private readonly ConcurrentDictionary<string, Player> players;
-        private readonly ConcurrentDictionary<string, Game> games;
-        private readonly List<Player> waitingPlayers;
-        private readonly IServiceProvider sp;
-
-        public ChessHub(IServiceProvider sp)
-        {
-            this.players = new ConcurrentDictionary<string, Player>(StringComparer.OrdinalIgnoreCase);
-            this.games = new ConcurrentDictionary<string, Game>(StringComparer.OrdinalIgnoreCase);
-            this.waitingPlayers = new List<Player>();
-            this.sp = sp;
-        }
-
-        public override Task OnConnectedAsync()
-        {
-            var msgFormat = $"{this.Context.User.Identity.Name} joined the lobby";
-            this.Clients.All.SendAsync("UpdateLobbyChatInternalMessage", msgFormat);
-            this.Clients.Caller.SendAsync("ListRooms", this.waitingPlayers);
-
-            return base.OnConnectedAsync();
-        }
-
-        public override Task OnDisconnectedAsync(Exception exception)
-        {
-            if (this.players.Keys.Contains(this.Context.ConnectionId))
-            {
-                var leavingPlayer = this.players[this.Context.ConnectionId];
-
-                if (leavingPlayer.GameId != null)
-                {
-                    var game = this.games[leavingPlayer.GameId];
-
-                    if (game.GameOver == GameOver.None)
-                    {
-                        var msgFormat = $"{leavingPlayer.Name} left. You won!";
-                        this.Clients.Group(leavingPlayer.GameId).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
-                        this.Clients.Group(leavingPlayer.GameId).SendAsync("GameOver", leavingPlayer, GameOver.Disconnected);
-
-                        if (game.Turn > 30)
-                        {
-                            var winner = game.MovingPlayer.Id != leavingPlayer.Id ? game.MovingPlayer : game.Opponent;
-                            if (this.players.Keys.Contains(winner.Id))
-                            {
-                                this.UpdateStats(winner, leavingPlayer, game, GameOver.Disconnected);
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    this.waitingPlayers.Remove(leavingPlayer);
-                    this.Clients.All.SendAsync("ListRooms", this.waitingPlayers);
-                }
-
-                this.players.TryRemove(leavingPlayer.Id, out _);
-            }
-
-            return base.OnDisconnectedAsync(exception);
-        }
-
-        public async Task<Player> CreateRoom(string name)
-        {
-            Player player = Factory.GetPlayer(name, this.Context.ConnectionId, this.Context.UserIdentifier);
-            player.Rating = this.GetUserRating(player);
-            this.players[player.Id] = player;
-            this.waitingPlayers.Add(player);
-
-            var msgFormat = $"{player.Name} created a room";
-            await this.Clients.All.SendAsync("UpdateLobbyChatInternalMessage", msgFormat);
-            await this.Clients.All.SendAsync("AddRoom", player);
-
-            return player;
-        }
-
-        public async Task<Player> JoinRoom(string name, string id)
-        {
-            Player joiningPlayer = Factory.GetPlayer(name, this.Context.ConnectionId, this.Context.UserIdentifier);
-            joiningPlayer.Rating = this.GetUserRating(joiningPlayer);
-            this.players[joiningPlayer.Id] = joiningPlayer;
-            var opponent = this.players[id];
-
-            await this.StartGame(opponent, joiningPlayer);
-
-            return joiningPlayer;
-        }
-
-        public async Task LobbySendMessage(string message)
-        {
-            var msgFormat = $"{DateTime.Now.ToString("HH:mm")}, {this.Context.User.Identity.Name}: {message}";
-            await this.Clients.All.SendAsync("UpdateLobbyChat", msgFormat);
-        }
-
-        public async Task GameSendMessage(string message)
-        {
-            var player = this.players[this.Context.ConnectionId];
-            var game = this.games[player.GameId];
-
-            var msgFormat = $"{DateTime.Now.ToString("HH:mm")}, {player.Name}: {message}";
-            await this.Clients.Group(game.Id).SendAsync("UpdateGameChat", msgFormat, player);
-        }
-
         public async Task MoveSelected(string source, string target, string sourceFen, string targetFen)
         {
             var player = this.players[this.Context.ConnectionId];
@@ -164,12 +58,10 @@
 
             if (movingPlayer.IsThreefoldDrawAvailable && movingPlayer.HasToMove)
             {
-                var msgFormat = $"{movingPlayer.Name} declared threefold draw!";
-                await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
-
                 game.GameOver = GameOver.ThreefoldDraw;
                 await this.Clients.Group(game.Id).SendAsync("GameOver", movingPlayer, GameOver.ThreefoldDraw);
 
+                await this.GameSendInternalMessage(game.Id, movingPlayer.Name, null);
                 this.UpdateStats(movingPlayer, opponent, game, GameOver.ThreefoldDraw);
             }
         }
@@ -180,12 +72,10 @@
             var game = this.games[loser.GameId];
             var winner = game.MovingPlayer.Id != loser.Id ? game.MovingPlayer : game.Opponent;
 
-            var msgFormat = $"{loser.Name} resigned!";
-            await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
-
             game.GameOver = GameOver.Resign;
             await this.Clients.Group(game.Id).SendAsync("GameOver", loser, GameOver.Resign);
 
+            await this.GameSendInternalMessage(game.Id, loser.Name, null);
             this.UpdateStats(winner, loser, game, GameOver.Resign);
         }
 
@@ -194,8 +84,7 @@
             var player = this.players[this.Context.ConnectionId];
             var game = this.games[player.GameId];
 
-            var msgFormat = $"{player.Name} requested a draw!";
-            await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
+            await this.GameSendInternalMessage(game.Id, player.Name, null);
             await this.Clients.GroupExcept(game.Id, this.Context.ConnectionId).SendAsync("DrawOffered", player);
         }
 
@@ -208,119 +97,16 @@
             {
                 var opponent = game.MovingPlayer.Id != player.Id ? game.MovingPlayer : game.Opponent;
 
-                var msgFormat = $"{player.Name} accepted the offer. Draw!";
-                await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
-
                 game.GameOver = GameOver.Draw;
                 await this.Clients.Group(game.Id).SendAsync("GameOver", null, GameOver.Draw);
 
+                await this.GameSendInternalMessage(game.Id, player.Name, null);
                 this.UpdateStats(player, opponent, game, GameOver.Draw);
             }
             else
             {
-                var msgFormat = $"{player.Name} rejected the offer!";
-                await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
                 await this.Clients.GroupExcept(game.Id, this.Context.ConnectionId).SendAsync("DrawOfferRejected", player);
             }
-        }
-
-        private async Task StartGame(Player player1, Player player2)
-        {
-            player1.Color = Color.White;
-            player2.Color = Color.Black;
-            player1.HasToMove = true;
-
-            var game = Factory.GetGame(player1, player2);
-            this.games[game.Id] = game;
-
-            game.OnGameOver += this.Game_OnGameOver;
-            game.OnMoveComplete += this.Game_OnMoveComplete;
-            game.OnMoveEvent += this.Game_OnMoveEvent;
-            game.OnTakePiece += this.Game_OnTakePiece;
-            game.OnThreefoldDrawAvailable += this.Game_OnThreefoldDrawAvailable;
-
-            await Task.WhenAll(
-                this.Groups.AddToGroupAsync(game.Player1.Id, groupName: game.Id),
-                this.Groups.AddToGroupAsync(game.Player2.Id, groupName: game.Id),
-                this.Clients.Group(game.Id).SendAsync("Start", game));
-
-            this.waitingPlayers.Remove(player1);
-            await this.Clients.All.SendAsync("ListRooms", this.waitingPlayers);
-
-            var msgFormat = $"{player2.Name} joined. The game started!";
-            await this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
-        }
-
-        private int GetUserRating(Player player)
-        {
-            using var scope = this.sp.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            return dbContext.Stats.Where(x => x.Owner.Id == player.UserId).Select(x => x.Rating).FirstOrDefault();
-        }
-
-        private void UpdateStats(Player sender, Player opponent, Game game, GameOver gameOver)
-        {
-            using var scope = this.sp.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            var senderStats = dbContext.Stats.Where(x => x.Owner.Id == sender.UserId).FirstOrDefault();
-            var opponentStats = dbContext.Stats.Where(x => x.Owner.Id == opponent.UserId).FirstOrDefault();
-
-            if (senderStats == null)
-            {
-                senderStats = new Stats
-                {
-                    Games = 0,
-                    Wins = 0,
-                    Draws = 0,
-                    Losses = 0,
-                    Rating = 1200,
-                    OwnerId = sender.UserId,
-                };
-
-                dbContext.Stats.Add(senderStats);
-                dbContext.SaveChanges();
-            }
-
-            if (opponentStats == null)
-            {
-                opponentStats = new Stats
-                {
-                    Games = 0,
-                    Wins = 0,
-                    Draws = 0,
-                    Losses = 0,
-                    Rating = 1200,
-                    OwnerId = opponent.UserId,
-                };
-
-                dbContext.Stats.Add(opponentStats);
-                dbContext.SaveChanges();
-            }
-
-            senderStats.Games += 1;
-            opponentStats.Games += 1;
-
-            if (gameOver == GameOver.Checkmate || gameOver == GameOver.Resign || gameOver == GameOver.Disconnected)
-            {
-                int points = game.CalculateRatingPoints(senderStats.Rating, opponentStats.Rating);
-
-                senderStats.Wins += 1;
-                senderStats.Rating += points;
-
-                opponentStats.Losses += 1;
-                opponentStats.Rating -= points;
-            }
-            else if (gameOver == GameOver.Stalemate || gameOver == GameOver.Draw || gameOver == GameOver.ThreefoldDraw || gameOver == GameOver.FivefoldDraw)
-            {
-                senderStats.Draws += 1;
-                opponentStats.Draws += 1;
-            }
-
-            dbContext.Stats.Update(senderStats);
-            dbContext.Stats.Update(opponentStats);
-            dbContext.SaveChanges();
         }
 
         private void Game_OnGameOver(object sender, EventArgs e)
@@ -330,10 +116,9 @@
             var opponent = game.Opponent;
             var gameOver = e as GameOverEventArgs;
 
-            var msgFormat = $"{gameOver.GameOver.ToString()}!";
-            this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMessage", msgFormat);
             this.Clients.Group(game.Id).SendAsync("GameOver", player, gameOver.GameOver);
 
+            _ = this.GameSendInternalMessage(game.Id, player.Name, gameOver.GameOver.ToString());
             this.UpdateStats(player, opponent, game, gameOver.GameOver);
         }
 
@@ -356,8 +141,7 @@
             {
                 if (message.Type == Message.CheckOpponent)
                 {
-                    var msgFormat = $"{player.Name} checked the opponent!";
-                    this.Clients.Group(game.Id).SendAsync("UpdateGameChatInternalMeesage", msgFormat);
+                    _ = this.GameSendInternalMessage(game.Id, player.Name, null);
                 }
 
                 this.Clients.Group(game.Id).SendAsync("CheckStatus", message.Type);

@@ -51,7 +51,9 @@
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddSignalR();
-            services.AddSingleton<ChessHub>();
+
+            // SignalR hub
+            services.AddSingleton<GameHub>();
 
             // Data repositories
             services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(EfDeletableEntityRepository<>));
@@ -110,7 +112,7 @@
                         endpoints.MapControllerRoute("areaRoute", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
                         endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
                         endpoints.MapRazorPages();
-                        endpoints.MapHub<ChessHub>("/hub");
+                        endpoints.MapHub<GameHub>("/hub");
                     });
         }
     }
