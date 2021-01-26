@@ -16,8 +16,8 @@
 
         public async Task GameSendMessage(string message)
         {
-            var player = this.players[this.Context.ConnectionId];
-            var game = this.games[player.GameId];
+            var player = this.GetPlayer();
+            var game = this.GetGame(player);
 
             var msgFormat = $"{DateTime.Now.ToString("HH:mm")}, {player.Name}: {message}";
             await this.Clients.Group(game.Id).SendAsync("UpdateGameChat", msgFormat, player);
@@ -65,7 +65,7 @@
                 case nameof(this.OnDisconnectedAsync):
                     message = $"{name} left. You win!";
                     break;
-                case nameof(this.IsThreefoldDraw):
+                case nameof(this.ThreefoldDraw):
                     message = $"{name} declared threefold draw!";
                     break;
             }
