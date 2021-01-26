@@ -13,8 +13,8 @@
     {
         public async Task MoveSelected(string source, string target, string sourceFen, string targetFen)
         {
-            var player = this.players[this.Context.ConnectionId];
-            var game = this.games[player.GameId];
+            var player = this.GetPlayer();
+            var game = this.GetGame(player);
 
             if (!player.HasToMove ||
                 !game.MakeMove(source, target, targetFen))
@@ -50,39 +50,23 @@
             }
         }
 
-        public async Task IsThreefoldDraw()
+        public async Task ThreefoldDraw()
         {
-            var movingPlayer = this.players[this.Context.ConnectionId];
-            var game = this.games[movingPlayer.GameId];
+            var player = this.GetPlayer();
+            var game = this.GetGame(player);
             var opponent = game.Opponent;
 
-            if (movingPlayer.IsThreefoldDrawAvailable && movingPlayer.HasToMove)
-            {
-                game.GameOver = GameOver.ThreefoldDraw;
-                await this.Clients.Group(game.Id).SendAsync("GameOver", movingPlayer, GameOver.ThreefoldDraw);
+            game.GameOver = GameOver.ThreefoldDraw;
+            await this.Clients.Group(game.Id).SendAsync("GameOver", player, game.GameOver);
+            await this.GameSendInternalMessage(game.Id, player.Name, null);
 
-                await this.GameSendInternalMessage(game.Id, movingPlayer.Name, null);
-                this.UpdateStats(movingPlayer, opponent, game, GameOver.ThreefoldDraw);
-            }
-        }
-
-        public async Task Resign()
-        {
-            var loser = this.players[this.Context.ConnectionId];
-            var game = this.games[loser.GameId];
-            var winner = game.MovingPlayer.Id != loser.Id ? game.MovingPlayer : game.Opponent;
-
-            game.GameOver = GameOver.Resign;
-            await this.Clients.Group(game.Id).SendAsync("GameOver", loser, GameOver.Resign);
-
-            await this.GameSendInternalMessage(game.Id, loser.Name, null);
-            this.UpdateStats(winner, loser, game, GameOver.Resign);
+            this.UpdateStats(player, opponent, game, game.GameOver);
         }
 
         public async Task OfferDrawRequest()
         {
-            var player = this.players[this.Context.ConnectionId];
-            var game = this.games[player.GameId];
+            var player = this.GetPlayer();
+            var game = this.GetGame(player);
 
             await this.GameSendInternalMessage(game.Id, player.Name, null);
             await this.Clients.GroupExcept(game.Id, this.Context.ConnectionId).SendAsync("DrawOffered", player);
@@ -90,18 +74,18 @@
 
         public async Task OfferDrawAnswer(bool isAccepted)
         {
-            var player = this.players[this.Context.ConnectionId];
-            var game = this.games[player.GameId];
+            var player = this.GetPlayer();
+            var game = this.GetGame(player);
 
             if (isAccepted)
             {
-                var opponent = game.MovingPlayer.Id != player.Id ? game.MovingPlayer : game.Opponent;
+                var opponent = this.GetOpponentPlayer(game, player);
 
                 game.GameOver = GameOver.Draw;
-                await this.Clients.Group(game.Id).SendAsync("GameOver", null, GameOver.Draw);
-
+                await this.Clients.Group(game.Id).SendAsync("GameOver", null, game.GameOver);
                 await this.GameSendInternalMessage(game.Id, player.Name, null);
-                this.UpdateStats(player, opponent, game, GameOver.Draw);
+
+                this.UpdateStats(player, opponent, game, game.GameOver);
             }
             else
             {
@@ -109,23 +93,36 @@
             }
         }
 
+        public async Task Resign()
+        {
+            var player = this.GetPlayer();
+            var game = this.GetGame(player);
+            var opponent = this.GetOpponentPlayer(game, player);
+
+            game.GameOver = GameOver.Resign;
+            await this.Clients.Group(game.Id).SendAsync("GameOver", player, game.GameOver);
+            await this.GameSendInternalMessage(game.Id, player.Name, null);
+
+            this.UpdateStats(opponent, player, game, game.GameOver);
+        }
+
         private void Game_OnGameOver(object sender, EventArgs e)
         {
             var player = sender as Player;
-            var game = this.games[player.GameId];
+            var game = this.GetGame(player);
             var opponent = game.Opponent;
             var gameOver = e as GameOverEventArgs;
 
             this.Clients.Group(game.Id).SendAsync("GameOver", player, gameOver.GameOver);
-
             _ = this.GameSendInternalMessage(game.Id, player.Name, gameOver.GameOver.ToString());
+
             this.UpdateStats(player, opponent, game, gameOver.GameOver);
         }
 
         private void Game_OnMoveComplete(object sender, EventArgs e)
         {
             var player = sender as Player;
-            var game = this.games[player.GameId];
+            var game = this.GetGame(player);
             var args = e as MoveCompleteEventArgs;
 
             this.Clients.Group(game.Id).SendAsync("UpdateMoveHistory", player, args.Notation);
@@ -134,7 +131,7 @@
         private void Game_OnMoveEvent(object sender, EventArgs e)
         {
             var player = sender as Player;
-            var game = this.games[player.GameId];
+            var game = this.GetGame(player);
             var message = e as MoveEventArgs;
 
             if (message.Type == Message.CheckOpponent || message.Type == Message.CheckClear)
@@ -155,7 +152,7 @@
         private void Game_OnTakePiece(object sender, EventArgs e)
         {
             var player = sender as Player;
-            var game = this.games[player.GameId];
+            var game = this.GetGame(player);
             var args = e as TakePieceEventArgs;
 
             this.Clients.Group(game.Id).SendAsync("UpdateTakenFigures", player, args.PieceName, args.Points);
@@ -164,7 +161,7 @@
         private void Game_OnThreefoldDrawAvailable(object sender, EventArgs e)
         {
             var player = sender as Player;
-            var game = this.games[player.GameId];
+            var game = this.GetGame(player);
             var args = e as ThreefoldDrawEventArgs;
 
             this.Clients.Caller.SendAsync("ThreefoldAvailable", false);

@@ -115,7 +115,7 @@
         elements.board.style.pointerEvents = "none";
         switch (gameOver) {
             case 1: {
-                elements.statusText.innerText = `CHECKMATE! ${player.name.toUpperCase()} WON THE GAME!`;
+                elements.statusText.innerText = `CHECKMATE! ${player.name.toUpperCase()} WIN!`;
                 elements.statusCheck.style.display = "none";
             }
                 break;
@@ -129,7 +129,7 @@
                 break;
             case 6: elements.statusText.innerText = `${player.name.toUpperCase()} RESIGNED!`;
                 break;
-            case 7: elements.statusText.innerText = `${player.name.toUpperCase()} HAS LEFT. YOU WON!`;
+            case 7: elements.statusText.innerText = `${player.name.toUpperCase()} LEFT. YOU WIN!`;
                 break;
         }
 
@@ -391,7 +391,7 @@
     })
 
     elements.threefoldDrawBtn.addEventListener("click", function () {
-        connection.invoke("IsThreefoldDraw")
+        connection.invoke("ThreefoldDraw")
             .catch((err) => alert(err));
     })
 

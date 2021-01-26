@@ -69,6 +69,21 @@
             }
         }
 
+        private Player GetPlayer()
+        {
+            return this.players[this.Context.ConnectionId];
+        }
+
+        private Player GetOpponentPlayer(Game game, Player player)
+        {
+            return game.MovingPlayer.Id != player.Id ? game.MovingPlayer : game.Opponent;
+        }
+
+        private Game GetGame(Player player)
+        {
+            return this.games[player.GameId];
+        }
+
         private int GetUserRating(Player player)
         {
             using var scope = this.sp.CreateScope();
@@ -100,6 +115,7 @@
                 dbContext.Stats.Add(senderStats);
                 dbContext.SaveChanges();
             }
+
             if (opponentStats == null)
             {
                 opponentStats = new Stats
