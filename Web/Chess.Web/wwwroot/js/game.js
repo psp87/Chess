@@ -146,7 +146,7 @@
 
     connection.on("CheckStatus", function (type) {
         if (type == 2) {
-            elements.statusCheck.style.display = "block";
+            elements.statusCheck.style.display = "inline";
             elements.statusCheck.innerText = "CHECK!";
         } else {
             elements.statusCheck.style.display = "none";
