@@ -16,37 +16,16 @@
             var player = this.GetPlayer();
             var game = this.GetGame(player);
 
-            if (!player.HasToMove ||
-                !game.MakeMove(source, target, targetFen))
+            if (player.HasToMove && game.MakeMove(source, target, targetFen))
+            {
+                await this.OpponentBoardMove(source, target, game);
+                await this.HighlightMove(source, target, game);
+                await this.IsSpecialMove(target, game);
+                await this.UpdateStatus(game);
+            }
+            else
             {
                 await this.Clients.Caller.SendAsync("BoardSnapback", sourceFen);
-                return;
-            }
-
-            await this.Clients.GroupExcept(game.Id, this.Context.ConnectionId).SendAsync("BoardMove", source, target);
-            await this.Clients.Group(game.Id).SendAsync("HighlightMove", source, target, game.Opponent);
-
-            if (game.GameOver.ToString() == GameOver.None.ToString())
-            {
-                await this.Clients.Group(game.Id).SendAsync("UpdateStatus", game.MovingPlayer.Name);
-            }
-
-            if (game.Move.Type != MoveType.Normal)
-            {
-                switch (game.Move.Type)
-                {
-                    case MoveType.Castling:
-                        await this.Clients.Group(game.Id).SendAsync("BoardMove", game.Move.CastlingArgs.RookSource, game.Move.CastlingArgs.RookTarget);
-                        break;
-                    case MoveType.EnPassant:
-                        await this.Clients.Group(game.Id).SendAsync("EnPassantTake", game.Move.EnPassantArgs.SquareTakenPiece.Name, target);
-                        break;
-                    case MoveType.PawnPromotion:
-                        await this.Clients.Group(game.Id).SendAsync("BoardSetPosition", game.Move.PawnPromotionArgs.FenString);
-                        break;
-                }
-
-                game.Move.Type = MoveType.Normal;
             }
         }
 
@@ -104,6 +83,45 @@
             await this.GameSendInternalMessage(game.Id, player.Name, null);
 
             this.UpdateStats(opponent, player, game, game.GameOver);
+        }
+
+        private async Task OpponentBoardMove(string source, string target, Game game)
+        {
+            await this.Clients.GroupExcept(game.Id, this.Context.ConnectionId).SendAsync("BoardMove", source, target);
+        }
+
+        private async Task HighlightMove(string source, string target, Game game)
+        {
+            await this.Clients.Group(game.Id).SendAsync("HighlightMove", source, target, game.Opponent);
+        }
+
+        private async Task IsSpecialMove(string target, Game game)
+        {
+            if (game.Move.Type != MoveType.Normal)
+            {
+                switch (game.Move.Type)
+                {
+                    case MoveType.Castling:
+                        await this.Clients.Group(game.Id).SendAsync("BoardMove", game.Move.CastlingArgs.RookSource, game.Move.CastlingArgs.RookTarget);
+                        break;
+                    case MoveType.EnPassant:
+                        await this.Clients.Group(game.Id).SendAsync("EnPassantTake", game.Move.EnPassantArgs.SquareTakenPiece.Name, target);
+                        break;
+                    case MoveType.PawnPromotion:
+                        await this.Clients.Group(game.Id).SendAsync("BoardSetPosition", game.Move.PawnPromotionArgs.FenString);
+                        break;
+                }
+
+                game.Move.Type = MoveType.Normal;
+            }
+        }
+
+        private async Task UpdateStatus(Game game)
+        {
+            if (game.GameOver.ToString() == GameOver.None.ToString())
+            {
+                await this.Clients.Group(game.Id).SendAsync("UpdateStatus", game.MovingPlayer.Name);
+            }
         }
 
         private void Game_OnGameOver(object sender, EventArgs e)
