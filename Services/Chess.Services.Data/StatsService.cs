@@ -1,6 +1,5 @@
 ﻿namespace Chess.Services.Data
 {
-    using System;
     using System.Linq;
 
     using Chess.Data.Common.Repositories;
@@ -20,6 +19,11 @@
         public T GetUserStats<T>(string userId)
         {
             return this.statsRepository.All().Where(x => x.OwnerId == userId).To<T>().FirstOrDefault();
+        }
+
+        public bool IsStatsInitiated(string id)
+        {
+            return this.statsRepository.All().Where(x => x.Owner.Id == id).Any();
         }
 
         public int GetUserRating(string userId)
