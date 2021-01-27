@@ -100,38 +100,6 @@
             var senderStats = dbContext.Stats.Where(x => x.Owner.Id == sender.UserId).FirstOrDefault();
             var opponentStats = dbContext.Stats.Where(x => x.Owner.Id == opponent.UserId).FirstOrDefault();
 
-            if (senderStats == null)
-            {
-                senderStats = new Stats
-                {
-                    Games = 0,
-                    Wins = 0,
-                    Draws = 0,
-                    Losses = 0,
-                    Rating = 1200,
-                    OwnerId = sender.UserId,
-                };
-
-                dbContext.Stats.Add(senderStats);
-                dbContext.SaveChanges();
-            }
-
-            if (opponentStats == null)
-            {
-                opponentStats = new Stats
-                {
-                    Games = 0,
-                    Wins = 0,
-                    Draws = 0,
-                    Losses = 0,
-                    Rating = 1200,
-                    OwnerId = opponent.UserId,
-                };
-
-                dbContext.Stats.Add(opponentStats);
-                dbContext.SaveChanges();
-            }
-
             senderStats.Games += 1;
             opponentStats.Games += 1;
 
@@ -140,9 +108,8 @@
                 int points = game.CalculateRatingPoints(senderStats.Rating, opponentStats.Rating);
 
                 senderStats.Wins += 1;
-                senderStats.Rating += points;
-
                 opponentStats.Losses += 1;
+                senderStats.Rating += points;
                 opponentStats.Rating -= points;
             }
             else if (gameOver == GameOver.Stalemate || gameOver == GameOver.Draw || gameOver == GameOver.ThreefoldDraw || gameOver == GameOver.FivefoldDraw)

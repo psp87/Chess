@@ -3,7 +3,6 @@
     using System;
     using System.Linq;
     using System.Security.Claims;
-    using System.Threading;
 
     using Chess.Data.Models;
     using Chess.Services.Data.Contracts;
@@ -27,21 +26,17 @@
         public IActionResult Index()
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             var stats = this.statsService.GetUserStats<UserStatsViewModel>(userId);
 
             if (stats == null)
             {
-                this.statsService.InitiateStats(userId);
-                Thread.Sleep(100);
+                return this.RedirectToAction("Index", "Home");
             }
-
-            var userStats = this.statsService.GetUserStats<UserStatsViewModel>(userId);
 
             var model = new StatsViewModel
             {
                 UserName = this.User.Identity.Name,
-                UserStats = userStats,
+                UserStats = stats,
                 TotalUsers = this.userManager.Users.Count(),
                 LastThirtyDaysRegisteredUsers = this.userManager.Users.Where(x => x.CreatedOn >= DateTime.Now.AddDays(-30)).Count(),
                 TotalGames = this.statsService.GetTotalGames(),
