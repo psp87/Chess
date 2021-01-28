@@ -8,7 +8,7 @@
 }
 
 .game-lobby-input-name {
-    width: 66.66%;
+    flex-grow: 1;
     text-indent: 10px;
     font-size: 1.7em;
 }
@@ -20,7 +20,7 @@
 .game-lobby-input-create-btn {
     background-color: #454a52;
     color: white;
-    width: 33.33%;
+    width: 25%;
     font-size: 1.7em;
     border-radius: 0 5px 5px 0;
 }
@@ -31,7 +31,7 @@
 }
 
 .game-lobby-title-room {
-    width: 66.66%;
+    width: 50%;
     background-color: darkslategray;
     color: white;
     padding: 5px;
@@ -40,7 +40,7 @@
 }
 
 .game-lobby-title-chat {
-    width: 33.33%;
+    flex-grow: 1;
     background-color: darkslategray;
     color: white;
     padding: 5px;
@@ -59,8 +59,8 @@
     flex-flow: column nowrap;
     border: 1px solid;
     border-radius: 0 0 0 7px;
-    background-color: azure;
-    width: 66.66%;
+    background-color: whitesmoke;
+    width: 50%;
     height: inherit;
     overflow: hidden;
     overflow-y: auto;
@@ -74,7 +74,8 @@
     border-radius: 5px;
     padding: 3px;
     margin: 2px 2px 0px 2px;
-    background-color: lightgreen;
+    background-color: lightslategray;
+    color: white;
 }
 
 .game-lobby-room-name {
@@ -83,20 +84,21 @@
 }
 
 .game-lobby-room-join-btn {
-    width: 15%;
+    width: 20%;
     border: none;
+    text-transform: uppercase;
 }
 
 .game-lobby-chat-container {
     height: inherit;
-    width: 33.33%;
+    flex-grow: 1;
     border: 1px solid;
     border-radius: 0 0 7px 0;
 }
 
 .game-lobby-chat-window-wrapper {
     height: 94%;
-    background-color: ghostwhite;
+    background-color: whitesmoke;
 }
 
 .game-lobby-chat-window {
@@ -113,6 +115,7 @@
 }
 
 .game-lobby-chat-send-btn {
-    width: 20%;
+    width: 15%;
     border: none;
+    font-weight: bold;
 }

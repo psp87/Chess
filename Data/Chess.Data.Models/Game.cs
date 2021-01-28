@@ -65,7 +65,7 @@
 
         public Player Opponent => this.Player1?.HasToMove ?? false ? this.Player2 : this.Player1;
 
-        public bool MakeMove(string source, string target, string targetFen)
+        public bool IsValidMove(string source, string target, string targetFen)
         {
             this.Move.Source = this.ChessBoard.GetSquareByName(source);
             this.Move.Target = this.ChessBoard.GetSquareByName(target);
