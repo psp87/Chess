@@ -48,9 +48,9 @@
         let span = document.createElement("span");
         let button = document.createElement("button");
 
-        span.innerText = `${player.name}`;
+        span.innerText = `${player.name.toUpperCase()}'S ROOM`;
         span.classList.add('game-lobby-room-name');
-        button.innerText = "Join";
+        button.innerText = "JOIN";
         button.classList.add('game-lobby-room-join-btn', 'game-btn', 'btn');
 
         div.append(span, button);
@@ -66,9 +66,9 @@
             let span = document.createElement("span");
             let button = document.createElement("button");
 
-            span.innerText = `${player.name}`;
+            span.innerText = `${player.name.toUpperCase()}'S ROOM`;
             span.classList.add('game-lobby-room-name');
-            button.innerText = "Join";
+            button.innerText = "JOIN";
             button.classList.add('game-lobby-room-join-btn', 'game-btn', 'btn');
 
             div.append(span, button);
@@ -379,7 +379,7 @@
                     elements.whiteName.innerHTML = player.name;
                     elements.whiteRating.innerHTML = player.rating;
                     elements.blackName.innerHTML = "?";
-                    elements.blackRating.innerHTML = "ELO";
+                    elements.blackRating.innerHTML = "N/A";
                     elements.statusText.style.color = "red";
                     elements.statusText.innerText = "WAITING FOR OPPONENT...";
                 })
