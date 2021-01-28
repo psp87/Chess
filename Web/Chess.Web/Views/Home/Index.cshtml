@@ -5,31 +5,27 @@
 <section class="home-title-container">
     <h1 class="home-title title-text">Chess</h1>
     <h6 class="home-author title-text">by Plamen Petrov</h6>
-    <div class="home-image">
-        <img src="~/img/chess.jpg" alt="Chess" class="center" />
-        <a asp-controller="Game" asp-action="Index" class="btn col-2"><i class="fas fa-play"></i> Play</a>
-    </div>
 </section>
 <hr />
 <section class="cards-container">
     <div class="card">
-        <img class="card-img" src="~/img/image1.jpg" alt="Play Image">
+        <img class="card-img" src="~/img/image2.jpg" alt="Stats Image">
         <div class="card-text-container">
-            <h4 class="card-text-title"><a asp-controller="Game" asp-action="Index">Play</a></h4>
-            <p class="card-text-desciption">Play against a friend</p>
+            <h4 class="card-text-title"><a asp-controller="Stats" asp-action="Index"><i class="fas fa-chart-bar"></i> Stats</a></h4>
+            <p class="card-text-desciption">Statistics for games and players</p>
         </div>
     </div>
     <div class="card">
-        <img class="card-img" src="~/img/image2.jpg" alt="Stats Image">
+        <img class="card-img" src="~/img/chess.jpg" alt="Play Image">
         <div class="card-text-container">
-            <h4 class="card-text-title"><a asp-controller="Stats" asp-action="Index">Stats</a></h4>
-            <p class="card-text-desciption">Statistics for games and players</p>
+            <h4 class="card-text-title"><a asp-controller="Game" asp-action="Index"><i class="fas fa-play"></i> Play</a></h4>
+            <p class="card-text-desciption">Play against a friend</p>
         </div>
     </div>
     <div class="card">
         <img class="card-img" src="~/img/image3.jpg" alt="About Image">
         <div class="card-text-container">
-            <h4 class="card-text-title"><a asp-controller="About" asp-action="Index">About</a></h4>
+            <h4 class="card-text-title"><a asp-controller="About" asp-action="Index"><i class="fas fa-info-circle"></i> About</a></h4>
             <p class="card-text-desciption">How the site is created</p>
         </div>
     </div>
