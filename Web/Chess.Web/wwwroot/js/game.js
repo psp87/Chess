@@ -182,7 +182,7 @@
         $no.classList.add('draw-offer-no-btn', 'draw-offer-button', 'btn', 'btn-primary');
 
         elements.statusText.style.color = "black";
-        elements.statusText.innerText = `Draw offer by ${player.name}! Do you accept?`;
+        elements.statusText.innerText = `${player.name} requested a draw! Do you accept?`;
 
         let $div = document.createElement("div");
         $div.classList.add('draw-offer-container');
@@ -206,7 +206,7 @@
         let oldText = elements.statusText.innerText;
         let oldColor = elements.statusText.style.color;
         elements.statusText.style.color = "black";
-        elements.statusText.innerText = `Rejected by ${player.name}!`;
+        elements.statusText.innerText = `${player.name} rejected the offer!`;
         sleep(1500).then(() => {
             elements.statusText.style.color = oldColor;
             elements.statusText.innerText = oldText;

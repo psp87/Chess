@@ -62,13 +62,14 @@
 
                 game.GameOver = GameOver.Draw;
                 await this.Clients.Group(game.Id).SendAsync("GameOver", null, game.GameOver);
-                await this.GameSendInternalMessage(game.Id, player.Name, null);
+                await this.GameSendInternalMessage(game.Id, player.Name, game.GameOver.ToString());
 
                 this.UpdateStats(player, opponent, game, game.GameOver);
             }
             else
             {
                 await this.Clients.GroupExcept(game.Id, this.Context.ConnectionId).SendAsync("DrawOfferRejected", player);
+                await this.GameSendInternalMessage(game.Id, player.Name, game.GameOver.ToString());
             }
         }
 

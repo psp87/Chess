@@ -218,7 +218,7 @@
         {
             if (this.IsPlayerChecked(this.Opponent))
             {
-                this.OnMoveEvent?.Invoke(this.Opponent, new MoveEventArgs(Message.CheckOpponent));
+                this.OnMoveEvent?.Invoke(this.MovingPlayer, new MoveEventArgs(Message.CheckOpponent));
                 if (this.IsCheckmate())
                 {
                     this.GameOver = GameOver.Checkmate;
@@ -744,8 +744,8 @@
 
         private bool IsAbleToBlockWithPawn(Square current)
         {
-            if ((this.Opponent.Color == Color.White && current.Position.Rank > 1) ||
-                (this.Opponent.Color == Color.Black && current.Position.Rank < 6))
+            if ((this.Opponent.Color == Color.White && current.Position.Rank < 6) ||
+                (this.Opponent.Color == Color.Black && current.Position.Rank > 1))
             {
                 var offsetPlayer = this.Opponent.Color == Color.White ? 1 : -1;
                 var source = this.ChessBoard.GetSquareByCoordinates(current.Position.Rank + offsetPlayer, current.Position.File);
