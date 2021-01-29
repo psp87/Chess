@@ -45,7 +45,7 @@
             switch (caller)
             {
                 case nameof(this.Game_OnMoveEvent):
-                    message = $"{name} checked the opponent!";
+                    message = $"Check announced by {name}!";
                     break;
                 case nameof(this.StartGame):
                     message = $"{name} joined. The game started!";
@@ -60,7 +60,15 @@
                     message = $"{name} requested a draw!";
                     break;
                 case nameof(this.OfferDrawAnswer):
-                    message = $"{name} accepted the offer. Draw!";
+                    if (gameOver == "Draw")
+                    {
+                        message = $"{name} accepted the offer. Draw!";
+                    }
+                    else
+                    {
+                        message = $"{name} rejected the offer!";
+                    }
+
                     break;
                 case nameof(this.OnDisconnectedAsync):
                     message = $"{name} left. You win!";
