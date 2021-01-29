@@ -133,7 +133,7 @@
                 break;
         }
 
-        $('.game-btn').prop("disabled", true);
+        $('.option-btn').prop("disabled", true);
     })
 
     connection.on("ThreefoldAvailable", function (isAvailable) {
@@ -431,6 +431,9 @@
             connection.invoke('GameSendMessage', message)
                 .then(elements.gameChatInput.value = "")
                 .catch((err) => alert(err));
+        }
+        else {
+            elements.gameChatInput.focus();
         }
     })
 
