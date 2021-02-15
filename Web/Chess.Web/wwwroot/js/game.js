@@ -350,6 +350,13 @@
 
     connection.start();
 
+    window.addEventListener("beforeunload", function (e) {
+        if (playerTwoName !== undefined) {
+            e.preventDefault(); // If you prevent default behavior in Mozilla Firefox prompt will always be shown
+            e.returnValue = '';
+        }
+    });
+
     $(document).on('click', '.game-lobby-room-join-btn', function () {
         let id = $(this).parent().attr('class');
         let name = elements.lobbyInputName.value;
