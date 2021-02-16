@@ -30,6 +30,7 @@
             this.Move = Factory.GetMove();
             this.GameOver = GameOver.None;
             this.Turn = 1;
+            this.FiftyMoveCounter = 0;
 
             this.movesThreefold = new Queue<string>();
             this.movesFivefold = new Queue<string>();
@@ -56,6 +57,8 @@
         public GameOver GameOver { get; set; }
 
         public int Turn { get; set; }
+
+        public int FiftyMoveCounter { get; set; }
 
         public Player Player1 { get; set; }
 
@@ -136,6 +139,7 @@
                 this.Move.Target.Piece.IsFirstMove = false;
                 this.MovingPlayer.TakeFigure(piece.Name);
                 this.MovingPlayer.Points += piece.Points;
+                this.Move.Type = MoveType.Taking;
                 this.OnTakePiece?.Invoke(this.MovingPlayer, new TakePieceEventArgs(piece.Name, this.MovingPlayer.Points));
                 return true;
             }
@@ -164,6 +168,7 @@
                     this.MovingPlayer.IsCheck = false;
                     this.MovingPlayer.TakeFigure(this.Move.Target.Piece.Name);
                     this.MovingPlayer.Points += this.Move.Target.Piece.Points;
+                    this.Move.Type = MoveType.Taking;
                     this.OnTakePiece?.Invoke(this.MovingPlayer, new TakePieceEventArgs(this.Move.Target.Piece.Name, this.MovingPlayer.Points));
                     this.Move.EnPassantArgs.SquareAvailable = null;
                     return true;
@@ -230,6 +235,11 @@
             if (this.IsFivefoldRepetitionDraw(targetFen))
             {
                 this.GameOver = GameOver.FivefoldDraw;
+            }
+
+            if (this.IsFiftyMoveDraw())
+            {
+                this.GameOver = GameOver.FiftyMoveDraw;
             }
 
             if (this.IsDraw())
@@ -378,6 +388,24 @@
                 }
             }
 
+            return false;
+        }
+
+        private bool IsFiftyMoveDraw()
+        {
+            if (!(this.Move.Target.Piece is Pawn) && this.Move.Type != MoveType.Taking)
+            {
+                this.FiftyMoveCounter += 1;
+
+                if (this.FiftyMoveCounter == 100)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            this.FiftyMoveCounter = 0;
             return false;
         }
 

@@ -10,5 +10,6 @@
         FivefoldDraw = 5,
         Resign = 6,
         Disconnected = 7,
+        FiftyMoveDraw = 8,
     }
 }

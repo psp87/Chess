@@ -131,6 +131,8 @@
                 break;
             case 7: elements.statusText.innerText = `${player.name.toUpperCase()} LEFT. YOU WIN!`;
                 break;
+            case 8: elements.statusText.innerText = `FIFTY-MOVE DRAW!`;
+                break;
         }
 
         $('.option-btn').prop("disabled", true);

@@ -3,8 +3,9 @@
     public enum MoveType
     {
         Normal = 0,
-        Castling = 1,
-        EnPassant = 2,
-        PawnPromotion = 3,
+        Taking = 1,
+        Castling = 2,
+        EnPassant = 3,
+        PawnPromotion = 4,
     }
 }

@@ -98,7 +98,7 @@
 
         private async Task IsSpecialMove(string target, Game game)
         {
-            if (game.Move.Type != MoveType.Normal)
+            if (game.Move.Type != MoveType.Normal && game.Move.Type != MoveType.Taking)
             {
                 switch (game.Move.Type)
                 {
@@ -112,9 +112,9 @@
                         await this.Clients.Group(game.Id).SendAsync("BoardSetPosition", game.Move.PawnPromotionArgs.FenString);
                         break;
                 }
-
-                game.Move.Type = MoveType.Normal;
             }
+
+            game.Move.Type = MoveType.Normal;
         }
 
         private async Task UpdateStatus(Game game)
