@@ -9,21 +9,27 @@
 <hr />
 <section class="cards-container">
     <div class="card">
-        <img class="card-img" src="~/img/image2.jpg" alt="Stats Image">
+        <div class="card-img-wrap">
+            <img class="card-img" src="~/img/chess.jpg" alt="Play Image">
+        </div>
+        <div class="card-text-container">
+            <h4 class="card-text-title"><a asp-controller="Game" asp-action="Index"><i class="fas fa-play"></i> Play</a></h4>
+            <p class="card-text-desciption">Play a friend</p>
+        </div>
+    </div>  
+    <div class="card">
+        <div class="card-img-wrap">
+            <img class="card-img" src="~/img/image2.jpg" alt="Stats Image">
+        </div>
         <div class="card-text-container">
             <h4 class="card-text-title"><a asp-controller="Stats" asp-action="Index"><i class="fas fa-chart-bar"></i> Stats</a></h4>
             <p class="card-text-desciption">Statistics for games and players</p>
         </div>
     </div>
     <div class="card">
-        <img class="card-img" src="~/img/chess.jpg" alt="Play Image">
-        <div class="card-text-container">
-            <h4 class="card-text-title"><a asp-controller="Game" asp-action="Index"><i class="fas fa-play"></i> Play</a></h4>
-            <p class="card-text-desciption">Play against a friend</p>
+        <div class="card-img-wrap">
+            <img class="card-img" src="~/img/image3.jpg" alt="About Image">
         </div>
-    </div>
-    <div class="card">
-        <img class="card-img" src="~/img/image3.jpg" alt="About Image">
         <div class="card-text-container">
             <h4 class="card-text-title"><a asp-controller="About" asp-action="Index"><i class="fas fa-info-circle"></i> About</a></h4>
             <p class="card-text-desciption">How the site is created</p>
