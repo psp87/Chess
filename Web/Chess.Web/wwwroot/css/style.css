@@ -188,3 +188,8 @@ button.accept-policy {
     list-style-type: none;
     font-style: italic;
 }
+
+.col-centered {
+    float: none;
+    margin: 0 auto;
+}
