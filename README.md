@@ -30,6 +30,7 @@ The following features are implemented:
 - [x] Game Chat
 - [x] Stats Page
 - [x] ELO Rating Calculation
+- [x] Fifty-Move Draw
 - [ ] Timer Game Mode
 
 The project is inspired by [console version](https://github.com/psp87/Chess.Console) of chess.
