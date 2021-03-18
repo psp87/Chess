@@ -25,7 +25,7 @@
 
             var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger(typeof(ApplicationDbContextSeeder));
 
-            var seeders = GetInstances<ISeeder>();
+            var seeders = this.GetInstances<ISeeder>();
 
             foreach (var seeder in seeders)
             {
@@ -37,7 +37,7 @@
 
         /// <summary>
         /// Create a list of all classes in the running Assembly having a particular interface that doesn't match the current
-        /// running class type
+        /// running class type.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
