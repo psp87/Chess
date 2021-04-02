@@ -12,17 +12,9 @@
 .home-author {
     background-color: black;
     font-size: small;
-    font-weight: 900;
-}
-
-.cards-container {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-between;
 }
 
 .card {
-    width: 32.5%;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     border-radius: 5px;
 }
@@ -41,7 +33,7 @@
 }
 
 .card-img {
-    height: 33vh;
+    height: 37vh;
     object-fit: cover;
     transition: transform .3s;
 }
@@ -52,8 +44,9 @@
 }
 
 .card-text-title a {
+    font-variant:small-caps;
     color: black;
-    font-weight: bold;
+    font-weight: 700;
 }
 
 .card-text-title a:hover {
