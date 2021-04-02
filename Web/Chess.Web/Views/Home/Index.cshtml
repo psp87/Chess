@@ -7,8 +7,8 @@
     <h6 class="home-author title-text">by Plamen Petrov</h6>
 </section>
 <hr />
-<section class="cards-container">
-    <div class="card">
+<section class="cards-container d-lg-flex">
+    <div class="card p-0 mb-1 col-lg-4 m-lg-0">
         <div class="card-img-wrap">
             <img class="card-img" src="~/img/chess.jpg" alt="Play Image">
         </div>
@@ -17,22 +17,22 @@
             <p class="card-text-desciption">Play a friend</p>
         </div>
     </div>  
-    <div class="card">
+    <div class="card p-0 mb-1 col-lg-4 m-lg-0">
         <div class="card-img-wrap">
             <img class="card-img" src="~/img/image2.jpg" alt="Stats Image">
         </div>
         <div class="card-text-container">
-            <h4 class="card-text-title"><a asp-controller="Stats" asp-action="Index"><i class="fas fa-chart-bar"></i> Stats</a></h4>
-            <p class="card-text-desciption">Statistics for games and players</p>
+            <h4 class="card-text-title"><a asp-controller="Stats" asp-action="Index"><i class="fas fa-chart-bar"></i> Statistics</a></h4>
+            <p class="card-text-desciption">Game charts & analysys</p>
         </div>
     </div>
-    <div class="card">
+    <div class="card p-0 mb-1 col-lg-4 m-lg-0">
         <div class="card-img-wrap">
             <img class="card-img" src="~/img/image3.jpg" alt="About Image">
         </div>
         <div class="card-text-container">
             <h4 class="card-text-title"><a asp-controller="About" asp-action="Index"><i class="fas fa-info-circle"></i> About</a></h4>
-            <p class="card-text-desciption">How the site is created</p>
+            <p class="card-text-desciption">Web site creation info</p>
         </div>
     </div>
 </section>
