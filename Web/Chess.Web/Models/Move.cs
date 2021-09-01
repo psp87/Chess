@@ -1,4 +1,4 @@
-﻿namespace Chess.Data.Models
+﻿namespace Chess.Web.Models
 {
     using Chess.Common.Enums;
     using Chess.Data.Models.Pieces.Helpers;

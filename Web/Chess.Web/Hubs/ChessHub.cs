@@ -4,9 +4,8 @@
     using System.Threading.Tasks;
 
     using Chess.Common.Enums;
-    using Chess.Data.Models;
-    using Chess.Data.Models.EventArgs;
-
+    using Chess.Web.Models;
+    using Chess.Web.Models.EventArgs;
     using Microsoft.AspNetCore.SignalR;
 
     public partial class GameHub

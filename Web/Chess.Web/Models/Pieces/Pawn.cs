@@ -1,6 +1,7 @@
 ﻿namespace Chess.Data.Models.Pieces
 {
     using Chess.Common.Enums;
+    using Chess.Web.Models;
 
     public class Pawn : Piece
     {

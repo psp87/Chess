@@ -1,4 +1,4 @@
-﻿namespace Chess.Data.Models
+﻿namespace Chess.Web.Models
 {
     using System;
     using System.Collections.Generic;
