@@ -1,4 +1,4 @@
-﻿namespace Chess.Data.Models
+﻿namespace Chess.Web.Models
 {
     using System;
     using System.Collections.Generic;
@@ -7,8 +7,8 @@
 
     using Chess.Common;
     using Chess.Common.Enums;
-    using Chess.Data.Models.EventArgs;
     using Chess.Data.Models.Pieces;
+    using Chess.Web.Models.EventArgs;
 
     public class Game
     {

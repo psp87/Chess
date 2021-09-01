@@ -3,6 +3,7 @@
     using System;
 
     using Chess.Common.Enums;
+    using Chess.Web.Models;
 
     public interface IPiece : ICloneable
     {

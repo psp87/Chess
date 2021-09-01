@@ -4,6 +4,7 @@
 
     using Chess.Common.Enums;
     using Chess.Data.Models.Pieces.Contracts;
+    using Chess.Web.Models;
 
     public abstract class Piece : IPiece, ICloneable
     {

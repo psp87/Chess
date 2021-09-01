@@ -2,6 +2,7 @@
 {
     using Chess.Common.Enums;
     using Chess.Data.Models.Pieces.Helpers;
+    using Chess.Web.Models;
 
     public class Queen : Piece
     {
