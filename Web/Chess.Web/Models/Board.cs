@@ -6,8 +6,8 @@
 
     using Chess.Common;
     using Chess.Common.Enums;
-    using Chess.Data.Models.Pieces;
-    using Chess.Data.Models.Pieces.Contracts;
+    using Chess.Web.Models.Pieces;
+    using Chess.Web.Models.Pieces.Contracts;
 
     public class Board : ICloneable
     {

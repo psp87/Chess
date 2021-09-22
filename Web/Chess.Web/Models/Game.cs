@@ -7,8 +7,8 @@
 
     using Chess.Common;
     using Chess.Common.Enums;
-    using Chess.Data.Models.Pieces;
     using Chess.Web.Models.EventArgs;
+    using Chess.Web.Models.Pieces;
 
     public class Game
     {
