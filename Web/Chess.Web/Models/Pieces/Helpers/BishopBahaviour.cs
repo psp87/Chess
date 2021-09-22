@@ -3,6 +3,7 @@
     using System;
 
     using Chess.Data.Models.Pieces.Contracts;
+    using Chess.Web.Models;
 
     public class BishopBahaviour
     {

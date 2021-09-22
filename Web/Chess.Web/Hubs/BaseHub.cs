@@ -8,8 +8,7 @@
 
     using Chess.Common.Enums;
     using Chess.Data;
-    using Chess.Data.Models;
-
+    using Chess.Web.Models;
     using Microsoft.AspNetCore.SignalR;
     using Microsoft.Extensions.DependencyInjection;
 

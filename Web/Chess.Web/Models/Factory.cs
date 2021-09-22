@@ -1,4 +1,4 @@
-﻿namespace Chess.Data.Models
+﻿namespace Chess.Web.Models
 {
     using Chess.Common;
     using Chess.Common.Enums;
@@ -70,11 +70,11 @@
 
         public static Square[][] GetMatrix()
         {
-            Square[][] matrix = new Square[GlobalConstants.Ranks][];
+            Square[][] matrix = new Square[Constants.Ranks][];
 
-            for (int rank = 0; rank < GlobalConstants.Ranks; rank++)
+            for (int rank = 0; rank < Constants.Ranks; rank++)
             {
-                matrix[rank] = new Square[GlobalConstants.Files];
+                matrix[rank] = new Square[Constants.Files];
             }
 
             return matrix;

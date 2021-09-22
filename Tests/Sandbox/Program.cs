@@ -11,8 +11,6 @@
     using Chess.Data.Models;
     using Chess.Data.Repositories;
     using Chess.Data.Seeding;
-    using Chess.Services.Data;
-    using Chess.Services.Data.Contracts;
     using Chess.Services.Messaging;
 
     using CommandLine;
@@ -53,9 +51,6 @@
         {
             var sw = Stopwatch.StartNew();
 
-            var settingsService = serviceProvider.GetService<ISettingsService>();
-            Console.WriteLine($"Count of settings: {settingsService.GetCount()}");
-
             Console.WriteLine(sw.Elapsed);
             return await Task.FromResult(0);
         }
@@ -82,7 +77,6 @@
 
             // Application services
             services.AddTransient<IEmailSender, NullMessageSender>();
-            services.AddTransient<ISettingsService, SettingsService>();
         }
     }
 }

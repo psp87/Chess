@@ -3,7 +3,9 @@
     using System;
     using System.Linq;
 
+    using Chess.Common;
     using Chess.Common.Enums;
+    using Chess.Web.Models;
 
     public class King : Piece
     {
@@ -12,9 +14,9 @@
         {
         }
 
-        public override char Symbol => 'K';
+        public override char Symbol => Constants.KingSymbol;
 
-        public override int Points => 0;
+        public override int Points => default;
 
         public override void IsMoveAvailable(Square[][] matrix)
         {

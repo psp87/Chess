@@ -1,7 +1,9 @@
 ﻿namespace Chess.Data.Models.Pieces
 {
+    using Chess.Common;
     using Chess.Common.Enums;
     using Chess.Data.Models.Pieces.Helpers;
+    using Chess.Web.Models;
 
     public class Queen : Piece
     {
@@ -15,9 +17,9 @@
             this.bishop = Factory.GetBishopBehaviour();
         }
 
-        public override char Symbol => 'Q';
+        public override char Symbol => Constants.QueenSymbol;
 
-        public override int Points => 9;
+        public override int Points => Constants.QueenPoints;
 
         public override void IsMoveAvailable(Square[][] matrix)
         {
