@@ -2,8 +2,8 @@
 {
     using System;
 
-    using Chess.Data.Models.Pieces.Contracts;
     using Chess.Web.Models;
+    using Chess.Web.Models.Pieces.Contracts;
 
     public class RookBehaviour
     {

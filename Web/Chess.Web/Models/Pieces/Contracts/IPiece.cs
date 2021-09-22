@@ -1,4 +1,4 @@
-﻿namespace Chess.Data.Models.Pieces.Contracts
+﻿namespace Chess.Web.Models.Pieces.Contracts
 {
     using System;
 

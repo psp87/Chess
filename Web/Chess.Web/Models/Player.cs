@@ -3,7 +3,7 @@
     using System.Collections.Generic;
 
     using Chess.Common.Enums;
-    using Chess.Data.Models.Pieces;
+    using Chess.Web.Models.Pieces;
 
     public class Player
     {

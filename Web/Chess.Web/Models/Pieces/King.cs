@@ -1,4 +1,4 @@
-﻿namespace Chess.Data.Models.Pieces
+﻿namespace Chess.Web.Models.Pieces
 {
     using System;
     using System.Linq;
