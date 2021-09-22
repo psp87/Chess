@@ -37,9 +37,9 @@
         {
             var toggle = Color.White;
 
-            for (int rank = 0; rank < GlobalConstants.Ranks; rank++)
+            for (int rank = 0; rank < Constants.Ranks; rank++)
             {
-                for (int file = 0; file < GlobalConstants.Files; file++)
+                for (int file = 0; file < Constants.Files; file++)
                 {
                     var name = this.files[file] + (8 - rank);
                     var square = new Square()
@@ -62,17 +62,17 @@
 
         public void CalculateAttackedSquares()
         {
-            for (int rank = 0; rank < GlobalConstants.Ranks; rank++)
+            for (int rank = 0; rank < Constants.Ranks; rank++)
             {
-                for (int file = 0; file < GlobalConstants.Files; file++)
+                for (int file = 0; file < Constants.Files; file++)
                 {
                     this.Matrix[rank][file].IsAttacked.Clear();
                 }
             }
 
-            for (int rank = 0; rank < GlobalConstants.Ranks; rank++)
+            for (int rank = 0; rank < Constants.Ranks; rank++)
             {
-                for (int file = 0; file < GlobalConstants.Files; file++)
+                for (int file = 0; file < Constants.Files; file++)
                 {
                     if (this.Matrix[rank][file].Piece != null)
                     {
@@ -111,7 +111,7 @@
 
         public Square GetKingSquare(Color color)
         {
-            for (int rank = 0; rank < GlobalConstants.Ranks; rank++)
+            for (int rank = 0; rank < Constants.Ranks; rank++)
             {
                 var kingSquare = this.Matrix[rank].FirstOrDefault(x => x.Piece is King && x.Piece.Color == color);
 
@@ -131,7 +131,7 @@
 
         public Square GetSquareByName(string name)
         {
-            for (int rank = 0; rank < GlobalConstants.Ranks; rank++)
+            for (int rank = 0; rank < Constants.Ranks; rank++)
             {
                 var square = this.Matrix[rank].FirstOrDefault(x => x.Name == name);
 
@@ -148,9 +148,9 @@
         {
             var board = Factory.GetBoard();
 
-            for (int rank = 0; rank < GlobalConstants.Ranks; rank++)
+            for (int rank = 0; rank < Constants.Ranks; rank++)
             {
-                for (int file = 0; file < GlobalConstants.Files; file++)
+                for (int file = 0; file < Constants.Files; file++)
                 {
                     board.Matrix[rank][file] = this.Matrix[rank][file].Clone() as Square;
                 }

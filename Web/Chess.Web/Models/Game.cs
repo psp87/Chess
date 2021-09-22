@@ -284,9 +284,9 @@
 
         private bool IsStalemate()
         {
-            for (int rank = 0; rank < GlobalConstants.Ranks; rank++)
+            for (int rank = 0; rank < Constants.Ranks; rank++)
             {
-                for (int file = 0; file < GlobalConstants.Files; file++)
+                for (int file = 0; file < Constants.Files; file++)
                 {
                     var currentFigure = this.ChessBoard.GetSquareByCoordinates(rank, file).Piece;
 
@@ -309,9 +309,9 @@
             int counterBishopKnightWhite = 0;
             int counterBishopKnightBlack = 0;
 
-            for (int rank = 0; rank < GlobalConstants.Ranks; rank++)
+            for (int rank = 0; rank < Constants.Ranks; rank++)
             {
-                for (int file = 0; file < GlobalConstants.Files; file++)
+                for (int file = 0; file < Constants.Files; file++)
                 {
                     var currentFigure = this.ChessBoard.GetSquareByCoordinates(rank, file).Piece;
 
