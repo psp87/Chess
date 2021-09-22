@@ -1,6 +1,8 @@
 ﻿namespace Chess.Data.Models.Pieces
 {
+    using Chess.Common;
     using Chess.Common.Enums;
+    using Chess.Web.Models;
 
     public class Knight : Piece
     {
@@ -9,9 +11,9 @@
         {
         }
 
-        public override char Symbol => 'N';
+        public override char Symbol => Constants.KnightSymbol;
 
-        public override int Points => 3;
+        public override int Points => Constants.KnightPoints;
 
         public override void IsMoveAvailable(Square[][] matrix)
         {

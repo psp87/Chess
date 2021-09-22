@@ -1,7 +1,9 @@
 ﻿namespace Chess.Data.Models.Pieces
 {
+    using Chess.Common;
     using Chess.Common.Enums;
     using Chess.Data.Models.Pieces.Helpers;
+    using Chess.Web.Models;
 
     public class Rook : Piece
     {
@@ -13,9 +15,9 @@
             this.rook = Factory.GetRookBehaviour();
         }
 
-        public override char Symbol => 'R';
+        public override char Symbol => Constants.RookSymbol;
 
-        public override int Points => 5;
+        public override int Points => Constants.RookPoints;
 
         public override void IsMoveAvailable(Square[][] matrix)
         {
