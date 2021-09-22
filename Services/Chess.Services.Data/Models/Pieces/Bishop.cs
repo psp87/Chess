@@ -1,37 +1,36 @@
-﻿namespace Chess.Web.Models.Pieces
+﻿namespace Chess.Services.Data.Models.Pieces
 {
     using Chess.Common;
     using Chess.Common.Enums;
-    using Chess.Data.Models.Pieces.Helpers;
-    using Chess.Web.Models;
+    using Chess.Services.Data.Models.Pieces.Helpers;
 
-    public class Rook : Piece
+    public class Bishop : Piece
     {
-        private RookBehaviour rook;
+        private BishopBahaviour bishop;
 
-        public Rook(Color color)
+        public Bishop(Color color)
             : base(color)
         {
-            this.rook = Factory.GetRookBehaviour();
+            this.bishop = Factory.GetBishopBehaviour();
         }
 
-        public override char Symbol => Constants.RookSymbol;
+        public override char Symbol => Constants.BishopSymbol;
 
-        public override int Points => Constants.RookPoints;
+        public override int Points => Constants.BishopPoints;
 
         public override void IsMoveAvailable(Square[][] matrix)
         {
-            this.IsMovable = this.rook.IsMoveAvailable(this, matrix) ? true : false;
+            this.IsMovable = this.bishop.IsMoveAvailable(this, matrix) ? true : false;
         }
 
         public override void Attacking(Square[][] matrix)
         {
-            this.rook.Attacking(this, matrix);
+            this.bishop.Attacking(this, matrix);
         }
 
         public override bool Move(Position to, Square[][] matrix, int turn, Move move)
         {
-            return this.rook.Move(this, to, matrix, move);
+            return this.bishop.Move(this, to, matrix, move);
         }
 
         public override bool Take(Position to, Square[][] matrix, int turn, Move move)
@@ -41,10 +40,9 @@
 
         public override object Clone()
         {
-            return new Rook(this.Color)
+            return new Bishop(this.Color)
             {
                 Position = this.Position.Clone() as Position,
-                IsFirstMove = this.IsFirstMove,
                 IsMovable = this.IsMovable,
             };
         }

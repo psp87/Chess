@@ -1,9 +1,8 @@
-﻿namespace Chess.Web.Models.Pieces
+﻿namespace Chess.Services.Data.Models.Pieces
 {
     using Chess.Common;
     using Chess.Common.Enums;
-    using Chess.Data.Models.Pieces.Helpers;
-    using Chess.Web.Models;
+    using Chess.Services.Data.Models.Pieces.Helpers;
 
     public class Queen : Piece
     {

@@ -1,4 +1,4 @@
-﻿namespace Chess.Web.Models
+﻿namespace Chess.Services.Data.Models
 {
     using System;
     using System.Collections.Generic;
@@ -6,8 +6,8 @@
 
     using Chess.Common;
     using Chess.Common.Enums;
-    using Chess.Web.Models.Pieces;
-    using Chess.Web.Models.Pieces.Contracts;
+    using Chess.Services.Data.Models.Pieces;
+    using Chess.Services.Data.Models.Pieces.Contracts;
 
     public class Board : ICloneable
     {

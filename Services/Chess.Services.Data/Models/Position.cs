@@ -1,4 +1,4 @@
-﻿namespace Chess.Web.Models
+﻿namespace Chess.Services.Data.Models
 {
     using System;
 

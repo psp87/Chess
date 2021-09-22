@@ -1,4 +1,4 @@
-﻿namespace Chess.Web.Models.EventArgs
+﻿namespace Chess.Services.Data.Models.EventArgs
 {
     using System;
 

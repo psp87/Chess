@@ -3,7 +3,7 @@
     using System.Threading.Tasks;
 
     using Chess.Common.Enums;
-    using Chess.Web.Models;
+    using Chess.Services.Data.Models;
     using Microsoft.AspNetCore.SignalR;
 
     public partial class GameHub

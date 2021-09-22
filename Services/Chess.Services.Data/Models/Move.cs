@@ -1,7 +1,7 @@
-﻿namespace Chess.Web.Models
+﻿namespace Chess.Services.Data.Models
 {
     using Chess.Common.Enums;
-    using Chess.Data.Models.Pieces.Helpers;
+    using Chess.Services.Data.Models.Pieces.Helpers;
 
     public class Move
     {
