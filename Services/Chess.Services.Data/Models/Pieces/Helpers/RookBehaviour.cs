@@ -1,9 +1,7 @@
-﻿namespace Chess.Data.Models.Pieces.Helpers
+﻿namespace Chess.Services.Data.Models.Pieces.Helpers
 {
     using System;
-
-    using Chess.Web.Models;
-    using Chess.Web.Models.Pieces.Contracts;
+    using Chess.Services.Data.Models.Pieces.Contracts;
 
     public class RookBehaviour
     {

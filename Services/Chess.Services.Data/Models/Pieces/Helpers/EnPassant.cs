@@ -1,7 +1,5 @@
-﻿namespace Chess.Data.Models.Pieces.Helpers
+﻿namespace Chess.Services.Data.Models.Pieces.Helpers
 {
-    using Chess.Web.Models;
-
     public class EnPassant
     {
         public int Turn { get; set; }

@@ -1,10 +1,9 @@
-﻿namespace Chess.Web.Models.Pieces
+﻿namespace Chess.Services.Data.Models.Pieces
 {
     using System;
 
     using Chess.Common.Enums;
-    using Chess.Web.Models;
-    using Chess.Web.Models.Pieces.Contracts;
+    using Chess.Services.Data.Models.Pieces.Contracts;
 
     public abstract class Piece : IPiece, ICloneable
     {

@@ -1,10 +1,12 @@
-﻿namespace Chess.Web.Models
+﻿namespace Chess.Services.Data.Models
 {
     using Chess.Common;
     using Chess.Common.Enums;
-    using Chess.Data.Models.Pieces.Helpers;
-    using Chess.Web.Models.Pieces;
-    using Chess.Web.Models.Pieces.Contracts;
+    using Chess.Services.Data;
+    using Chess.Services.Data.Contracts;
+    using Chess.Services.Data.Models.Pieces;
+    using Chess.Services.Data.Models.Pieces.Contracts;
+    using Chess.Services.Data.Models.Pieces.Helpers;
 
     public class Factory
     {
@@ -90,11 +92,6 @@
             return new BishopBahaviour();
         }
 
-        public static Game GetGame(Player player1, Player player2)
-        {
-            return new Game(player1, player2);
-        }
-
         public static Move GetMove()
         {
             return new Move();
@@ -103,6 +100,16 @@
         public static Move GetMove(Square source, Square target)
         {
             return new Move(source, target);
+        }
+
+        public static Game GetGame(Player player1, Player player2)
+        {
+            return new Game(player1, player2);
+        }
+
+        public static DrawService GetDrawService()
+        {
+            return new DrawService();
         }
     }
 }
