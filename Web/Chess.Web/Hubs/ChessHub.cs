@@ -35,7 +35,9 @@
             var opponent = game.Opponent;
 
             game.GameOver = GameOver.ThreefoldDraw;
-            await this.Clients.Group(game.Id).SendAsync("GameOver", player, game.GameOver);
+            await this.Clients
+                .Group(game.Id)
+                .SendAsync("GameOver", player, game.GameOver);
             await this.GameSendInternalMessage(game.Id, player.Name, null);
 
             this.UpdateStats(player, opponent, game, game.GameOver);

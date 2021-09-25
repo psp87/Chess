@@ -1,12 +1,13 @@
 ﻿namespace Chess.Services.Data.Models
 {
+    using System;
     using Chess.Common;
     using Chess.Common.Enums;
-    using Chess.Services.Data;
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Models.Pieces;
     using Chess.Services.Data.Models.Pieces.Contracts;
     using Chess.Services.Data.Models.Pieces.Helpers;
+    using Microsoft.Extensions.DependencyInjection;
 
     public class Factory
     {
@@ -102,14 +103,12 @@
             return new Move(source, target);
         }
 
-        public static Game GetGame(Player player1, Player player2)
+        public static Game GetGame(Player player1, Player player2, IServiceProvider serviceProvider)
         {
-            return new Game(player1, player2);
-        }
+            var drawService = serviceProvider.GetRequiredService<IDrawService>();
+            var checkService = serviceProvider.GetRequiredService<ICheckService>();
 
-        public static DrawService GetDrawService()
-        {
-            return new DrawService();
+            return new Game(player1, player2, drawService, checkService);
         }
     }
 }
