@@ -113,11 +113,14 @@
         {
             for (int rank = 0; rank < Constants.Ranks; rank++)
             {
-                var kingSquare = this.Matrix[rank].FirstOrDefault(x => x.Piece is King && x.Piece.Color == color);
+                var square = this.Matrix[rank]
+                    .FirstOrDefault(x =>
+                        x.Piece is King &&
+                        x.Piece.Color == color);
 
-                if (kingSquare != null)
+                if (square != null)
                 {
-                    return kingSquare;
+                    return square;
                 }
             }
 

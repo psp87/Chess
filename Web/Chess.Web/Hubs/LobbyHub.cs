@@ -38,7 +38,7 @@
             player2.Color = Color.Black;
             player1.HasToMove = true;
 
-            var game = Factory.GetGame(player1, player2);
+            var game = Factory.GetGame(player1, player2, this.serviceProvider);
             this.games[game.Id] = game;
 
             game.OnGameOver += this.Game_OnGameOver;
