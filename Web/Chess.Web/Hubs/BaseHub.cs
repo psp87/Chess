@@ -8,7 +8,12 @@
 
     using Chess.Common.Enums;
     using Chess.Data;
+<<<<<<< HEAD
+    using Chess.Services.Data.Contracts;
+    using Chess.Services.Data.Models;
+=======
     using Chess.Web.Models;
+>>>>>>> master
     using Microsoft.AspNetCore.SignalR;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -17,14 +22,14 @@
         private readonly ConcurrentDictionary<string, Player> players;
         private readonly ConcurrentDictionary<string, Game> games;
         private readonly List<Player> waitingPlayers;
-        private readonly IServiceProvider sp;
+        private readonly IServiceProvider serviceProvider;
 
-        public GameHub(IServiceProvider sp)
+        public GameHub(IServiceProvider serviceProvider)
         {
             this.players = new ConcurrentDictionary<string, Player>(StringComparer.OrdinalIgnoreCase);
             this.games = new ConcurrentDictionary<string, Game>(StringComparer.OrdinalIgnoreCase);
             this.waitingPlayers = new List<Player>();
-            this.sp = sp;
+            this.serviceProvider = serviceProvider;
         }
 
         public override async Task OnConnectedAsync()
@@ -85,7 +90,7 @@
 
         private int GetUserRating(Player player)
         {
-            using var scope = this.sp.CreateScope();
+            using var scope = this.serviceProvider.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
             return dbContext.Stats.Where(x => x.Owner.Id == player.UserId).Select(x => x.Rating).FirstOrDefault();
@@ -93,7 +98,7 @@
 
         private void UpdateStats(Player sender, Player opponent, Game game, GameOver gameOver)
         {
-            using var scope = this.sp.CreateScope();
+            using var scope = this.serviceProvider.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
             var senderStats = dbContext.Stats.Where(x => x.Owner.Id == sender.UserId).FirstOrDefault();

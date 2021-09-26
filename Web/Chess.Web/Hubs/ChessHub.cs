@@ -4,8 +4,13 @@
     using System.Threading.Tasks;
 
     using Chess.Common.Enums;
+<<<<<<< HEAD
+    using Chess.Services.Data.Models;
+    using Chess.Services.Data.Models.EventArgs;
+=======
     using Chess.Web.Models;
     using Chess.Web.Models.EventArgs;
+>>>>>>> master
     using Microsoft.AspNetCore.SignalR;
 
     public partial class GameHub
@@ -35,7 +40,9 @@
             var opponent = game.Opponent;
 
             game.GameOver = GameOver.ThreefoldDraw;
-            await this.Clients.Group(game.Id).SendAsync("GameOver", player, game.GameOver);
+            await this.Clients
+                .Group(game.Id)
+                .SendAsync("GameOver", player, game.GameOver);
             await this.GameSendInternalMessage(game.Id, player.Name, null);
 
             this.UpdateStats(player, opponent, game, game.GameOver);

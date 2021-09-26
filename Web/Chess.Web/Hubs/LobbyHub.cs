@@ -3,7 +3,11 @@
     using System.Threading.Tasks;
 
     using Chess.Common.Enums;
+<<<<<<< HEAD
+    using Chess.Services.Data.Models;
+=======
     using Chess.Web.Models;
+>>>>>>> master
     using Microsoft.AspNetCore.SignalR;
 
     public partial class GameHub
@@ -38,7 +42,7 @@
             player2.Color = Color.Black;
             player1.HasToMove = true;
 
-            var game = Factory.GetGame(player1, player2);
+            var game = Factory.GetGame(player1, player2, this.serviceProvider);
             this.games[game.Id] = game;
 
             game.OnGameOver += this.Game_OnGameOver;
