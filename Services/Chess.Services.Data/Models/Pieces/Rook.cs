@@ -2,12 +2,7 @@
 {
     using Chess.Common;
     using Chess.Common.Enums;
-<<<<<<< HEAD:Services/Chess.Services.Data/Models/Pieces/Rook.cs
     using Chess.Services.Data.Models.Pieces.Helpers;
-=======
-    using Chess.Data.Models.Pieces.Helpers;
-    using Chess.Web.Models;
->>>>>>> master:Web/Chess.Web/Models/Pieces/Rook.cs
 
     public class Rook : Piece
     {

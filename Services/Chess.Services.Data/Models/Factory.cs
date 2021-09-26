@@ -1,10 +1,7 @@
-<<<<<<< HEAD:Services/Chess.Services.Data/Models/Factory.cs
-﻿namespace Chess.Services.Data.Models
-=======
-﻿namespace Chess.Web.Models
->>>>>>> master:Web/Chess.Web/Models/Factory.cs
+namespace Chess.Services.Data.Models
 {
     using System;
+
     using Chess.Common;
     using Chess.Common.Enums;
     using Chess.Services.Data.Contracts;

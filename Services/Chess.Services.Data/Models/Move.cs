@@ -1,8 +1,4 @@
-<<<<<<< HEAD:Services/Chess.Services.Data/Models/Move.cs
 ﻿namespace Chess.Services.Data.Models
-=======
-﻿namespace Chess.Web.Models
->>>>>>> master:Web/Chess.Web/Models/Move.cs
 {
     using Chess.Common.Enums;
     using Chess.Services.Data.Models.Pieces.Helpers;
