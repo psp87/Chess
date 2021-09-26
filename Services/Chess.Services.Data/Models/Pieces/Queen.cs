@@ -2,7 +2,15 @@
 {
     using Chess.Common;
     using Chess.Common.Enums;
+<<<<<<<< HEAD:Services/Chess.Services.Data/Models/Pieces/Queen.cs
     using Chess.Services.Data.Models.Pieces.Helpers;
+========
+<<<<<<< HEAD:Services/Chess.Services.Data/Models/Pieces/Queen.cs
+    using Chess.Services.Data.Models.Pieces.Helpers;
+=======
+    using Chess.Data.Models.Pieces.Helpers;
+    using Chess.Web.Models;
+>>>>>>> master:Web/Chess.Web/Models/Pieces/Queen.cs
 
     public class Queen : Piece
     {

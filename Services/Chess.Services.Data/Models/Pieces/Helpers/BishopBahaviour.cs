@@ -1,8 +1,12 @@
 ﻿namespace Chess.Services.Data.Models.Pieces.Helpers
 {
     using System;
+<<<<<<< HEAD:Services/Chess.Services.Data/Models/Pieces/Helpers/BishopBahaviour.cs
+    using Chess.Services.Data.Models.Pieces.Contracts;
+=======
 
     using Chess.Services.Data.Models.Pieces.Contracts;
+    using Chess.Data.Models.Pieces.Contracts;
 
     public class BishopBahaviour
     {
