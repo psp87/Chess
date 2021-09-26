@@ -2,15 +2,7 @@
 {
     using Chess.Common;
     using Chess.Common.Enums;
-<<<<<<<< HEAD:Services/Chess.Services.Data/Models/Pieces/Bishop.cs
     using Chess.Services.Data.Models.Pieces.Helpers;
-========
-<<<<<<< HEAD:Services/Chess.Services.Data/Models/Pieces/Bishop.cs
-    using Chess.Services.Data.Models.Pieces.Helpers;
-=======
-    using Chess.Data.Models.Pieces.Helpers;
-    using Chess.Web.Models;
->>>>>>> master:Web/Chess.Web/Models/Pieces/Bishop.cs
 
     public class Bishop : Piece
     {

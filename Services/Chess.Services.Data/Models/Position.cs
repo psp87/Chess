@@ -1,11 +1,4 @@
-<<<<<<<< HEAD:Services/Chess.Services.Data/Models/Position.cs
 ﻿namespace Chess.Services.Data.Models
-========
-<<<<<<< HEAD:Services/Chess.Services.Data/Models/Position.cs
-﻿namespace Chess.Services.Data.Models
-=======
-﻿namespace Chess.Web.Models
->>>>>>> master:Web/Chess.Web/Models/Position.cs
 {
     using System;
 
