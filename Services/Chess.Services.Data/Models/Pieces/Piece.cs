@@ -3,12 +3,7 @@
     using System;
 
     using Chess.Common.Enums;
-<<<<<<< HEAD:Services/Chess.Services.Data/Models/Pieces/Piece.cs
     using Chess.Services.Data.Models.Pieces.Contracts;
-=======
-    using Chess.Data.Models.Pieces.Contracts;
-    using Chess.Web.Models;
->>>>>>> master:Web/Chess.Web/Models/Pieces/Piece.cs
 
     public abstract class Piece : IPiece, ICloneable
     {

@@ -1,8 +1,4 @@
-<<<<<<< HEAD:Services/Chess.Services.Data/Models/Player.cs
 ﻿namespace Chess.Services.Data.Models
-=======
-﻿namespace Chess.Web.Models
->>>>>>> master:Web/Chess.Web/Models/Player.cs
 {
     using System.Collections.Generic;
 

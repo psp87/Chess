@@ -5,7 +5,6 @@
 
     using Chess.Common;
     using Chess.Common.Enums;
-    using Chess.Web.Models;
 
     public class King : Piece
     {
