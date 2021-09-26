@@ -1,11 +1,4 @@
-<<<<<<<< HEAD:Services/Chess.Services.Data/Models/Board.cs
 ﻿namespace Chess.Services.Data.Models
-========
-<<<<<<< HEAD:Services/Chess.Services.Data/Models/Board.cs
-﻿namespace Chess.Services.Data.Models
-=======
-﻿namespace Chess.Web.Models
->>>>>>> master:Web/Chess.Web/Models/Board.cs
 {
     using System;
     using System.Collections.Generic;
