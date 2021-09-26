@@ -1,3 +1,6 @@
+<<<<<<<< HEAD:Services/Chess.Services.Data/Models/Game.cs
+namespace Chess.Services.Data.Models
+========
 <<<<<<< HEAD:Services/Chess.Services.Data/Models/Game.cs
 ﻿namespace Chess.Services.Data.Models
 =======
@@ -10,6 +13,11 @@
     using System.Text;
 
     using Chess.Common.Enums;
+<<<<<<<< HEAD:Services/Chess.Services.Data/Models/Game.cs
+    using Chess.Services.Data.Contracts;
+    using Chess.Services.Data.Models.EventArgs;
+    using Chess.Services.Data.Models.Pieces;
+========
 <<<<<<< HEAD:Services/Chess.Services.Data/Models/Game.cs
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Models.EventArgs;
@@ -236,6 +244,7 @@
 
             this.MovingPlayer.IsThreefoldDrawAvailable = false;
             this.OnThreefoldDrawAvailable?.Invoke(this.MovingPlayer, new ThreefoldDrawEventArgs(false));
+<<<<<<<< HEAD:Services/Chess.Services.Data/Models/Game.cs
 
             if (this.drawService.IsThreefoldRepetionDraw(targetFen))
             {
@@ -243,6 +252,15 @@
                 this.OnThreefoldDrawAvailable?.Invoke(this.MovingPlayer, new ThreefoldDrawEventArgs(true));
             }
 
+========
+
+            if (this.drawService.IsThreefoldRepetionDraw(targetFen))
+            {
+                this.Opponent.IsThreefoldDrawAvailable = true;
+                this.OnThreefoldDrawAvailable?.Invoke(this.MovingPlayer, new ThreefoldDrawEventArgs(true));
+            }
+
+>>>>>>>> master:Web/Chess.Web/Models/Game.cs
             if (this.drawService.IsFivefoldRepetitionDraw(targetFen))
             {
                 this.GameOver = GameOver.FivefoldDraw;
@@ -269,6 +287,8 @@
             }
         }
 
+<<<<<<<< HEAD:Services/Chess.Services.Data/Models/Game.cs
+========
 <<<<<<< HEAD:Services/Chess.Services.Data/Models/Game.cs
 =======
         private bool IsPlayerChecked(Player player)
@@ -423,6 +443,7 @@
         }
 
 >>>>>>> master:Web/Chess.Web/Models/Game.cs
+>>>>>>>> master:Web/Chess.Web/Models/Game.cs
         private void IsPawnPromotion(string targetFen)
         {
             if (this.Move.Target.Piece is Pawn && this.Move.Target.Piece.IsLastMove)

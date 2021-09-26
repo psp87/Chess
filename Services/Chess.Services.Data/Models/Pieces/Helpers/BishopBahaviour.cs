@@ -5,9 +5,8 @@
     using Chess.Services.Data.Models.Pieces.Contracts;
 =======
 
+    using Chess.Services.Data.Models.Pieces.Contracts;
     using Chess.Data.Models.Pieces.Contracts;
-    using Chess.Web.Models;
->>>>>>> master:Web/Chess.Web/Models/Pieces/Helpers/BishopBahaviour.cs
 
     public class BishopBahaviour
     {

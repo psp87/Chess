@@ -1,3 +1,6 @@
+<<<<<<<< HEAD:Services/Chess.Services.Data/Models/Square.cs
+﻿namespace Chess.Services.Data.Models
+========
 <<<<<<< HEAD:Services/Chess.Services.Data/Models/Square.cs
 ﻿namespace Chess.Services.Data.Models
 =======

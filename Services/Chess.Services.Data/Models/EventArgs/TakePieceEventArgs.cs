@@ -1,8 +1,12 @@
+<<<<<<<< HEAD:Services/Chess.Services.Data/Models/EventArgs/TakePieceEventArgs.cs
+﻿namespace Chess.Services.Data.Models.EventArgs
+========
 <<<<<<< HEAD:Services/Chess.Services.Data/Models/EventArgs/TakePieceEventArgs.cs
 ﻿namespace Chess.Services.Data.Models.EventArgs
 =======
 ﻿namespace Chess.Web.Models.EventArgs
 >>>>>>> master:Web/Chess.Web/Models/EventArgs/TakePieceEventArgs.cs
+>>>>>>>> master:Web/Chess.Web/Models/EventArgs/TakePieceEventArgs.cs
 {
     using System;
 
