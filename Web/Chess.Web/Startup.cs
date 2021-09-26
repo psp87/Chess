@@ -33,11 +33,10 @@
             this.configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(
-                options => options.UseSqlServer(this.configuration.GetConnectionString("defaultConnection")));
+            services.AddDbContext<ApplicationDbContext>(options => options
+                .UseSqlServer(this.configuration.GetConnectionString("defaultConnection")));
 
             services.AddDefaultIdentity<ApplicationUser>(IdentityOptionsProvider.GetIdentityOptions)
                 .AddRoles<ApplicationRole>().AddEntityFrameworkStores<ApplicationDbContext>();
@@ -70,9 +69,10 @@
             services.AddTransient<IEmailSender, NullMessageSender>();
             services.AddTransient<IGameService, GameService>();
             services.AddTransient<IStatsService, StatsService>();
+            services.AddSingleton<IDrawService, DrawService>();
+            services.AddSingleton<ICheckService, CheckService>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).GetTypeInfo().Assembly);
