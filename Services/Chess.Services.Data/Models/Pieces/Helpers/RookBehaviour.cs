@@ -1,8 +1,16 @@
 ﻿namespace Chess.Services.Data.Models.Pieces.Helpers
 {
     using System;
-
+<<<<<<< HEAD:Services/Chess.Services.Data/Models/Pieces/Helpers/RookBehaviour.cs
     using Chess.Services.Data.Models.Pieces.Contracts;
+=======
+
+<<<<<<<< HEAD:Services/Chess.Services.Data/Models/Pieces/Helpers/RookBehaviour.cs
+    using Chess.Services.Data.Models.Pieces.Contracts;
+========
+    using Chess.Data.Models.Pieces.Contracts;
+    using Chess.Web.Models;
+>>>>>>> master:Web/Chess.Web/Models/Pieces/Helpers/RookBehaviour.cs
 
     public class RookBehaviour
     {

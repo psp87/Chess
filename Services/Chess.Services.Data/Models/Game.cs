@@ -1,4 +1,11 @@
+<<<<<<<< HEAD:Services/Chess.Services.Data/Models/Game.cs
 namespace Chess.Services.Data.Models
+========
+<<<<<<< HEAD:Services/Chess.Services.Data/Models/Game.cs
+﻿namespace Chess.Services.Data.Models
+=======
+﻿namespace Chess.Web.Models
+>>>>>>> master:Web/Chess.Web/Models/Game.cs
 {
     using System;
     using System.Collections.Generic;
@@ -6,9 +13,19 @@ namespace Chess.Services.Data.Models
     using System.Text;
 
     using Chess.Common.Enums;
+<<<<<<<< HEAD:Services/Chess.Services.Data/Models/Game.cs
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Models.EventArgs;
     using Chess.Services.Data.Models.Pieces;
+========
+<<<<<<< HEAD:Services/Chess.Services.Data/Models/Game.cs
+    using Chess.Services.Data.Contracts;
+    using Chess.Services.Data.Models.EventArgs;
+    using Chess.Services.Data.Models.Pieces;
+=======
+    using Chess.Data.Models.Pieces;
+    using Chess.Web.Models.EventArgs;
+>>>>>>> master:Web/Chess.Web/Models/Game.cs
 
     public class Game
     {
@@ -227,6 +244,7 @@ namespace Chess.Services.Data.Models
 
             this.MovingPlayer.IsThreefoldDrawAvailable = false;
             this.OnThreefoldDrawAvailable?.Invoke(this.MovingPlayer, new ThreefoldDrawEventArgs(false));
+<<<<<<<< HEAD:Services/Chess.Services.Data/Models/Game.cs
 
             if (this.drawService.IsThreefoldRepetionDraw(targetFen))
             {
@@ -234,6 +252,15 @@ namespace Chess.Services.Data.Models
                 this.OnThreefoldDrawAvailable?.Invoke(this.MovingPlayer, new ThreefoldDrawEventArgs(true));
             }
 
+========
+
+            if (this.drawService.IsThreefoldRepetionDraw(targetFen))
+            {
+                this.Opponent.IsThreefoldDrawAvailable = true;
+                this.OnThreefoldDrawAvailable?.Invoke(this.MovingPlayer, new ThreefoldDrawEventArgs(true));
+            }
+
+>>>>>>>> master:Web/Chess.Web/Models/Game.cs
             if (this.drawService.IsFivefoldRepetitionDraw(targetFen))
             {
                 this.GameOver = GameOver.FivefoldDraw;
@@ -260,6 +287,163 @@ namespace Chess.Services.Data.Models
             }
         }
 
+<<<<<<<< HEAD:Services/Chess.Services.Data/Models/Game.cs
+========
+<<<<<<< HEAD:Services/Chess.Services.Data/Models/Game.cs
+=======
+        private bool IsPlayerChecked(Player player)
+        {
+            var kingSquare = this.ChessBoard.GetKingSquare(player.Color);
+
+            if (kingSquare.IsAttacked.Where(x => x.Color != kingSquare.Piece.Color).Any())
+            {
+                player.IsCheck = true;
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool IsCheckmate()
+        {
+            if (!this.IsAbleToMoveTheKing() && !this.IsAbleToTakeTheAttackingPiece() && !this.IsAbleToBlockTheCheck())
+            {
+                this.Opponent.IsCheckMate = true;
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool IsStalemate()
+        {
+            for (int rank = 0; rank < Constants.Ranks; rank++)
+            {
+                for (int file = 0; file < Constants.Files; file++)
+                {
+                    var currentFigure = this.ChessBoard.GetSquareByCoordinates(rank, file).Piece;
+
+                    if (currentFigure != null && currentFigure.Color == this.Opponent.Color)
+                    {
+                        currentFigure.IsMoveAvailable(this.ChessBoard.Matrix);
+                        if (currentFigure.IsMovable)
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        private bool IsDraw()
+        {
+            int counterBishopKnightWhite = 0;
+            int counterBishopKnightBlack = 0;
+
+            for (int rank = 0; rank < Constants.Ranks; rank++)
+            {
+                for (int file = 0; file < Constants.Files; file++)
+                {
+                    var currentFigure = this.ChessBoard.GetSquareByCoordinates(rank, file).Piece;
+
+                    if (!(currentFigure == null || currentFigure is King))
+                    {
+                        if (currentFigure is Pawn ||
+                            currentFigure is Rook ||
+                            currentFigure is Queen ||
+                            counterBishopKnightWhite > 1 ||
+                            counterBishopKnightBlack > 1)
+                        {
+                            return false;
+                        }
+
+                        if (currentFigure.Color == Color.White)
+                        {
+                            counterBishopKnightWhite++;
+                        }
+                        else
+                        {
+                            counterBishopKnightBlack++;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        private void IsThreefoldRepetionDraw(string fen)
+        {
+            this.movesThreefold.Enqueue(fen);
+
+            this.MovingPlayer.IsThreefoldDrawAvailable = false;
+            this.OnThreefoldDrawAvailable?.Invoke(this.MovingPlayer, new ThreefoldDrawEventArgs(false));
+
+            if (this.movesThreefold.Count == 9)
+            {
+                this.arrayThreefold = this.movesThreefold.ToArray();
+
+                var isFirstFenSame = string.Compare(fen, this.arrayThreefold[0]) == 0;
+                var isFiveFenSame = string.Compare(fen, this.arrayThreefold[4]) == 0;
+
+                if (isFirstFenSame && isFiveFenSame)
+                {
+                    this.Opponent.IsThreefoldDrawAvailable = true;
+                    this.OnThreefoldDrawAvailable?.Invoke(this.MovingPlayer, new ThreefoldDrawEventArgs(true));
+                }
+
+                this.movesThreefold.Dequeue();
+            }
+        }
+
+        private bool IsFivefoldRepetitionDraw(string fen)
+        {
+            this.movesFivefold.Enqueue(fen);
+
+            if (this.movesFivefold.Count == 17)
+            {
+                this.arrayFivefold = this.movesFivefold.ToArray();
+
+                var isFirstFenSame = string.Compare(fen, this.arrayFivefold[0]) == 0;
+                var isFiveFenSame = string.Compare(fen, this.arrayFivefold[4]) == 0;
+                var isNineFenSame = string.Compare(fen, this.arrayFivefold[8]) == 0;
+                var isThirteenFenSame = string.Compare(fen, this.arrayFivefold[12]) == 0;
+
+                if (isFirstFenSame && isFiveFenSame && isNineFenSame && isThirteenFenSame)
+                {
+                    return true;
+                }
+                else
+                {
+                    this.movesFivefold.Dequeue();
+                }
+            }
+
+            return false;
+        }
+
+        private bool IsFiftyMoveDraw()
+        {
+            if (!(this.Move.Target.Piece is Pawn) && this.Move.Type != MoveType.Taking)
+            {
+                this.FiftyMoveCounter += 1;
+
+                if (this.FiftyMoveCounter == 100)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            this.FiftyMoveCounter = 0;
+            return false;
+        }
+
+>>>>>>> master:Web/Chess.Web/Models/Game.cs
+>>>>>>>> master:Web/Chess.Web/Models/Game.cs
         private void IsPawnPromotion(string targetFen)
         {
             if (this.Move.Target.Piece is Pawn && this.Move.Target.Piece.IsLastMove)

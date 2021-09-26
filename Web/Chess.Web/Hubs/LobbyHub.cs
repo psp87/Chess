@@ -4,6 +4,7 @@
 
     using Chess.Common.Enums;
     using Chess.Services.Data.Models;
+>>>>>>> master
     using Microsoft.AspNetCore.SignalR;
 
     public partial class GameHub
