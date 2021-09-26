@@ -3,6 +3,9 @@
     using System;
 
     using Chess.Common.Enums;
+<<<<<<<< HEAD:Services/Chess.Services.Data/Models/Pieces/Piece.cs
+    using Chess.Services.Data.Models.Pieces.Contracts;
+========
 <<<<<<< HEAD:Services/Chess.Services.Data/Models/Pieces/Piece.cs
     using Chess.Services.Data.Models.Pieces.Contracts;
 =======

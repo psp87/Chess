@@ -3,10 +3,7 @@
     using System.Threading.Tasks;
 
     using Chess.Common.Enums;
-<<<<<<< HEAD
     using Chess.Services.Data.Models;
-=======
-    using Chess.Web.Models;
 >>>>>>> master
     using Microsoft.AspNetCore.SignalR;
 
