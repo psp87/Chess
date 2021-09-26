@@ -4,8 +4,13 @@
     using System.Threading.Tasks;
 
     using Chess.Common.Enums;
+<<<<<<< HEAD
     using Chess.Services.Data.Models;
     using Chess.Services.Data.Models.EventArgs;
+=======
+    using Chess.Web.Models;
+    using Chess.Web.Models.EventArgs;
+>>>>>>> master
     using Microsoft.AspNetCore.SignalR;
 
     public partial class GameHub

@@ -8,8 +8,12 @@
 
     using Chess.Common.Enums;
     using Chess.Data;
+<<<<<<< HEAD
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Models;
+=======
+    using Chess.Web.Models;
+>>>>>>> master
     using Microsoft.AspNetCore.SignalR;
     using Microsoft.Extensions.DependencyInjection;
 
