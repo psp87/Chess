@@ -24,15 +24,10 @@
             this.drawService = drawService;
             this.checkService = checkService;
 
-            this.Id = Guid.NewGuid().ToString();
             this.Player1 = player1;
             this.Player2 = player2;
             this.Player1.GameId = this.Id;
             this.Player2.GameId = this.Id;
-            this.ChessBoard = Factory.GetBoard();
-            this.Move = Factory.GetMove();
-            this.GameOver = GameOver.None;
-            this.Turn = 1;
         }
 
         public event EventHandler OnGameOver;
@@ -45,15 +40,15 @@
 
         public event EventHandler OnThreefoldDrawAvailable;
 
-        public string Id { get; set; }
+        public string Id { get; } = Guid.NewGuid().ToString();
 
-        public Board ChessBoard { get; set; }
+        public Board ChessBoard { get; } = Factory.GetBoard();
 
-        public Move Move { get; set; }
+        public Move Move { get; set; } = Factory.GetMove();
 
-        public GameOver GameOver { get; set; }
+        public GameOver GameOver { get; set; } = GameOver.None;
 
-        public int Turn { get; set; }
+        public int Turn { get; set; } = 1;
 
         public Player Player1 { get; set; }
 
@@ -63,10 +58,12 @@
 
         public Player Opponent => this.Player1?.HasToMove ?? false ? this.Player2 : this.Player1;
 
-        public bool IsValidMove(string source, string target, string targetFen)
+        public bool MakeMove(string source, string target, string targetFen)
         {
-            this.Move.Source = this.ChessBoard.GetSquareByName(source);
-            this.Move.Target = this.ChessBoard.GetSquareByName(target);
+            this.Move.Source = this.ChessBoard
+                .GetSquareByName(source);
+            this.Move.Target = this.ChessBoard
+                .GetSquareByName(target);
 
             var oldSource = this.Move.Source.Clone() as Square;
             var oldTarget = this.Move.Target.Clone() as Square;
@@ -98,20 +95,27 @@
         public bool TryMove(Player player, Move move)
         {
             var oldPiece = move.Target.Piece;
-            this.ChessBoard.ShiftPiece(move);
-            this.ChessBoard.CalculateAttackedSquares();
+            this.ChessBoard
+                .ShiftPiece(move);
+            this.ChessBoard
+                .CalculateAttackedSquares();
 
             if (this.checkService.IsCheck(player, this.ChessBoard))
             {
-                this.ChessBoard.ReversePiece(move, oldPiece);
-                this.ChessBoard.CalculateAttackedSquares();
+                this.ChessBoard
+                    .ReversePiece(move, oldPiece);
+                this.ChessBoard
+                    .CalculateAttackedSquares();
+
                 return false;
             }
 
             if (player == this.Opponent)
             {
-                this.ChessBoard.ReversePiece(move, oldPiece);
-                this.ChessBoard.CalculateAttackedSquares();
+                this.ChessBoard
+                    .ReversePiece(move, oldPiece);
+                this.ChessBoard
+                    .CalculateAttackedSquares();
             }
 
             return true;

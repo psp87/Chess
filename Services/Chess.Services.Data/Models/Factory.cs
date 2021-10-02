@@ -12,65 +12,15 @@
 
     public class Factory
     {
-        public static Board GetBoard()
+        public static Game GetGame(Player player1, Player player2, IServiceProvider serviceProvider)
         {
-            return new Board();
+            var drawService = serviceProvider.GetRequiredService<IDrawService>();
+            var checkService = serviceProvider.GetRequiredService<ICheckService>();
+
+            return new Game(player1, player2, drawService, checkService);
         }
 
-        public static Player GetPlayer(string name, string connectionId, string userId)
-        {
-            return new Player(name, connectionId, userId);
-        }
-
-        public static IPiece GetPawn(Color color)
-        {
-            return new Pawn(color);
-        }
-
-        public static IPiece GetRook(Color color)
-        {
-            return new Rook(color);
-        }
-
-        public static IPiece GetKnight(Color color)
-        {
-            return new Knight(color);
-        }
-
-        public static IPiece GetBishop(Color color)
-        {
-            return new Bishop(color);
-        }
-
-        public static IPiece GetQueen(Color color)
-        {
-            return new Queen(color);
-        }
-
-        public static IPiece GetKing(Color color)
-        {
-             return new King(color);
-        }
-
-        public static Position GetPosition()
-        {
-            return new Position();
-        }
-
-        public static Position GetPosition(int rank, int file)
-        {
-            return new Position(rank, file);
-        }
-
-        public static Square GetSquare()
-        {
-            return new Square();
-        }
-
-        public static Square GetSquare(int rank, int file)
-        {
-            return new Square(rank, file);
-        }
+        public static Player GetPlayer(string name, string connectionId, string userId) => new Player(name, connectionId, userId);
 
         public static Square[][] GetMatrix()
         {
@@ -84,32 +34,40 @@
             return matrix;
         }
 
-        public static RookBehaviour GetRookBehaviour()
-        {
-            return new RookBehaviour();
-        }
+        public static Move GetMove() => new Move();
 
-        public static BishopBahaviour GetBishopBehaviour()
-        {
-            return new BishopBahaviour();
-        }
+        public static Move GetMove(Square source, Square target) => new Move(source, target);
 
-        public static Move GetMove()
-        {
-            return new Move();
-        }
+        public static Board GetBoard() => new Board();
 
-        public static Move GetMove(Square source, Square target)
-        {
-            return new Move(source, target);
-        }
+        public static Square GetSquare() => new Square();
 
-        public static Game GetGame(Player player1, Player player2, IServiceProvider serviceProvider)
-        {
-            var drawService = serviceProvider.GetRequiredService<IDrawService>();
-            var checkService = serviceProvider.GetRequiredService<ICheckService>();
+        public static Square GetSquare(int rank, int file) => new Square(rank, file);
 
-            return new Game(player1, player2, drawService, checkService);
-        }
+        public static Position GetPosition() => new Position();
+
+        public static Position GetPosition(int rank, int file) => new Position(rank, file);
+
+        public static IPiece GetPawn(Color color) => new Pawn(color);
+
+        public static IPiece GetRook(Color color) => new Rook(color);
+
+        public static IPiece GetKnight(Color color) => new Knight(color);
+
+        public static IPiece GetBishop(Color color) => new Bishop(color);
+
+        public static IPiece GetQueen(Color color) => new Queen(color);
+
+        public static IPiece GetKing(Color color) => new King(color);
+
+        public static RookBehaviour GetRookBehaviour() => new RookBehaviour();
+
+        public static BishopBahaviour GetBishopBehaviour() => new BishopBahaviour();
+
+        public static CastlingArgs GetCastlingArgs() => new CastlingArgs();
+
+        public static EnPassantArgs GetEnPassantArgs() => new EnPassantArgs();
+
+        public static PawnPromotionArgs GetPawnPromotionArgs() => new PawnPromotionArgs();
     }
 }
