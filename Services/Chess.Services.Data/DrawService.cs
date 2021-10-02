@@ -10,21 +10,9 @@
 
     public class DrawService : IDrawService
     {
-        private readonly Queue<string> movesThreefold;
-        private readonly Queue<string> movesFivefold;
-        private string[] arrayThreefold;
-        private string[] arrayFivefold;
-
-        public DrawService()
-        {
-            this.movesThreefold = new Queue<string>();
-            this.movesFivefold = new Queue<string>();
-            this.arrayThreefold = new string[9];
-            this.arrayFivefold = new string[17];
-            this.FiftyMoveCounter = 0;
-        }
-
-        public int FiftyMoveCounter { get; set; }
+        private readonly Queue<string> threefoldQueue = new Queue<string>();
+        private readonly Queue<string> fivefoldQueue = new Queue<string>();
+        private int fiftyMoveCounter;
 
         public bool IsStalemate(Board board, Player opponent)
         {
@@ -32,9 +20,11 @@
             {
                 for (int file = 0; file < Constants.Files; file++)
                 {
-                    var currentFigure = board.GetSquareByCoordinates(rank, file).Piece;
+                    var currentFigure = board
+                        .GetSquareByCoordinates(rank, file).Piece;
 
-                    if (currentFigure != null && currentFigure.Color == opponent.Color)
+                    if (currentFigure != null &&
+                        currentFigure.Color == opponent.Color)
                     {
                         currentFigure.IsMoveAvailable(board.Matrix);
                         if (currentFigure.IsMovable)
@@ -57,7 +47,8 @@
             {
                 for (int file = 0; file < Constants.Files; file++)
                 {
-                    var currentFigure = board.GetSquareByCoordinates(rank, file).Piece;
+                    var currentFigure = board
+                        .GetSquareByCoordinates(rank, file).Piece;
 
                     if (!(currentFigure == null || currentFigure is King))
                     {
@@ -87,21 +78,17 @@
 
         public bool IsThreefoldRepetionDraw(string fen)
         {
-            this.movesThreefold.Enqueue(fen);
+            this.threefoldQueue.Enqueue(fen);
 
-            if (this.movesThreefold.Count == 9)
+            if (this.threefoldQueue.Count == 9)
             {
-                this.arrayThreefold = this.movesThreefold.ToArray();
-
-                var isFirstFenSame = string.Compare(fen, this.arrayThreefold[0]) == 0;
-                var isFiveFenSame = string.Compare(fen, this.arrayThreefold[4]) == 0;
-
-                this.movesThreefold.Dequeue();
-
-                if (isFirstFenSame && isFiveFenSame)
+                if (this.IsThreefoldDraw(fen, this.threefoldQueue.ToArray()))
                 {
+                    this.threefoldQueue.Dequeue();
                     return true;
                 }
+
+                this.threefoldQueue.Dequeue();
             }
 
             return false;
@@ -109,25 +96,16 @@
 
         public bool IsFivefoldRepetitionDraw(string fen)
         {
-            this.movesFivefold.Enqueue(fen);
+            this.fivefoldQueue.Enqueue(fen);
 
-            if (this.movesFivefold.Count == 17)
+            if (this.fivefoldQueue.Count == 17)
             {
-                this.arrayFivefold = this.movesFivefold.ToArray();
-
-                var isFirstFenSame = string.Compare(fen, this.arrayFivefold[0]) == 0;
-                var isFiveFenSame = string.Compare(fen, this.arrayFivefold[4]) == 0;
-                var isNineFenSame = string.Compare(fen, this.arrayFivefold[8]) == 0;
-                var isThirteenFenSame = string.Compare(fen, this.arrayFivefold[12]) == 0;
-
-                if (isFirstFenSame && isFiveFenSame && isNineFenSame && isThirteenFenSame)
+                if (this.IsFivefoldDraw(fen, this.fivefoldQueue.ToArray()))
                 {
                     return true;
                 }
-                else
-                {
-                    this.movesFivefold.Dequeue();
-                }
+
+                this.fivefoldQueue.Dequeue();
             }
 
             return false;
@@ -137,9 +115,9 @@
         {
             if (!(move.Target.Piece is Pawn) && move.Type != MoveType.Taking)
             {
-                this.FiftyMoveCounter += 1;
+                this.fiftyMoveCounter += 1;
 
-                if (this.FiftyMoveCounter == 100)
+                if (this.fiftyMoveCounter == 100)
                 {
                     return true;
                 }
@@ -147,7 +125,30 @@
                 return false;
             }
 
-            this.FiftyMoveCounter = 0;
+            this.fiftyMoveCounter = 0;
+            return false;
+        }
+
+        private bool IsThreefoldDraw(string currentFen, string[] allFens)
+        {
+            if (string.Compare(currentFen, allFens[Constants.ArrayPositionOne]) == 0 &&
+                string.Compare(currentFen, allFens[Constants.ArrayPositionFive]) == 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool IsFivefoldDraw(string currentFen, string[] allFens)
+        {
+            if (this.IsThreefoldDraw(currentFen, allFens) &&
+                string.Compare(currentFen, allFens[Constants.ArrayPositionNine]) == 0 &&
+                string.Compare(currentFen, allFens[Constants.ArrayPositionThirteen]) == 0)
+            {
+                return true;
+            }
+
             return false;
         }
     }
