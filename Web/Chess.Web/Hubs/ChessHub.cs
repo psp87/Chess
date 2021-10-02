@@ -15,7 +15,7 @@
             var player = this.GetPlayer();
             var game = this.GetGame(player);
 
-            if (player.HasToMove && game.IsValidMove(source, target, targetFen))
+            if (player.HasToMove && game.MakeMove(source, target, targetFen))
             {
                 await this.OpponentBoardMove(source, target, game);
                 await this.HighlightMove(source, target, game);

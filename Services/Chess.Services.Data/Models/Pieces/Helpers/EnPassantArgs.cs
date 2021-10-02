@@ -1,6 +1,6 @@
 ﻿namespace Chess.Services.Data.Models.Pieces.Helpers
 {
-    public class EnPassant
+    public class EnPassantArgs
     {
         public int Turn { get; set; }
 
