@@ -1,6 +1,6 @@
 ﻿namespace Chess.Services.Data.Models.Pieces.Helpers
 {
-    public class Castling
+    public class CastlingArgs
     {
         public bool IsCastlingMove { get; set; }
 
