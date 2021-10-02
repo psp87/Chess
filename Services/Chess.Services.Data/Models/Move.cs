@@ -7,38 +7,27 @@
     {
         public Move()
         {
-            this.Source = Factory.GetSquare();
-            this.Target = Factory.GetSquare();
-
-            this.CastlingArgs = new Castling();
-            this.EnPassantArgs = new EnPassant();
-            this.PawnPromotionArgs = new PawnPromotion();
-
-            this.Type = MoveType.Normal;
         }
 
         public Move(Square source, Square target)
-            : this()
         {
             this.Source = source;
             this.Target = target;
         }
 
-        public Square Source { get; set; }
+        public Square Source { get; set; } = Factory.GetSquare();
 
-        public Square Target { get; set; }
+        public Square Target { get; set; } = Factory.GetSquare();
 
-        public MoveType Type { get; set; }
+        public MoveType Type { get; set; } = MoveType.Normal;
 
-        public Castling CastlingArgs { get; set; }
+        public CastlingArgs CastlingArgs { get; set; } = Factory.GetCastlingArgs();
 
-        public EnPassant EnPassantArgs { get; set; }
+        public EnPassantArgs EnPassantArgs { get; set; } = Factory.GetEnPassantArgs();
 
-        public PawnPromotion PawnPromotionArgs { get; set; }
+        public PawnPromotionArgs PawnPromotionArgs { get; set; } = Factory.GetPawnPromotionArgs();
 
         public override string ToString()
-        {
-            return this.Source.ToString() + this.Target.ToString();
-        }
+            => this.Source.ToString() + this.Target.ToString();
     }
 }

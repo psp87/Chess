@@ -20,5 +20,10 @@
         public const int BishopPoints = 3;
         public const int RookPoints = 5;
         public const int QueenPoints = 9;
+
+        public const int ArrayPositionOne = 0;
+        public const int ArrayPositionFive = 4;
+        public const int ArrayPositionNine = 8;
+        public const int ArrayPositionThirteen = 12;
     }
 }
