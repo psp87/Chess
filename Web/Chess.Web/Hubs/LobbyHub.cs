@@ -3,8 +3,10 @@
     using System.Threading.Tasks;
 
     using Chess.Common.Enums;
+    using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Models;
     using Microsoft.AspNetCore.SignalR;
+    using Microsoft.Extensions.DependencyInjection;
 
     public partial class GameHub
     {
@@ -34,6 +36,8 @@
 
         private async Task StartGame(Player player1, Player player2)
         {
+            var notificationService = this.serviceProvider.GetRequiredService<INotificationService>();
+
             player1.Color = Color.White;
             player2.Color = Color.Black;
             player1.HasToMove = true;
@@ -42,8 +46,8 @@
             this.games[game.Id] = game;
 
             game.OnGameOver += this.Game_OnGameOver;
-            game.OnMoveComplete += this.Game_OnMoveComplete;
-            game.OnMoveEvent += this.Game_OnMoveEvent;
+            notificationService.OnHistoryUpdate += this.Game_OnMoveComplete;
+            notificationService.OnMove += this.Game_OnMoveEvent;
             game.OnTakePiece += this.Game_OnTakePiece;
             game.OnThreefoldDrawAvailable += this.Game_OnThreefoldDrawAvailable;
 

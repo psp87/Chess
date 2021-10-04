@@ -148,7 +148,7 @@
         {
             var player = sender as Player;
             var game = this.GetGame(player);
-            var args = e as MoveCompleteEventArgs;
+            var args = e as HistoryUpdateArgs;
 
             this.Clients.Group(game.Id).SendAsync("UpdateMoveHistory", player, args.Notation);
         }
@@ -157,7 +157,7 @@
         {
             var player = sender as Player;
             var game = this.GetGame(player);
-            var message = e as MoveEventArgs;
+            var message = e as MoveArgs;
 
             if (message.Type == Message.CheckOpponent || message.Type == Message.CheckClear)
             {

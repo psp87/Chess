@@ -4,9 +4,9 @@
 
     using Chess.Common.Enums;
 
-    public class MoveEventArgs : EventArgs
+    public class MoveArgs : EventArgs
     {
-        public MoveEventArgs(Message type)
+        public MoveArgs(Message type)
         {
             this.Type = type;
         }

@@ -40,8 +40,8 @@
 
         public bool IsDraw(Board board)
         {
-            int counterBishopKnightWhite = 0;
-            int counterBishopKnightBlack = 0;
+            int counterWhite = 0;
+            int counterBlack = 0;
 
             for (int rank = 0; rank < Constants.Ranks; rank++)
             {
@@ -52,22 +52,19 @@
 
                     if (!(currentFigure == null || currentFigure is King))
                     {
-                        if (currentFigure is Pawn ||
-                            currentFigure is Rook ||
-                            currentFigure is Queen ||
-                            counterBishopKnightWhite > 1 ||
-                            counterBishopKnightBlack > 1)
+                        if (currentFigure is Pawn || currentFigure is Rook || currentFigure is Queen ||
+                            counterWhite > 1 || counterBlack > 1)
                         {
                             return false;
                         }
 
                         if (currentFigure.Color == Color.White)
                         {
-                            counterBishopKnightWhite++;
+                            counterWhite++;
                         }
                         else
                         {
-                            counterBishopKnightBlack++;
+                            counterBlack++;
                         }
                     }
                 }
