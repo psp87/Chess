@@ -46,7 +46,7 @@
             this.games[game.Id] = game;
 
             game.OnGameOver += this.Game_OnGameOver;
-            notificationService.OnHistoryUpdate += this.Game_OnMoveComplete;
+            notificationService.OnUpdateHistory += this.Game_OnMoveComplete;
             notificationService.OnMove += this.Game_OnMoveEvent;
             game.OnTakePiece += this.Game_OnTakePiece;
             game.OnThreefoldDrawAvailable += this.Game_OnThreefoldDrawAvailable;

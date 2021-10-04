@@ -72,6 +72,7 @@
             services.AddSingleton<IDrawService, DrawService>();
             services.AddSingleton<ICheckService, CheckService>();
             services.AddSingleton<INotificationService, NotificationService>();
+            services.AddSingleton<IUtilityService, UtilityService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
