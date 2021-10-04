@@ -8,7 +8,7 @@
     {
         event EventHandler OnMove;
 
-        event EventHandler OnHistoryUpdate;
+        event EventHandler OnUpdateHistory;
 
         void ClearCheck(Player movingPlayer, Player opponent);
 
@@ -16,6 +16,6 @@
 
         void SendCheck(Player movingPlayer);
 
-        void UpdateMoveHistory(Square source, Square target, Board board, Player movingPlayer, Player opponent, int turn, Move move);
+        void UpdateHistory(Player movingPlayer, string notation);
     }
 }
