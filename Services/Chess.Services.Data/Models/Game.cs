@@ -73,6 +73,7 @@
             {
                 this.IsPawnPromotion(targetFen);
                 this.notificationService.ClearCheck(this.MovingPlayer, this.Opponent);
+                this.checkService.IsCheck(this.Opponent, this.ChessBoard);
                 this.UpdateHistory(oldSource, oldTarget, oldBoard);
                 this.IsGameOver(targetFen);
                 this.ChangeTurns();
@@ -183,7 +184,7 @@
                     this.MovingPlayer.IsCheck = false;
                     this.MovingPlayer.TakeFigure(this.Move.Target.Piece.Name);
                     this.MovingPlayer.Points += this.Move.Target.Piece.Points;
-                    this.Move.Type = MoveType.Taking;
+                    //this.Move.Type = MoveType.Taking;
                     this.OnTakePiece?.Invoke(this.MovingPlayer, new TakePieceEventArgs(this.Move.Target.Piece.Name, this.MovingPlayer.Points));
                     this.Move.EnPassantArgs.SquareAvailable = null;
                     return true;
