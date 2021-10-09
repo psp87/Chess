@@ -12,104 +12,6 @@
 
     public class UtilityService : IUtilityService
     {
-        public string GetAlgebraicNotation(AlgebraicNotationDto model)
-        {
-            var sb = new StringBuilder();
-
-            var playerTurn = Math.Ceiling(model.Turn / 2.0);
-            sb.Append(playerTurn + ". ");
-
-            if (model.Move.Type == MoveType.EnPassant)
-            {
-                var file = model.OldSource.ToString()[0];
-                sb.Append(file + "x" + model.OldTarget + "e.p");
-            }
-            else if (model.Move.Type == MoveType.Castling)
-            {
-                if (model.OldTarget.ToString()[0] == 'g')
-                {
-                    sb.Append("0-0");
-                }
-                else
-                {
-                    sb.Append("0-0-0");
-                }
-            }
-            else if (model.Move.Type == MoveType.PawnPromotion)
-            {
-                sb.Append(model.OldTarget + "=Q");
-            }
-            else if (model.OldTarget.Piece == null || model.OldTarget.Piece.Color != model.OldSource.Piece.Color)
-            {
-                if (model.OldSource.Piece is Pawn)
-                {
-                    if (model.OldTarget.Piece == null)
-                    {
-                        sb.Append(model.OldTarget);
-                    }
-                    else
-                    {
-                        var file = model.OldSource.ToString()[0];
-                        sb.Append(file + "x" + model.OldTarget);
-                    }
-                }
-                else
-                {
-                    var targetWithOldIsAttackedValue = model.OldBoard.Matrix.SelectMany(x => x).Where(y => y.Name == model.OldTarget.Name).FirstOrDefault();
-
-                    if (targetWithOldIsAttackedValue.IsAttacked.Count(piece =>
-                        piece.Color == model.OldSource.Piece.Color &&
-                        piece.Name.Contains(model.OldSource.Piece.Name)) > 1)
-                    {
-                        var secondPieceSquare = model.OldBoard.Matrix.SelectMany(x => x).Where(square =>
-                            square.Piece != null &&
-                            square.Piece.Color == model.OldSource.Piece.Color &&
-                            square.Piece.Name.Contains(model.OldSource.Piece.Name) &&
-                            square.Name != model.OldSource.Name).FirstOrDefault();
-
-                        var xCheck = model.OldTarget.Piece == null ? string.Empty : "x";
-
-                        if (secondPieceSquare.Position.File.Equals(model.OldSource.Position.File))
-                        {
-                            var rank = model.OldSource.Name[1];
-                            if (model.OldTarget.Piece == null)
-                            {
-                                sb.Append($"{model.OldSource.Piece.Symbol}{rank}{xCheck}{model.OldTarget}");
-                            }
-                            else
-                            {
-                                sb.Append($"{model.OldSource.Piece.Symbol}{rank}{xCheck}{model.OldTarget}");
-                            }
-                        }
-                        else
-                        {
-                            var file = model.OldSource.Name[0];
-                            sb.Append($"{model.OldSource.Piece.Symbol}{file}{xCheck}{model.OldTarget}");
-                        }
-                    }
-                    else
-                    {
-                        var check = model.OldTarget.Piece == null ? string.Empty : "x";
-                        sb.Append($"{model.OldSource.Piece.Symbol}{check}{model.OldTarget}");
-                    }
-                }
-            }
-
-            if (model.Opponent.IsCheck)
-            {
-                if (!model.Opponent.IsCheckMate)
-                {
-                    sb.Append("+");
-                }
-                else
-                {
-                    sb.Append("#");
-                }
-            }
-
-            return sb.ToString();
-        }
-
         public int CalculateRatingPoints(int yourRating, int opponentRating)
         {
             return Math.Max(1, ((opponentRating - yourRating) / 25) + 16);
@@ -157,6 +59,134 @@
             }
 
             move.PawnPromotionArgs.FenString = sb.ToString();
+        }
+
+        public string GetAlgebraicNotation(AlgebraicNotationDto model)
+        {
+            StringBuilder builder = new StringBuilder();
+
+            var turnNotation = this.GetTurnNotation(model.Turn);
+            var moveNotation = this.GetMoveNotation(model);
+            var checkNotation = this.GetCheckNotation(model.Opponent);
+
+            builder
+                .Append(turnNotation);
+            builder
+                .Append(moveNotation);
+            builder
+                .Append(checkNotation);
+
+            return builder.ToString();
+        }
+
+        private string GetTurnNotation(int turn)
+        {
+            return $"{Math.Ceiling(turn / 2.0)}. ";
+        }
+
+        private string GetMoveNotation(AlgebraicNotationDto model)
+        {
+            if (model.Move.Type == MoveType.EnPassant)
+            {
+                return this.GetEnPassantNotation(model.OldSource, model.OldTarget);
+            }
+
+            if (model.Move.Type == MoveType.Castling)
+            {
+                return this.GetCastlingNotation(model.OldTarget);
+            }
+
+            if (model.Move.Type == MoveType.PawnPromotion)
+            {
+                return this.GetPawnPromotionNotation(model.OldTarget);
+            }
+
+            if (model.OldSource.Piece is Pawn)
+            {
+                return this.GetPawnMoveNotation(model.OldSource, model.OldTarget);
+            }
+
+            return this.GetNormalNotation(model);
+        }
+
+        private string GetCheckNotation(Player opponent)
+        {
+            if (opponent.IsCheck)
+            {
+                return !opponent.IsCheckMate ? "+" : "#";
+            }
+
+            return string.Empty;
+        }
+
+        private string GetEnPassantNotation(Square oldSource, Square oldTarget)
+        {
+            var oldFile = oldSource.Name[0];
+
+            return $"{oldFile}x{oldTarget}e.p";
+        }
+
+        private string GetCastlingNotation(Square oldTarget)
+        {
+            return oldTarget.Name[0] == 'g' ? "0-0" : "0-0-0";
+        }
+
+        private string GetPawnPromotionNotation(Square oldTarget)
+        {
+            return $"{oldTarget}=Q";
+        }
+
+        private string GetPawnMoveNotation(Square oldSource, Square oldTarget)
+        {
+            if (oldTarget.Piece == null)
+            {
+                return $"{oldTarget}";
+            }
+
+            var oldFile = oldSource.Name[0];
+
+            return $"{oldFile}x{oldTarget}";
+        }
+
+        private string GetNormalNotation(AlgebraicNotationDto model)
+        {
+            var targetWithOldIsAttackedValue = model.OldBoard.Matrix
+                .SelectMany(x => x)
+                .Where(y => y.Name == model.OldTarget.Name)
+                .FirstOrDefault();
+
+            if (targetWithOldIsAttackedValue.IsAttacked
+                .Count(piece =>
+                    piece.Color == model.OldSource.Piece.Color &&
+                    piece.Name.Contains(model.OldSource.Piece.Name)) > 1)
+            {
+                var secondPieceSquare = model.OldBoard.Matrix
+                    .SelectMany(x => x)
+                    .Where(square =>
+                        square.Piece != null &&
+                        square.Piece.Color == model.OldSource.Piece.Color &&
+                        square.Piece.Name.Contains(model.OldSource.Piece.Name) &&
+                        square.Name != model.OldSource.Name).FirstOrDefault();
+
+                var xCheck = model.OldTarget.Piece == null ? string.Empty : "x";
+
+                if (secondPieceSquare.Position.File.Equals(model.OldSource.Position.File))
+                {
+                    var rank = model.OldSource.Name[1];
+                    if (model.OldTarget.Piece == null)
+                    {
+                        return $"{model.OldSource.Piece.Symbol}{rank}{xCheck}{model.OldTarget}";
+                    }
+
+                    return $"{model.OldSource.Piece.Symbol}{rank}{xCheck}{model.OldTarget}";
+                }
+
+                var file = model.OldSource.Name[0];
+                return $"{model.OldSource.Piece.Symbol}{file}{xCheck}{model.OldTarget}";
+            }
+
+            var check = model.OldTarget.Piece == null ? string.Empty : "x";
+            return $"{model.OldSource.Piece.Symbol}{check}{model.OldTarget}";
         }
     }
 }
