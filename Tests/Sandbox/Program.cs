@@ -12,9 +12,7 @@
     using Chess.Data.Repositories;
     using Chess.Data.Seeding;
     using Chess.Services.Messaging;
-
     using CommandLine;
-
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;

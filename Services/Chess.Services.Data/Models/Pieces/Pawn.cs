@@ -1,7 +1,7 @@
 ﻿namespace Chess.Services.Data.Models.Pieces
 {
-    using Chess.Common;
-    using Chess.Common.Enums;
+    using Common.Constants;
+    using Common.Enums;
 
     public class Pawn : Piece
     {
@@ -10,9 +10,9 @@
         {
         }
 
-        public override char Symbol => Constants.PawnSymbol;
+        public override char Symbol => SymbolConstants.Pawn;
 
-        public override int Points => Constants.PawnPoints;
+        public override int Points => PointsConstants.Pawn;
 
         public override void IsMoveAvailable(Square[][] matrix)
         {

@@ -4,11 +4,11 @@
     using System.Linq;
     using System.Text;
 
-    using Chess.Common.Enums;
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Dtos;
     using Chess.Services.Data.Models;
     using Chess.Services.Data.Models.Pieces;
+    using Common.Enums;
 
     public class UtilityService : IUtilityService
     {

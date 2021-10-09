@@ -2,9 +2,9 @@
 {
     using System.Threading.Tasks;
 
-    using Chess.Common.Enums;
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Models;
+    using Common.Enums;
     using Microsoft.AspNetCore.SignalR;
     using Microsoft.Extensions.DependencyInjection;
 

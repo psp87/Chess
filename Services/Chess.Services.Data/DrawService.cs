@@ -2,11 +2,11 @@
 {
     using System.Collections.Generic;
 
-    using Chess.Common;
-    using Chess.Common.Enums;
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Models;
     using Chess.Services.Data.Models.Pieces;
+    using Common.Constants;
+    using Common.Enums;
 
     public class DrawService : IDrawService
     {
@@ -16,9 +16,9 @@
 
         public bool IsStalemate(Board board, Player opponent)
         {
-            for (int rank = 0; rank < Constants.Ranks; rank++)
+            for (int rank = 0; rank < BoardConstants.Ranks; rank++)
             {
-                for (int file = 0; file < Constants.Files; file++)
+                for (int file = 0; file < BoardConstants.Files; file++)
                 {
                     var currentFigure = board
                         .GetSquareByCoordinates(rank, file).Piece;
@@ -43,9 +43,9 @@
             int counterWhite = 0;
             int counterBlack = 0;
 
-            for (int rank = 0; rank < Constants.Ranks; rank++)
+            for (int rank = 0; rank < BoardConstants.Ranks; rank++)
             {
-                for (int file = 0; file < Constants.Files; file++)
+                for (int file = 0; file < BoardConstants.Files; file++)
                 {
                     var currentFigure = board
                         .GetSquareByCoordinates(rank, file).Piece;
@@ -128,8 +128,8 @@
 
         private bool IsThreefoldDraw(string currentFen, string[] allFens)
         {
-            if (string.Compare(currentFen, allFens[Constants.ArrayPositionOne]) == 0 &&
-                string.Compare(currentFen, allFens[Constants.ArrayPositionFive]) == 0)
+            if (string.Compare(currentFen, allFens[CommonConstants.ArrayPositionOne]) == 0 &&
+                string.Compare(currentFen, allFens[CommonConstants.ArrayPositionFive]) == 0)
             {
                 return true;
             }
@@ -140,8 +140,8 @@
         private bool IsFivefoldDraw(string currentFen, string[] allFens)
         {
             if (this.IsThreefoldDraw(currentFen, allFens) &&
-                string.Compare(currentFen, allFens[Constants.ArrayPositionNine]) == 0 &&
-                string.Compare(currentFen, allFens[Constants.ArrayPositionThirteen]) == 0)
+                string.Compare(currentFen, allFens[CommonConstants.ArrayPositionNine]) == 0 &&
+                string.Compare(currentFen, allFens[CommonConstants.ArrayPositionThirteen]) == 0)
             {
                 return true;
             }

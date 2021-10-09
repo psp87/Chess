@@ -5,7 +5,6 @@
 
     using Chess.Services.Data.Contracts;
     using Chess.Web.ViewModels;
-
     using Microsoft.AspNetCore.Mvc;
 
     public class HomeController : BaseController

@@ -4,9 +4,9 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using Chess.Common.Enums;
     using Chess.Services.Data.Models.Pieces;
     using Chess.Services.Data.Models.Pieces.Contracts;
+    using Common.Enums;
 
     public class Square : ICloneable
     {

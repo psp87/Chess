@@ -2,10 +2,10 @@
 {
     using System;
 
-    using Chess.Common.Enums;
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Models;
     using Chess.Services.Data.Models.EventArgs;
+    using Common.Enums;
 
     public class NotificationService : INotificationService
     {

@@ -3,11 +3,11 @@
     using System;
     using System.Collections.Generic;
 
-    using Chess.Common.Enums;
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Dtos;
     using Chess.Services.Data.Models.EventArgs;
     using Chess.Services.Data.Models.Pieces;
+    using Common.Enums;
     using Microsoft.Extensions.DependencyInjection;
 
     public class Game
