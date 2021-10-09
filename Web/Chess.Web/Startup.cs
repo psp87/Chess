@@ -14,7 +14,6 @@
     using Chess.Services.Messaging;
     using Chess.Web.Hubs;
     using Chess.Web.ViewModels;
-
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -69,10 +68,10 @@
             services.AddTransient<IEmailSender, NullMessageSender>();
             services.AddTransient<IGameService, GameService>();
             services.AddTransient<IStatsService, StatsService>();
-            services.AddSingleton<IDrawService, DrawService>();
-            services.AddSingleton<ICheckService, CheckService>();
+            services.AddTransient<IDrawService, DrawService>();
+            services.AddTransient<ICheckService, CheckService>();
             services.AddSingleton<INotificationService, NotificationService>();
-            services.AddSingleton<IUtilityService, UtilityService>();
+            services.AddTransient<IUtilityService, UtilityService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

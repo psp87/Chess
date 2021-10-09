@@ -1,18 +1,5 @@
 ﻿namespace Chess.Services.Data.Tests
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-
-    using Chess.Data;
-    using Chess.Data.Common.Repositories;
-    using Chess.Data.Models;
-    using Chess.Data.Repositories;
-
-    using Microsoft.EntityFrameworkCore;
-
-    using Moq;
-
     using Xunit;
 
     public class SettingsServiceTests

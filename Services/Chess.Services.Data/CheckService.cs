@@ -3,10 +3,10 @@
     using System;
     using System.Linq;
 
-    using Chess.Common.Enums;
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Models;
     using Chess.Services.Data.Models.Pieces;
+    using Common.Enums;
 
     public class CheckService : ICheckService
     {

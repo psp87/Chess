@@ -4,7 +4,6 @@ namespace Chess.Data.Models
     using System;
 
     using Chess.Data.Common.Models;
-
     using Microsoft.AspNetCore.Identity;
 
     public class ApplicationRole : IdentityRole, IAuditInfo, IDeletableEntity

@@ -1,12 +1,11 @@
 ﻿namespace Chess.Web.Areas.Administration.Controllers
 {
-    using Chess.Common;
     using Chess.Web.Controllers;
-
+    using Common.Constants;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
-    [Authorize(Roles = Constants.AdministratorRoleName)]
+    [Authorize(Roles = CommonConstants.AdministratorRoleName)]
     [Area("Administration")]
     public class AdministrationController : BaseController
     {

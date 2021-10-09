@@ -1,14 +1,13 @@
-﻿namespace Chess.Data.Seeding
+﻿using Common.Constants;
+
+namespace Chess.Data.Seeding
 {
+    using Chess.Data.Models;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.Extensions.DependencyInjection;
     using System;
     using System.Linq;
     using System.Threading.Tasks;
-
-    using Chess.Common;
-    using Chess.Data.Models;
-
-    using Microsoft.AspNetCore.Identity;
-    using Microsoft.Extensions.DependencyInjection;
 
     internal class RolesSeeder : ISeeder
     {
@@ -16,7 +15,7 @@
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
 
-            await SeedRoleAsync(roleManager, Constants.AdministratorRoleName);
+            await SeedRoleAsync(roleManager, CommonConstants.AdministratorRoleName);
         }
 
         private static async Task SeedRoleAsync(RoleManager<ApplicationRole> roleManager, string roleName)

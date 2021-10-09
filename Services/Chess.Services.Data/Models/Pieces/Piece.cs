@@ -2,8 +2,8 @@
 {
     using System;
 
-    using Chess.Common.Enums;
     using Chess.Services.Data.Models.Pieces.Contracts;
+    using Common.Enums;
 
     public abstract class Piece : IPiece, ICloneable
     {

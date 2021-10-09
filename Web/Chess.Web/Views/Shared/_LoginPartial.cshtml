@@ -1,5 +1,5 @@
-﻿@using Chess.Common
-@using Chess.Data.Models
+﻿@using Chess.Data.Models
+@using Common.Constants
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -10,7 +10,7 @@
         <li class="nav-item">
             <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @(this.User.Identity.Name)!</a>
         </li>
-        if (this.User.IsInRole(Constants.AdministratorRoleName))
+        if (this.User.IsInRole(CommonConstants.AdministratorRoleName))
         {
             <li class="nav-item">
                 <a class="nav-link" asp-area="Administration" asp-controller="Dashboard" asp-action="Index" title="Admin">Admin</a>

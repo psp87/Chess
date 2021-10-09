@@ -2,11 +2,11 @@
 {
     using System;
 
-    using Chess.Common;
-    using Chess.Common.Enums;
     using Chess.Services.Data.Models.Pieces;
     using Chess.Services.Data.Models.Pieces.Contracts;
     using Chess.Services.Data.Models.Pieces.Helpers;
+    using Common.Constants;
+    using Common.Enums;
 
     public class Factory
     {
@@ -19,11 +19,11 @@
 
         public static Square[][] GetMatrix()
         {
-            Square[][] matrix = new Square[Constants.Ranks][];
+            Square[][] matrix = new Square[BoardConstants.Ranks][];
 
-            for (int rank = 0; rank < Constants.Ranks; rank++)
+            for (int rank = 0; rank < BoardConstants.Ranks; rank++)
             {
-                matrix[rank] = new Square[Constants.Files];
+                matrix[rank] = new Square[BoardConstants.Files];
             }
 
             return matrix;
