@@ -2,9 +2,9 @@
 {
     using System;
 
-    public class MoveCompleteEventArgs : EventArgs
+    public class HistoryUpdateArgs : EventArgs
     {
-        public MoveCompleteEventArgs(string notation)
+        public HistoryUpdateArgs(string notation)
         {
             this.Notation = notation;
         }

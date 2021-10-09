@@ -6,7 +6,6 @@
 
     using Chess.Data.Common.Models;
     using Chess.Data.Common.Repositories;
-
     using Microsoft.EntityFrameworkCore;
 
     public class EfDeletableEntityRepository<TEntity> : EfRepository<TEntity>, IDeletableEntityRepository<TEntity>

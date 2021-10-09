@@ -3,7 +3,6 @@
     using OpenQA.Selenium;
     using OpenQA.Selenium.Chrome;
     using OpenQA.Selenium.Remote;
-
     using Xunit;
 
     public class SeleniumTests : IClassFixture<SeleniumServerFactory<Startup>>
@@ -29,6 +28,11 @@
             Assert.Contains(
                 this.browser.FindElements(By.CssSelector("footer a")),
                 x => x.GetAttribute("href").EndsWith("/Home/Privacy"));
+        }
+
+        public void Dispose()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

@@ -6,9 +6,10 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Chess.Common.Enums;
     using Chess.Data;
+    using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Models;
+    using Common.Enums;
     using Microsoft.AspNetCore.SignalR;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -104,7 +105,8 @@
 
             if (gameOver == GameOver.Checkmate || gameOver == GameOver.Resign || gameOver == GameOver.Disconnected)
             {
-                int points = game.CalculateRatingPoints(senderStats.Rating, opponentStats.Rating);
+                var utilityService = this.serviceProvider.GetRequiredService<IUtilityService>();
+                int points = utilityService.CalculateRatingPoints(senderStats.Rating, opponentStats.Rating);
 
                 senderStats.Wins += 1;
                 opponentStats.Losses += 1;

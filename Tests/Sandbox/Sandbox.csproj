@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Chess.Common\Chess.Common.csproj" />
+    <ProjectReference Include="..\..\Chess.Common\Common.csproj" />
     <ProjectReference Include="..\..\Data\Chess.Data.Common\Chess.Data.Common.csproj" />
     <ProjectReference Include="..\..\Data\Chess.Data.Models\Chess.Data.Models.csproj" />
     <ProjectReference Include="..\..\Data\Chess.Data\Chess.Data.csproj" />

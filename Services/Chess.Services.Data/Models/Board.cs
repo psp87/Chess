@@ -4,10 +4,10 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using Chess.Common;
-    using Chess.Common.Enums;
     using Chess.Services.Data.Models.Pieces;
     using Chess.Services.Data.Models.Pieces.Contracts;
+    using Common.Constants;
+    using Common.Enums;
 
     public class Board : ICloneable
     {
@@ -37,9 +37,9 @@
         {
             var toggle = Color.White;
 
-            for (int rank = 0; rank < Constants.Ranks; rank++)
+            for (int rank = 0; rank < BoardConstants.Ranks; rank++)
             {
-                for (int file = 0; file < Constants.Files; file++)
+                for (int file = 0; file < BoardConstants.Files; file++)
                 {
                     var name = this.files[file] + (8 - rank);
                     var square = new Square()
@@ -62,17 +62,17 @@
 
         public void CalculateAttackedSquares()
         {
-            for (int rank = 0; rank < Constants.Ranks; rank++)
+            for (int rank = 0; rank < BoardConstants.Ranks; rank++)
             {
-                for (int file = 0; file < Constants.Files; file++)
+                for (int file = 0; file < BoardConstants.Files; file++)
                 {
                     this.Matrix[rank][file].IsAttacked.Clear();
                 }
             }
 
-            for (int rank = 0; rank < Constants.Ranks; rank++)
+            for (int rank = 0; rank < BoardConstants.Ranks; rank++)
             {
-                for (int file = 0; file < Constants.Files; file++)
+                for (int file = 0; file < BoardConstants.Files; file++)
                 {
                     if (this.Matrix[rank][file].Piece != null)
                     {
@@ -111,7 +111,7 @@
 
         public Square GetKingSquare(Color color)
         {
-            for (int rank = 0; rank < Constants.Ranks; rank++)
+            for (int rank = 0; rank < BoardConstants.Ranks; rank++)
             {
                 var square = this.Matrix[rank]
                     .FirstOrDefault(x =>
@@ -134,7 +134,7 @@
 
         public Square GetSquareByName(string name)
         {
-            for (int rank = 0; rank < Constants.Ranks; rank++)
+            for (int rank = 0; rank < BoardConstants.Ranks; rank++)
             {
                 var square = this.Matrix[rank].FirstOrDefault(x => x.Name == name);
 
@@ -151,9 +151,9 @@
         {
             var board = Factory.GetBoard();
 
-            for (int rank = 0; rank < Constants.Ranks; rank++)
+            for (int rank = 0; rank < BoardConstants.Ranks; rank++)
             {
-                for (int file = 0; file < Constants.Files; file++)
+                for (int file = 0; file < BoardConstants.Files; file++)
                 {
                     board.Matrix[rank][file] = this.Matrix[rank][file].Clone() as Square;
                 }

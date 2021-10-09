@@ -3,8 +3,8 @@
     using System;
     using System.Linq;
 
-    using Chess.Common;
-    using Chess.Common.Enums;
+    using Common.Constants;
+    using Common.Enums;
 
     public class King : Piece
     {
@@ -13,7 +13,7 @@
         {
         }
 
-        public override char Symbol => Constants.KingSymbol;
+        public override char Symbol => SymbolConstants.King;
 
         public override int Points => default;
 

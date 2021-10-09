@@ -1,7 +1,7 @@
 ﻿namespace Chess.Services.Data.Models.Pieces
 {
-    using Chess.Common;
-    using Chess.Common.Enums;
+    using Common.Constants;
+    using Common.Enums;
 
     public class Knight : Piece
     {
@@ -10,9 +10,9 @@
         {
         }
 
-        public override char Symbol => Constants.KnightSymbol;
+        public override char Symbol => SymbolConstants.Knight;
 
-        public override int Points => Constants.KnightPoints;
+        public override int Points => PointsConstants.Knight;
 
         public override void IsMoveAvailable(Square[][] matrix)
         {

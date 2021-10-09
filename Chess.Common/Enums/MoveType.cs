@@ -1,4 +1,4 @@
-﻿namespace Chess.Common.Enums
+﻿namespace Common.Enums
 {
     public enum MoveType
     {
