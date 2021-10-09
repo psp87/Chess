@@ -13,7 +13,9 @@
     public class SeleniumServerFactory<TStartup> : WebApplicationFactory<TStartup>
         where TStartup : class
     {
+#pragma warning disable CA2213 // Disposable fields should be disposed
         private readonly Process process;
+#pragma warning restore CA2213 // Disposable fields should be disposed
 
         private IWebHost host;
 

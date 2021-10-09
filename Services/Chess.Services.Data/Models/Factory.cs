@@ -2,33 +2,28 @@
 {
     using System;
 
-    using Chess.Common;
-    using Chess.Common.Enums;
-    using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Models.Pieces;
     using Chess.Services.Data.Models.Pieces.Contracts;
     using Chess.Services.Data.Models.Pieces.Helpers;
-    using Microsoft.Extensions.DependencyInjection;
+    using Common.Constants;
+    using Common.Enums;
 
     public class Factory
     {
         public static Game GetGame(Player player1, Player player2, IServiceProvider serviceProvider)
         {
-            var drawService = serviceProvider.GetRequiredService<IDrawService>();
-            var checkService = serviceProvider.GetRequiredService<ICheckService>();
-
-            return new Game(player1, player2, drawService, checkService);
+            return new Game(player1, player2, serviceProvider);
         }
 
         public static Player GetPlayer(string name, string connectionId, string userId) => new Player(name, connectionId, userId);
 
         public static Square[][] GetMatrix()
         {
-            Square[][] matrix = new Square[Constants.Ranks][];
+            Square[][] matrix = new Square[BoardConstants.Ranks][];
 
-            for (int rank = 0; rank < Constants.Ranks; rank++)
+            for (int rank = 0; rank < BoardConstants.Ranks; rank++)
             {
-                matrix[rank] = new Square[Constants.Files];
+                matrix[rank] = new Square[BoardConstants.Files];
             }
 
             return matrix;

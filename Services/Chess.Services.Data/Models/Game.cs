@@ -2,30 +2,33 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
 
-    using Chess.Common.Enums;
     using Chess.Services.Data.Contracts;
+    using Chess.Services.Data.Dtos;
     using Chess.Services.Data.Models.EventArgs;
     using Chess.Services.Data.Models.Pieces;
+    using Common.Enums;
+    using Microsoft.Extensions.DependencyInjection;
 
     public class Game
     {
+        private readonly IServiceProvider serviceProvider;
         private readonly IDrawService drawService;
         private readonly ICheckService checkService;
+        private readonly INotificationService notificationService;
+        private readonly IUtilityService utilityService;
 
-        public Game(
-            Player player1,
-            Player player2,
-            IDrawService drawService,
-            ICheckService checkService)
+        public Game(Player player1, Player player2, IServiceProvider serviceProvider)
         {
-            this.drawService = drawService;
-            this.checkService = checkService;
+            this.serviceProvider = serviceProvider;
+            this.drawService = this.serviceProvider.GetRequiredService<IDrawService>();
+            this.checkService = this.serviceProvider.GetRequiredService<ICheckService>();
+            this.notificationService = this.serviceProvider.GetRequiredService<INotificationService>();
+            this.utilityService = this.serviceProvider.GetRequiredService<IUtilityService>();
 
             this.Player1 = player1;
             this.Player2 = player2;
+            this.serviceProvider = serviceProvider;
             this.Player1.GameId = this.Id;
             this.Player2.GameId = this.Id;
         }
@@ -33,10 +36,6 @@
         public event EventHandler OnGameOver;
 
         public event EventHandler OnTakePiece;
-
-        public event EventHandler OnMoveComplete;
-
-        public event EventHandler OnMoveEvent;
 
         public event EventHandler OnThreefoldDrawAvailable;
 
@@ -73,8 +72,8 @@
             if (this.MovePiece() || this.TakePiece() || this.EnPassantTake())
             {
                 this.IsPawnPromotion(targetFen);
-                this.ClearCheckMessage();
-                this.UpdateMoveHistory(oldSource, oldTarget, oldBoard);
+                this.notificationService.ClearCheck(this.MovingPlayer, this.Opponent);
+                this.UpdateHistory(oldSource, oldTarget, oldBoard);
                 this.IsGameOver(targetFen);
                 this.ChangeTurns();
                 this.Turn++;
@@ -82,14 +81,9 @@
             }
             else
             {
-                this.InvalidMove(oldIsCheck);
+                this.notificationService.Invalid(oldIsCheck, this.MovingPlayer);
                 return false;
             }
-        }
-
-        public int CalculateRatingPoints(int yourRating, int opponentRating)
-        {
-            return Math.Max(1, ((opponentRating - yourRating) / 25) + 16);
         }
 
         public bool TryMove(Player player, Move move)
@@ -222,7 +216,7 @@
         {
             if (this.checkService.IsCheck(this.Opponent, this.ChessBoard))
             {
-                this.OnMoveEvent?.Invoke(this.MovingPlayer, new MoveEventArgs(Message.CheckOpponent));
+                this.notificationService.SendCheck(this.MovingPlayer);
                 if (this.checkService.IsCheckmate(this.ChessBoard, this.MovingPlayer, this.Opponent, this))
                 {
                     this.GameOver = GameOver.Checkmate;
@@ -270,36 +264,8 @@
             {
                 this.Move.Target.Piece = Factory.GetQueen(this.MovingPlayer.Color);
                 this.Move.Type = MoveType.PawnPromotion;
-                this.GetPawnPromotionFenString(targetFen);
+                this.utilityService.GetPawnPromotionFenString(targetFen, this.MovingPlayer, this.Move);
                 this.ChessBoard.CalculateAttackedSquares();
-            }
-        }
-
-        private void InvalidMove(bool oldIsCheck)
-        {
-            if (this.MovingPlayer.IsCheck)
-            {
-                if (oldIsCheck)
-                {
-                    this.OnMoveEvent?.Invoke(this.MovingPlayer, new MoveEventArgs(Message.CheckSelf));
-                }
-                else
-                {
-                    this.OnMoveEvent?.Invoke(this.MovingPlayer, new MoveEventArgs(Message.CheckOpen));
-                    this.MovingPlayer.IsCheck = false;
-                }
-            }
-            else
-            {
-                this.OnMoveEvent?.Invoke(this.MovingPlayer, new MoveEventArgs(Message.InvalidMove));
-            }
-        }
-
-        private void ClearCheckMessage()
-        {
-            if (!this.MovingPlayer.IsCheck && !this.Opponent.IsCheck)
-            {
-                this.OnMoveEvent?.Invoke(this.MovingPlayer, new MoveEventArgs(Message.CheckClear));
             }
         }
 
@@ -315,154 +281,6 @@
                 this.Player2.HasToMove = false;
                 this.Player1.HasToMove = true;
             }
-        }
-
-        private void GetPawnPromotionFenString(string targetFen)
-        {
-            var sb = new StringBuilder();
-            string[] rows = targetFen.Split('/');
-
-            var lastRow = this.MovingPlayer.Color == Color.White ? 0 : 7;
-            var pawn = this.MovingPlayer.Color == Color.White ? "P" : "p";
-            var queen = this.MovingPlayer.Color == Color.White ? "Q" : "q";
-
-            for (int i = 0; i < rows.Length; i++)
-            {
-                var currentRow = rows[i];
-
-                if (i == lastRow)
-                {
-                    for (int k = 0; k < currentRow.Length; k++)
-                    {
-                        var currentSymbol = currentRow[k].ToString();
-
-                        if (string.Compare(currentSymbol, pawn) == 0)
-                        {
-                            sb.Append(queen);
-                            continue;
-                        }
-
-                        sb.Append(currentSymbol);
-                    }
-                }
-                else
-                {
-                    if (this.MovingPlayer.Color == Color.White)
-                    {
-                        sb.Append("/" + currentRow);
-                    }
-                    else
-                    {
-                        sb.Append(currentRow + "/");
-                    }
-                }
-            }
-
-            this.Move.PawnPromotionArgs.FenString = sb.ToString();
-        }
-
-        private void UpdateMoveHistory(Square source, Square target, Board board)
-        {
-            string notation = this.GetAlgebraicNotation(source, target, board);
-            this.OnMoveComplete?.Invoke(this.MovingPlayer, new MoveCompleteEventArgs(notation));
-        }
-
-        private string GetAlgebraicNotation(Square source, Square target, Board board)
-        {
-            var sb = new StringBuilder();
-
-            var playerTurn = Math.Ceiling(this.Turn / 2.0);
-            sb.Append(playerTurn + ". ");
-
-            if (this.Move.Type == MoveType.EnPassant)
-            {
-                var file = source.ToString()[0];
-                sb.Append(file + "x" + target + "e.p");
-            }
-            else if (this.Move.Type == MoveType.Castling)
-            {
-                if (target.ToString()[0] == 'g')
-                {
-                    sb.Append("0-0");
-                }
-                else
-                {
-                    sb.Append("0-0-0");
-                }
-            }
-            else if (this.Move.Type == MoveType.PawnPromotion)
-            {
-                sb.Append(target + "=Q");
-            }
-            else if (target.Piece == null || target.Piece.Color != source.Piece.Color)
-            {
-                if (source.Piece is Pawn)
-                {
-                    if (target.Piece == null)
-                    {
-                        sb.Append(target);
-                    }
-                    else
-                    {
-                        var file = source.ToString()[0];
-                        sb.Append(file + "x" + target);
-                    }
-                }
-                else
-                {
-                    var targetWithOldIsAttackedValue = board.Matrix.SelectMany(x => x).Where(y => y.Name == target.Name).FirstOrDefault();
-
-                    if (targetWithOldIsAttackedValue.IsAttacked.Count(piece =>
-                        piece.Color == source.Piece.Color &&
-                        piece.Name.Contains(source.Piece.Name)) > 1)
-                    {
-                        var secondPieceSquare = board.Matrix.SelectMany(x => x).Where(square =>
-                            square.Piece != null &&
-                            square.Piece.Color == source.Piece.Color &&
-                            square.Piece.Name.Contains(source.Piece.Name) &&
-                            square.Name != source.Name).FirstOrDefault();
-
-                        var xCheck = target.Piece == null ? string.Empty : "x";
-
-                        if (secondPieceSquare.Position.File.Equals(source.Position.File))
-                        {
-                            var rank = source.Name[1];
-                            if (target.Piece == null)
-                            {
-                                sb.Append($"{source.Piece.Symbol}{rank}{xCheck}{target}");
-                            }
-                            else
-                            {
-                                sb.Append($"{source.Piece.Symbol}{rank}{xCheck}{target}");
-                            }
-                        }
-                        else
-                        {
-                            var file = source.Name[0];
-                            sb.Append($"{source.Piece.Symbol}{file}{xCheck}{target}");
-                        }
-                    }
-                    else
-                    {
-                        var check = target.Piece == null ? string.Empty : "x";
-                        sb.Append($"{source.Piece.Symbol}{check}{target}");
-                    }
-                }
-            }
-
-            if (this.Opponent.IsCheck)
-            {
-                if (!this.Opponent.IsCheckMate)
-                {
-                    sb.Append("+");
-                }
-                else
-                {
-                    sb.Append("#");
-                }
-            }
-
-            return sb.ToString();
         }
 
         private List<Position> GetAllowedPositions()
@@ -482,6 +300,23 @@
             positions.Add(secondAllowedPosition);
 
             return positions;
+        }
+
+        private void UpdateHistory(Square oldSource, Square oldTarget, Board oldBoard)
+        {
+            var notation = this.utilityService
+                    .GetAlgebraicNotation(
+                    new AlgebraicNotationDto
+                    {
+                        OldSource = oldSource,
+                        OldTarget = oldTarget,
+                        OldBoard = oldBoard,
+                        Opponent = this.Opponent,
+                        Turn = this.Turn,
+                        Move = this.Move,
+                    });
+
+            this.notificationService.UpdateHistory(this.MovingPlayer, notation);
         }
     }
 }

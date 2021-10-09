@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29806.167
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31612.314
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{E389DEB6-5F90-444B-A054-12A10D39C76F}"
 EndProject
@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.Data", "Data\Chess.Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.Data.Common", "Data\Chess.Data.Common\Chess.Data.Common.csproj", "{D0D59508-CF8B-4656-A344-396C530BB9DF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.Common", "Chess.Common\Chess.Common.csproj", "{A2288C46-0FBF-43B6-80B6-3072FD65BC32}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Chess.Common\Common.csproj", "{A2288C46-0FBF-43B6-80B6-3072FD65BC32}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.Web.Infrastructure", "Web\Chess.Web.Infrastructure\Chess.Web.Infrastructure.csproj", "{7A7A7986-1F5B-4EBD-9B17-8B41F8FABA58}"
 EndProject
