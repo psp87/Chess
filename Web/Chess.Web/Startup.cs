@@ -70,8 +70,8 @@
             services.AddTransient<IStatsService, StatsService>();
             services.AddTransient<IDrawService, DrawService>();
             services.AddTransient<ICheckService, CheckService>();
-            services.AddSingleton<INotificationService, NotificationService>();
             services.AddTransient<IUtilityService, UtilityService>();
+            services.AddSingleton<INotificationService, NotificationService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
