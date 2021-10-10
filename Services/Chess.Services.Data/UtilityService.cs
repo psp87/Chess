@@ -1,7 +1,6 @@
 ﻿namespace Chess.Services.Data
 {
     using System;
-    using System.Linq;
     using System.Text;
 
     using Chess.Services.Data.Contracts;
@@ -150,43 +149,41 @@
 
         private string GetNormalNotation(AlgebraicNotationDto model)
         {
-            var targetWithOldIsAttackedValue = model.OldBoard.Matrix
-                .SelectMany(x => x)
-                .Where(y => y.Name == model.OldTarget.Name)
-                .FirstOrDefault();
+            var takingSymbol = this.TakingSymbol(model);
 
-            if (targetWithOldIsAttackedValue.IsAttacked
-                .Count(piece =>
-                    piece.Color == model.OldSource.Piece.Color &&
-                    piece.Name.Contains(model.OldSource.Piece.Name)) > 1)
+            if (model.OldTarget.SameAllyPieceAttack(model.OldSource.Piece))
             {
-                var secondPieceSquare = model.OldBoard.Matrix
-                    .SelectMany(x => x)
-                    .Where(square =>
-                        square.Piece != null &&
-                        square.Piece.Color == model.OldSource.Piece.Color &&
-                        square.Piece.Name.Contains(model.OldSource.Piece.Name) &&
-                        square.Name != model.OldSource.Name).FirstOrDefault();
-
-                var xCheck = model.OldTarget.Piece == null ? string.Empty : "x";
-
-                if (secondPieceSquare.Position.File.Equals(model.OldSource.Position.File))
-                {
-                    var rank = model.OldSource.Name[1];
-                    if (model.OldTarget.Piece == null)
-                    {
-                        return $"{model.OldSource.Piece.Symbol}{rank}{xCheck}{model.OldTarget}";
-                    }
-
-                    return $"{model.OldSource.Piece.Symbol}{rank}{xCheck}{model.OldTarget}";
-                }
-
-                var file = model.OldSource.Name[0];
-                return $"{model.OldSource.Piece.Symbol}{file}{xCheck}{model.OldTarget}";
+                return this.GetNotationWithAdditionalInfo(model, takingSymbol);
             }
 
-            var check = model.OldTarget.Piece == null ? string.Empty : "x";
-            return $"{model.OldSource.Piece.Symbol}{check}{model.OldTarget}";
+            return $"{model.OldSource.Piece.Symbol}{takingSymbol}{model.OldTarget}";
+        }
+
+        private string GetNotationWithAdditionalInfo(AlgebraicNotationDto model, string takingSymbol)
+        {
+            var square = model.OldBoard
+                .GetSecondPieceSquare(model.OldSource);
+
+            if (square.Position.File.Equals(model.OldSource.Position.File))
+            {
+                var rank = model.OldSource.Name[1];
+
+                if (model.OldTarget.Piece == null)
+                {
+                    return $"{model.OldSource.Piece.Symbol}{rank}{takingSymbol}{model.OldTarget}";
+                }
+
+                return $"{model.OldSource.Piece.Symbol}{rank}{takingSymbol}{model.OldTarget}";
+            }
+
+            var file = model.OldSource.Name[0];
+
+            return $"{model.OldSource.Piece.Symbol}{file}{takingSymbol}{model.OldTarget}";
+        }
+
+        private string TakingSymbol(AlgebraicNotationDto model)
+        {
+            return model.Move.Type == MoveType.Normal ? string.Empty : "x";
         }
     }
 }

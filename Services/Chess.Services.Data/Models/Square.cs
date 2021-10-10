@@ -47,6 +47,14 @@
 
         public List<IPiece> IsAttacked { get; set; }
 
+        public bool SameAllyPieceAttack(IPiece piece)
+        {
+            return this.IsAttacked
+                .Count(x =>
+                    x.Color == piece.Color &&
+                    x.Name.Equals(piece.Name)) > 1;
+        }
+
         public override string ToString()
         {
             return this.Name.ToLower();

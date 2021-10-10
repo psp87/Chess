@@ -147,6 +147,18 @@
             return null;
         }
 
+        public Square GetSecondPieceSquare(Square square)
+        {
+            return this.Matrix
+                .SelectMany(x => x)
+                .Where(x =>
+                    x.Piece != null &&
+                    x.Piece.Color == square.Piece.Color &&
+                    x.Piece.Name.Equals(square.Piece.Name) &&
+                    x.Name != square.Name)
+                .FirstOrDefault();
+        }
+
         public object Clone()
         {
             var board = Factory.GetBoard();

@@ -5,39 +5,34 @@
 
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Dtos;
-    using Chess.Services.Data.Models.EventArgs;
     using Chess.Services.Data.Models.Pieces;
     using Common.Enums;
-    using Microsoft.Extensions.DependencyInjection;
 
     public class Game
     {
-        private readonly IServiceProvider serviceProvider;
-        private readonly IDrawService drawService;
-        private readonly ICheckService checkService;
         private readonly INotificationService notificationService;
+        private readonly ICheckService checkService;
+        private readonly IDrawService drawService;
         private readonly IUtilityService utilityService;
 
-        public Game(Player player1, Player player2, IServiceProvider serviceProvider)
+        public Game(
+            Player player1,
+            Player player2,
+            INotificationService notificationService,
+            ICheckService checkService,
+            IDrawService drawService,
+            IUtilityService utilityService)
         {
-            this.serviceProvider = serviceProvider;
-            this.drawService = this.serviceProvider.GetRequiredService<IDrawService>();
-            this.checkService = this.serviceProvider.GetRequiredService<ICheckService>();
-            this.notificationService = this.serviceProvider.GetRequiredService<INotificationService>();
-            this.utilityService = this.serviceProvider.GetRequiredService<IUtilityService>();
+            this.notificationService = notificationService;
+            this.checkService = checkService;
+            this.drawService = drawService;
+            this.utilityService = utilityService;
 
             this.Player1 = player1;
             this.Player2 = player2;
-            this.serviceProvider = serviceProvider;
             this.Player1.GameId = this.Id;
             this.Player2.GameId = this.Id;
         }
-
-        public event EventHandler OnGameOver;
-
-        public event EventHandler OnTakePiece;
-
-        public event EventHandler OnThreefoldDrawAvailable;
 
         public string Id { get; } = Guid.NewGuid().ToString();
 
@@ -72,19 +67,22 @@
             if (this.MovePiece() || this.TakePiece() || this.EnPassantTake())
             {
                 this.IsPawnPromotion(targetFen);
-                this.notificationService.ClearCheck(this.MovingPlayer, this.Opponent);
-                this.checkService.IsCheck(this.Opponent, this.ChessBoard);
+                this.notificationService
+                    .ClearCheck(this.MovingPlayer, this.Opponent);
+                this.checkService
+                    .IsCheck(this.Opponent, this.ChessBoard);
                 this.UpdateHistory(oldSource, oldTarget, oldBoard);
                 this.IsGameOver(targetFen);
                 this.ChangeTurns();
                 this.Turn++;
+
                 return true;
             }
-            else
-            {
-                this.notificationService.Invalid(oldIsCheck, this.MovingPlayer);
-                return false;
-            }
+
+            this.notificationService
+                .InvalidMove(oldIsCheck, this.MovingPlayer);
+
+            return false;
         }
 
         public bool TryMove(Player player, Move move)
@@ -156,7 +154,9 @@
                 this.MovingPlayer.TakeFigure(piece.Name);
                 this.MovingPlayer.Points += piece.Points;
                 this.Move.Type = MoveType.Taking;
-                this.OnTakePiece?.Invoke(this.MovingPlayer, new TakePieceEventArgs(piece.Name, this.MovingPlayer.Points));
+                this.notificationService
+                    .UpdateTakenPiecesHistory(this.MovingPlayer, piece.Name);
+
                 return true;
             }
 
@@ -185,8 +185,11 @@
                     this.MovingPlayer.TakeFigure(this.Move.Target.Piece.Name);
                     this.MovingPlayer.Points += this.Move.Target.Piece.Points;
                     //this.Move.Type = MoveType.Taking;
-                    this.OnTakePiece?.Invoke(this.MovingPlayer, new TakePieceEventArgs(this.Move.Target.Piece.Name, this.MovingPlayer.Points));
+
+                    this.notificationService
+                        .UpdateTakenPiecesHistory(this.MovingPlayer, this.Move.Target.Piece.Name);
                     this.Move.EnPassantArgs.SquareAvailable = null;
+
                     return true;
                 }
             }
@@ -215,47 +218,59 @@
 
         private void IsGameOver(string targetFen)
         {
-            if (this.checkService.IsCheck(this.Opponent, this.ChessBoard))
+            if (this.checkService
+                .IsCheck(this.Opponent, this.ChessBoard))
             {
-                this.notificationService.SendCheck(this.MovingPlayer);
-                if (this.checkService.IsCheckmate(this.ChessBoard, this.MovingPlayer, this.Opponent, this))
+                this.notificationService
+                    .SendCheck(this.MovingPlayer);
+
+                if (this.checkService
+                    .IsCheckmate(this.ChessBoard, this.MovingPlayer, this.Opponent, this))
                 {
                     this.GameOver = GameOver.Checkmate;
                 }
             }
 
             this.MovingPlayer.IsThreefoldDrawAvailable = false;
-            this.OnThreefoldDrawAvailable?.Invoke(this.MovingPlayer, new ThreefoldDrawEventArgs(false));
+            this.notificationService
+                .SendThreefoldDrawAvailability(this.MovingPlayer, false);
 
-            if (this.drawService.IsThreefoldRepetionDraw(targetFen))
+            if (this.drawService
+                .IsThreefoldRepetionDraw(targetFen))
             {
                 this.Opponent.IsThreefoldDrawAvailable = true;
-                this.OnThreefoldDrawAvailable?.Invoke(this.MovingPlayer, new ThreefoldDrawEventArgs(true));
+                this.notificationService
+                    .SendThreefoldDrawAvailability(this.MovingPlayer, true);
             }
 
-            if (this.drawService.IsFivefoldRepetitionDraw(targetFen))
+            if (this.drawService
+                .IsFivefoldRepetitionDraw(targetFen))
             {
                 this.GameOver = GameOver.FivefoldDraw;
             }
 
-            if (this.drawService.IsFiftyMoveDraw(this.Move))
+            if (this.drawService
+                .IsFiftyMoveDraw(this.Move))
             {
                 this.GameOver = GameOver.FiftyMoveDraw;
             }
 
-            if (this.drawService.IsDraw(this.ChessBoard))
+            if (this.drawService
+                .IsDraw(this.ChessBoard))
             {
                 this.GameOver = GameOver.Draw;
             }
 
-            if (this.drawService.IsStalemate(this.ChessBoard, this.Opponent))
+            if (this.drawService
+                .IsStalemate(this.ChessBoard, this.Opponent))
             {
                 this.GameOver = GameOver.Stalemate;
             }
 
             if (this.GameOver.ToString() != GameOver.None.ToString())
             {
-                this.OnGameOver?.Invoke(this.MovingPlayer, new GameOverEventArgs(this.GameOver));
+                this.notificationService
+                    .SendGameOver(this.MovingPlayer, this.GameOver);
             }
         }
 
@@ -265,7 +280,8 @@
             {
                 this.Move.Target.Piece = Factory.GetQueen(this.MovingPlayer.Color);
                 this.Move.Type = MoveType.PawnPromotion;
-                this.utilityService.GetPawnPromotionFenString(targetFen, this.MovingPlayer, this.Move);
+                this.utilityService
+                    .GetPawnPromotionFenString(targetFen, this.MovingPlayer, this.Move);
                 this.ChessBoard.CalculateAttackedSquares();
             }
         }
@@ -317,7 +333,7 @@
                         Move = this.Move,
                     });
 
-            this.notificationService.UpdateHistory(this.MovingPlayer, notation);
+            this.notificationService.UpdateMoveHistory(this.MovingPlayer, notation);
         }
     }
 }
