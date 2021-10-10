@@ -2,11 +2,9 @@
 {
     using System.Threading.Tasks;
 
-    using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Models;
     using Common.Enums;
     using Microsoft.AspNetCore.SignalR;
-    using Microsoft.Extensions.DependencyInjection;
 
     public partial class GameHub
     {
@@ -36,20 +34,19 @@
 
         private async Task StartGame(Player player1, Player player2)
         {
-            var notificationService = this.serviceProvider.GetRequiredService<INotificationService>();
-
             player1.Color = Color.White;
             player2.Color = Color.Black;
             player1.HasToMove = true;
 
-            var game = Factory.GetGame(player1, player2, this.serviceProvider);
-            this.games[game.Id] = game;
+            var game = Factory.GetGame(
+                    player1,
+                    player2,
+                    this.notificationService,
+                    this.checkService,
+                    this.drawService,
+                    this.utilityService);
 
-            game.OnGameOver += this.Game_OnGameOver;
-            notificationService.OnUpdateHistory += this.Game_OnMoveComplete;
-            notificationService.OnMove += this.Game_OnMoveEvent;
-            game.OnTakePiece += this.Game_OnTakePiece;
-            game.OnThreefoldDrawAvailable += this.Game_OnThreefoldDrawAvailable;
+            this.games[game.Id] = game;
 
             await Task.WhenAll(
                 this.Groups.AddToGroupAsync(game.Player1.Id, groupName: game.Id),

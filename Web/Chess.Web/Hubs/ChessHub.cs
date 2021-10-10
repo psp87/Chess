@@ -144,7 +144,7 @@
             this.UpdateStats(player, opponent, game, gameOver.GameOver);
         }
 
-        private void Game_OnMoveComplete(object sender, EventArgs e)
+        private void Game_OnCompleteMove(object sender, EventArgs e)
         {
             var player = sender as Player;
             var game = this.GetGame(player);
@@ -183,7 +183,7 @@
             this.Clients.Group(game.Id).SendAsync("UpdateTakenFigures", player, args.PieceName, args.Points);
         }
 
-        private void Game_OnThreefoldDrawAvailable(object sender, EventArgs e)
+        private void Game_OnAvailableThreefoldDraw(object sender, EventArgs e)
         {
             var player = sender as Player;
             var game = this.GetGame(player);
