@@ -15,17 +15,38 @@
 
     public partial class GameHub : Hub
     {
+        private readonly IServiceProvider serviceProvider;
+        private readonly INotificationService notificationService;
+        private readonly ICheckService checkService;
+        private readonly IDrawService drawService;
+        private readonly IUtilityService utilityService;
+
         private readonly ConcurrentDictionary<string, Player> players;
         private readonly ConcurrentDictionary<string, Game> games;
         private readonly List<Player> waitingPlayers;
-        private readonly IServiceProvider serviceProvider;
 
-        public GameHub(IServiceProvider serviceProvider)
+        public GameHub(
+            IServiceProvider serviceProvider,
+            INotificationService notificationService,
+            ICheckService checkService,
+            IDrawService drawService,
+            IUtilityService utilityService)
         {
+            this.serviceProvider = serviceProvider;
+            this.notificationService = notificationService;
+            this.checkService = checkService;
+            this.drawService = drawService;
+            this.utilityService = utilityService;
+
             this.players = new ConcurrentDictionary<string, Player>(StringComparer.OrdinalIgnoreCase);
             this.games = new ConcurrentDictionary<string, Game>(StringComparer.OrdinalIgnoreCase);
             this.waitingPlayers = new List<Player>();
-            this.serviceProvider = serviceProvider;
+
+            this.notificationService.OnGameOver += this.Game_OnGameOver;
+            this.notificationService.OnTakePiece += this.Game_OnTakePiece;
+            this.notificationService.OnAvailableThreefoldDraw += this.Game_OnAvailableThreefoldDraw;
+            this.notificationService.OnCompleteMove += this.Game_OnCompleteMove;
+            this.notificationService.OnMoveEvent += this.Game_OnMoveEvent;
         }
 
         public override async Task OnConnectedAsync()

@@ -1,7 +1,6 @@
 ﻿namespace Chess.Services.Data.Models
 {
-    using System;
-
+    using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Models.Pieces;
     using Chess.Services.Data.Models.Pieces.Contracts;
     using Chess.Services.Data.Models.Pieces.Helpers;
@@ -10,9 +9,21 @@
 
     public class Factory
     {
-        public static Game GetGame(Player player1, Player player2, IServiceProvider serviceProvider)
+        public static Game GetGame(
+            Player player1,
+            Player player2,
+            INotificationService notificationService,
+            ICheckService checkService,
+            IDrawService drawService,
+            IUtilityService utilityService)
         {
-            return new Game(player1, player2, serviceProvider);
+            return new Game(
+                player1,
+                player2,
+                notificationService,
+                checkService,
+                drawService,
+                utilityService);
         }
 
         public static Player GetPlayer(string name, string connectionId, string userId) => new Player(name, connectionId, userId);
