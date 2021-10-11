@@ -62,21 +62,21 @@
 
         public void CalculateAttackedSquares()
         {
-            for (int rank = 0; rank < BoardConstants.Ranks; rank++)
+            foreach (var rank in this.Matrix)
             {
-                for (int file = 0; file < BoardConstants.Files; file++)
+                foreach (var square in rank)
                 {
-                    this.Matrix[rank][file].IsAttacked.Clear();
+                    square.IsAttacked.Clear();
                 }
             }
 
-            for (int rank = 0; rank < BoardConstants.Ranks; rank++)
+            foreach (var rank in this.Matrix)
             {
-                for (int file = 0; file < BoardConstants.Files; file++)
+                foreach (var square in rank)
                 {
-                    if (this.Matrix[rank][file].Piece != null)
+                    if (square.Piece != null)
                     {
-                        this.Matrix[rank][file].Piece.Attacking(this.Matrix);
+                        square.Piece.Attacking(this.Matrix);
                     }
                 }
             }
@@ -97,59 +97,41 @@
         public void ShiftEnPassant(Move move, int offsetX)
         {
             this.ShiftPiece(move);
-            var square = this.GetSquareByCoordinates(move.Source.Position.Rank, move.Source.Position.File + offsetX);
+            var square = this.GetSquareByCoordinates(
+                move.Source.Position.Rank,
+                move.Source.Position.File + offsetX);
             square.Piece = null;
         }
 
         public void ReverseEnPassant(Move move, int offsetX)
         {
             this.ReversePiece(move, null);
-            var square = this.GetSquareByCoordinates(move.Source.Position.Rank, move.Source.Position.File + offsetX);
+            var square = this.GetSquareByCoordinates(
+                move.Source.Position.Rank,
+                move.Source.Position.File + offsetX);
             var color = move.Source.Piece.Color == Color.White ? Color.Black : Color.White;
             square.Piece = Factory.GetPawn(color);
         }
 
         public Square GetKingSquare(Color color)
-        {
-            for (int rank = 0; rank < BoardConstants.Ranks; rank++)
-            {
-                var square = this.Matrix[rank]
-                    .FirstOrDefault(x =>
-                        x.Piece is King &&
-                        x.Piece.Color == color);
-
-                if (square != null)
-                {
-                    return square;
-                }
-            }
-
-            return null;
-        }
+            => this.Matrix
+                .SelectMany(x => x)
+                .FirstOrDefault(x => x.Piece is King && x.Piece.Color == color);
 
         public Square GetSquareByCoordinates(int rank, int file)
-        {
-            return this.Matrix[rank][file];
-        }
+            => this.Matrix
+                .SelectMany(x => x)
+                .FirstOrDefault(x =>
+                    x.Position.Rank == rank &&
+                    x.Position.File == file);
 
         public Square GetSquareByName(string name)
-        {
-            for (int rank = 0; rank < BoardConstants.Ranks; rank++)
-            {
-                var square = this.Matrix[rank].FirstOrDefault(x => x.Name == name);
-
-                if (square != null)
-                {
-                    return square;
-                }
-            }
-
-            return null;
-        }
+            => this.Matrix
+                .SelectMany(x => x)
+                .FirstOrDefault(x => x.Name == name);
 
         public Square GetSecondPieceSquare(Square square)
-        {
-            return this.Matrix
+            => this.Matrix
                 .SelectMany(x => x)
                 .Where(x =>
                     x.Piece != null &&
@@ -157,7 +139,6 @@
                     x.Piece.Name.Equals(square.Piece.Name) &&
                     x.Name != square.Name)
                 .FirstOrDefault();
-        }
 
         public object Clone()
         {
