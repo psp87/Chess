@@ -11,18 +11,41 @@
 
     public class Board : ICloneable
     {
-        private readonly string[] files = new string[] { "a", "b", "c", "d", "e", "f", "g", "h" };
-
         private readonly Dictionary<string, IPiece> setup = new Dictionary<string, IPiece>()
         {
-            { "a1", Factory.GetRook(Color.White) }, { "b1", Factory.GetKnight(Color.White) }, { "c1", Factory.GetBishop(Color.White) }, { "d1", Factory.GetQueen(Color.White) },
-            { "e1", Factory.GetKing(Color.White) }, { "f1", Factory.GetBishop(Color.White) }, { "g1", Factory.GetKnight(Color.White) }, { "h1", Factory.GetRook(Color.White) },
-            { "a2", Factory.GetPawn(Color.White) }, { "b2", Factory.GetPawn(Color.White) }, { "c2", Factory.GetPawn(Color.White) }, { "d2", Factory.GetPawn(Color.White) },
-            { "e2", Factory.GetPawn(Color.White) }, { "f2", Factory.GetPawn(Color.White) }, { "g2", Factory.GetPawn(Color.White) }, { "h2", Factory.GetPawn(Color.White) },
-            { "a7", Factory.GetPawn(Color.Black) }, { "b7", Factory.GetPawn(Color.Black) }, { "c7", Factory.GetPawn(Color.Black) }, { "d7", Factory.GetPawn(Color.Black) },
-            { "e7", Factory.GetPawn(Color.Black) }, { "f7", Factory.GetPawn(Color.Black) }, { "g7", Factory.GetPawn(Color.Black) }, { "h7", Factory.GetPawn(Color.Black) },
-            { "a8", Factory.GetRook(Color.Black) }, { "b8", Factory.GetKnight(Color.Black) }, { "c8", Factory.GetBishop(Color.Black) }, { "d8", Factory.GetQueen(Color.Black) },
-            { "e8", Factory.GetKing(Color.Black) }, { "f8", Factory.GetBishop(Color.Black) }, { "g8", Factory.GetKnight(Color.Black) }, { "h8", Factory.GetRook(Color.Black) },
+            { $"{BoardConstants.FileA}{BoardConstants.Rank1}", Factory.GetRook(Color.White) },
+            { $"{BoardConstants.FileB}{BoardConstants.Rank1}", Factory.GetKnight(Color.White) },
+            { $"{BoardConstants.FileC}{BoardConstants.Rank1}", Factory.GetBishop(Color.White) },
+            { $"{BoardConstants.FileD}{BoardConstants.Rank1}", Factory.GetQueen(Color.White) },
+            { $"{BoardConstants.FileE}{BoardConstants.Rank1}", Factory.GetKing(Color.White) },
+            { $"{BoardConstants.FileF}{BoardConstants.Rank1}", Factory.GetBishop(Color.White) },
+            { $"{BoardConstants.FileG}{BoardConstants.Rank1}", Factory.GetKnight(Color.White) },
+            { $"{BoardConstants.FileH}{BoardConstants.Rank1}", Factory.GetRook(Color.White) },
+            { $"{BoardConstants.FileA}{BoardConstants.Rank2}", Factory.GetPawn(Color.White) },
+            { $"{BoardConstants.FileB}{BoardConstants.Rank2}", Factory.GetPawn(Color.White) },
+            { $"{BoardConstants.FileC}{BoardConstants.Rank2}", Factory.GetPawn(Color.White) },
+            { $"{BoardConstants.FileD}{BoardConstants.Rank2}", Factory.GetPawn(Color.White) },
+            { $"{BoardConstants.FileE}{BoardConstants.Rank2}", Factory.GetPawn(Color.White) },
+            { $"{BoardConstants.FileF}{BoardConstants.Rank2}", Factory.GetPawn(Color.White) },
+            { $"{BoardConstants.FileG}{BoardConstants.Rank2}", Factory.GetPawn(Color.White) },
+            { $"{BoardConstants.FileH}{BoardConstants.Rank2}", Factory.GetPawn(Color.White) },
+
+            { $"{BoardConstants.FileA}{BoardConstants.Rank7}", Factory.GetPawn(Color.Black) },
+            { $"{BoardConstants.FileB}{BoardConstants.Rank7}", Factory.GetPawn(Color.Black) },
+            { $"{BoardConstants.FileC}{BoardConstants.Rank7}", Factory.GetPawn(Color.Black) },
+            { $"{BoardConstants.FileD}{BoardConstants.Rank7}", Factory.GetPawn(Color.Black) },
+            { $"{BoardConstants.FileE}{BoardConstants.Rank7}", Factory.GetPawn(Color.Black) },
+            { $"{BoardConstants.FileF}{BoardConstants.Rank7}", Factory.GetPawn(Color.Black) },
+            { $"{BoardConstants.FileG}{BoardConstants.Rank7}", Factory.GetPawn(Color.Black) },
+            { $"{BoardConstants.FileH}{BoardConstants.Rank7}", Factory.GetPawn(Color.Black) },
+            { $"{BoardConstants.FileA}{BoardConstants.Rank8}", Factory.GetRook(Color.Black) },
+            { $"{BoardConstants.FileB}{BoardConstants.Rank8}", Factory.GetKnight(Color.Black) },
+            { $"{BoardConstants.FileC}{BoardConstants.Rank8}", Factory.GetBishop(Color.Black) },
+            { $"{BoardConstants.FileD}{BoardConstants.Rank8}", Factory.GetQueen(Color.Black) },
+            { $"{BoardConstants.FileE}{BoardConstants.Rank8}", Factory.GetKing(Color.Black) },
+            { $"{BoardConstants.FileF}{BoardConstants.Rank8}", Factory.GetBishop(Color.Black) },
+            { $"{BoardConstants.FileG}{BoardConstants.Rank8}", Factory.GetKnight(Color.Black) },
+            { $"{BoardConstants.FileH}{BoardConstants.Rank8}", Factory.GetRook(Color.Black) },
         };
 
         public Board()
@@ -37,25 +60,23 @@
         {
             var toggle = Color.White;
 
-            for (int rank = 0; rank < BoardConstants.Ranks; rank++)
+            for (int rank = BoardConstants.Rank8; rank <= BoardConstants.Rank1; rank++)
             {
-                for (int file = 0; file < BoardConstants.Files; file++)
+                for (int file = BoardConstants.FileA; file <= BoardConstants.FileH; file++)
                 {
-                    var name = this.files[file] + (8 - rank);
-                    var square = new Square()
+                    this.Matrix[rank][file] = new Square()
                     {
                         Position = Factory.GetPosition(rank, file),
-                        Piece = this.setup.FirstOrDefault(x => x.Key.Equals(name)).Value,
+                        Piece = this.setup
+                            .FirstOrDefault(x => x.Key.Equals($"{file}{rank}")).Value,
                         Color = toggle,
-                        Name = name,
+                        Name = $"{(char)(file + 'a')}{8 - rank}",
                     };
 
                     if (file != 7)
                     {
                         toggle = toggle == Color.White ? Color.Black : Color.White;
                     }
-
-                    this.Matrix[rank][file] = square;
                 }
             }
         }
