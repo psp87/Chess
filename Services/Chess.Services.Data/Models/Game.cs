@@ -32,6 +32,8 @@
             this.Player2 = player2;
             this.Player1.GameId = this.Id;
             this.Player2.GameId = this.Id;
+
+            this.ChessBoard.ArrangePieces();
         }
 
         public string Id { get; } = Guid.NewGuid().ToString();
@@ -184,7 +186,6 @@
                     this.MovingPlayer.IsCheck = false;
                     this.MovingPlayer.TakeFigure(this.Move.Target.Piece.Name);
                     this.MovingPlayer.Points += this.Move.Target.Piece.Points;
-                    //this.Move.Type = MoveType.Taking;
 
                     this.notificationService
                         .UpdateTakenPiecesHistory(this.MovingPlayer, this.Move.Target.Piece.Name);
@@ -322,18 +323,18 @@
         private void UpdateHistory(Square oldSource, Square oldTarget, Board oldBoard)
         {
             var notation = this.utilityService
-                    .GetAlgebraicNotation(
-                    new AlgebraicNotationDto
-                    {
-                        OldSource = oldSource,
-                        OldTarget = oldTarget,
-                        OldBoard = oldBoard,
-                        Opponent = this.Opponent,
-                        Turn = this.Turn,
-                        Move = this.Move,
-                    });
+                .GetAlgebraicNotation(new AlgebraicNotationDto
+                {
+                    OldSource = oldSource,
+                    OldTarget = oldTarget,
+                    OldBoard = oldBoard,
+                    Opponent = this.Opponent,
+                    Turn = this.Turn,
+                    Move = this.Move,
+                });
 
-            this.notificationService.UpdateMoveHistory(this.MovingPlayer, notation);
+            this.notificationService
+                .UpdateMoveHistory(this.MovingPlayer, notation);
         }
     }
 }

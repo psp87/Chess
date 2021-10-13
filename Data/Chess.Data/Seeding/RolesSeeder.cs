@@ -2,12 +2,13 @@
 
 namespace Chess.Data.Seeding
 {
-    using Chess.Data.Models;
-    using Microsoft.AspNetCore.Identity;
-    using Microsoft.Extensions.DependencyInjection;
     using System;
     using System.Linq;
     using System.Threading.Tasks;
+
+    using Chess.Data.Models;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.Extensions.DependencyInjection;
 
     internal class RolesSeeder : ISeeder
     {
