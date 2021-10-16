@@ -10,15 +10,15 @@
 
     public class DrawService : IDrawService
     {
-        private readonly Queue<string> threefoldQueue = new Queue<string>();
-        private readonly Queue<string> fivefoldQueue = new Queue<string>();
+        private readonly Queue<string> threefoldQueue = new ();
+        private readonly Queue<string> fivefoldQueue = new ();
         private int fiftyMoveCounter;
 
         public bool IsStalemate(Board board, Player opponent)
         {
-            for (int rank = 0; rank < BoardConstants.Ranks; rank++)
+            for (int rank = BoardConstants.Rank8; rank <= BoardConstants.Rank1; rank++)
             {
-                for (int file = 0; file < BoardConstants.Files; file++)
+                for (int file = BoardConstants.FileA; file <= BoardConstants.FileH; file++)
                 {
                     var currentFigure = board
                         .GetSquareByCoordinates(rank, file).Piece;
@@ -43,9 +43,9 @@
             int counterWhite = 0;
             int counterBlack = 0;
 
-            for (int rank = 0; rank < BoardConstants.Ranks; rank++)
+            for (int rank = BoardConstants.Rank8; rank <= BoardConstants.Rank1; rank++)
             {
-                for (int file = 0; file < BoardConstants.Files; file++)
+                for (int file = BoardConstants.FileA; file <= BoardConstants.FileH; file++)
                 {
                     var currentFigure = board
                         .GetSquareByCoordinates(rank, file).Piece;

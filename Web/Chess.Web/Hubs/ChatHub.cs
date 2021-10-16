@@ -10,7 +10,7 @@
     {
         public async Task LobbySendMessage(string message)
         {
-            var msgFormat = $"{DateTime.Now.ToString("HH:mm")}, {this.Context.User.Identity.Name}: {message}";
+            var msgFormat = $"{DateTime.Now:HH:mm}, {this.Context.User.Identity.Name}: {message}";
             await this.Clients.All.SendAsync("UpdateLobbyChat", msgFormat);
         }
 
@@ -19,7 +19,7 @@
             var player = this.GetPlayer();
             var game = this.GetGame(player);
 
-            var msgFormat = $"{DateTime.Now.ToString("HH:mm")}, {player.Name}: {message}";
+            var msgFormat = $"{DateTime.Now:HH:mm}, {player.Name}: {message}";
             await this.Clients.Group(game.Id).SendAsync("UpdateGameChat", msgFormat, player);
         }
 

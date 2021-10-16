@@ -11,73 +11,38 @@
 
     public class Board : ICloneable
     {
-        private readonly string[] files = new string[] { "a", "b", "c", "d", "e", "f", "g", "h" };
-
-        private readonly Dictionary<string, IPiece> setup = new Dictionary<string, IPiece>()
-        {
-            { "a1", Factory.GetRook(Color.White) }, { "b1", Factory.GetKnight(Color.White) }, { "c1", Factory.GetBishop(Color.White) }, { "d1", Factory.GetQueen(Color.White) },
-            { "e1", Factory.GetKing(Color.White) }, { "f1", Factory.GetBishop(Color.White) }, { "g1", Factory.GetKnight(Color.White) }, { "h1", Factory.GetRook(Color.White) },
-            { "a2", Factory.GetPawn(Color.White) }, { "b2", Factory.GetPawn(Color.White) }, { "c2", Factory.GetPawn(Color.White) }, { "d2", Factory.GetPawn(Color.White) },
-            { "e2", Factory.GetPawn(Color.White) }, { "f2", Factory.GetPawn(Color.White) }, { "g2", Factory.GetPawn(Color.White) }, { "h2", Factory.GetPawn(Color.White) },
-            { "a7", Factory.GetPawn(Color.Black) }, { "b7", Factory.GetPawn(Color.Black) }, { "c7", Factory.GetPawn(Color.Black) }, { "d7", Factory.GetPawn(Color.Black) },
-            { "e7", Factory.GetPawn(Color.Black) }, { "f7", Factory.GetPawn(Color.Black) }, { "g7", Factory.GetPawn(Color.Black) }, { "h7", Factory.GetPawn(Color.Black) },
-            { "a8", Factory.GetRook(Color.Black) }, { "b8", Factory.GetKnight(Color.Black) }, { "c8", Factory.GetBishop(Color.Black) }, { "d8", Factory.GetQueen(Color.Black) },
-            { "e8", Factory.GetKing(Color.Black) }, { "f8", Factory.GetBishop(Color.Black) }, { "g8", Factory.GetKnight(Color.Black) }, { "h8", Factory.GetRook(Color.Black) },
-        };
-
         public Board()
         {
-            this.Matrix = Factory.GetMatrix();
             this.Initialize();
         }
 
-        public Square[][] Matrix { get; set; }
+        public Square[][] Matrix { get; set; } = Factory.GetMatrix();
 
-        public void Initialize()
+        public void ArrangePieces()
         {
-            var toggle = Color.White;
+            var setup = this.GetStandardSetup();
 
-            for (int rank = 0; rank < BoardConstants.Ranks; rank++)
+            foreach (var square in this.Matrix.SelectMany(x => x))
             {
-                for (int file = 0; file < BoardConstants.Files; file++)
-                {
-                    var name = this.files[file] + (8 - rank);
-                    var square = new Square()
-                    {
-                        Position = Factory.GetPosition(rank, file),
-                        Piece = this.setup.FirstOrDefault(x => x.Key.Equals(name)).Value,
-                        Color = toggle,
-                        Name = name,
-                    };
-
-                    if (file != 7)
-                    {
-                        toggle = toggle == Color.White ? Color.Black : Color.White;
-                    }
-
-                    this.Matrix[rank][file] = square;
-                }
+                square.Piece = setup
+                    .FirstOrDefault(x => x.Key
+                        .Equals(square.Position.ToString()))
+                    .Value;
             }
         }
 
         public void CalculateAttackedSquares()
         {
-            for (int rank = 0; rank < BoardConstants.Ranks; rank++)
+            foreach (var square in this.Matrix.SelectMany(x => x))
             {
-                for (int file = 0; file < BoardConstants.Files; file++)
-                {
-                    this.Matrix[rank][file].IsAttacked.Clear();
-                }
+                square.IsAttacked.Clear();
             }
 
-            for (int rank = 0; rank < BoardConstants.Ranks; rank++)
+            foreach (var square in this.Matrix.SelectMany(x => x))
             {
-                for (int file = 0; file < BoardConstants.Files; file++)
+                if (square.Piece != null)
                 {
-                    if (this.Matrix[rank][file].Piece != null)
-                    {
-                        this.Matrix[rank][file].Piece.Attacking(this.Matrix);
-                    }
+                    square.Piece.Attacking(this.Matrix);
                 }
             }
         }
@@ -97,59 +62,43 @@
         public void ShiftEnPassant(Move move, int offsetX)
         {
             this.ShiftPiece(move);
-            var square = this.GetSquareByCoordinates(move.Source.Position.Rank, move.Source.Position.File + offsetX);
+            var square = this.GetSquareByCoordinates(
+                move.Source.Position.Rank,
+                move.Source.Position.File + offsetX);
             square.Piece = null;
         }
 
         public void ReverseEnPassant(Move move, int offsetX)
         {
             this.ReversePiece(move, null);
-            var square = this.GetSquareByCoordinates(move.Source.Position.Rank, move.Source.Position.File + offsetX);
+            var square = this.GetSquareByCoordinates(
+                move.Source.Position.Rank,
+                move.Source.Position.File + offsetX);
             var color = move.Source.Piece.Color == Color.White ? Color.Black : Color.White;
             square.Piece = Factory.GetPawn(color);
         }
 
         public Square GetKingSquare(Color color)
-        {
-            for (int rank = 0; rank < BoardConstants.Ranks; rank++)
-            {
-                var square = this.Matrix[rank]
-                    .FirstOrDefault(x =>
-                        x.Piece is King &&
-                        x.Piece.Color == color);
-
-                if (square != null)
-                {
-                    return square;
-                }
-            }
-
-            return null;
-        }
+            => this.Matrix
+                .SelectMany(x => x)
+                .FirstOrDefault(x =>
+                    x.Piece is King &&
+                    x.Piece.Color == color);
 
         public Square GetSquareByCoordinates(int rank, int file)
-        {
-            return this.Matrix[rank][file];
-        }
+            => this.Matrix
+                .SelectMany(x => x)
+                .FirstOrDefault(x =>
+                    x.Position.Rank == rank &&
+                    x.Position.File == file);
 
         public Square GetSquareByName(string name)
-        {
-            for (int rank = 0; rank < BoardConstants.Ranks; rank++)
-            {
-                var square = this.Matrix[rank].FirstOrDefault(x => x.Name == name);
-
-                if (square != null)
-                {
-                    return square;
-                }
-            }
-
-            return null;
-        }
+            => this.Matrix
+                .SelectMany(x => x)
+                .FirstOrDefault(x => x.Name == name);
 
         public Square GetSecondPieceSquare(Square square)
-        {
-            return this.Matrix
+            => this.Matrix
                 .SelectMany(x => x)
                 .Where(x =>
                     x.Piece != null &&
@@ -157,15 +106,14 @@
                     x.Piece.Name.Equals(square.Piece.Name) &&
                     x.Name != square.Name)
                 .FirstOrDefault();
-        }
 
         public object Clone()
         {
             var board = Factory.GetBoard();
 
-            for (int rank = 0; rank < BoardConstants.Ranks; rank++)
+            for (int rank = BoardConstants.Rank8; rank <= BoardConstants.Rank1; rank++)
             {
-                for (int file = 0; file < BoardConstants.Files; file++)
+                for (int file = BoardConstants.FileA; file <= BoardConstants.FileH; file++)
                 {
                     board.Matrix[rank][file] = this.Matrix[rank][file].Clone() as Square;
                 }
@@ -173,5 +121,65 @@
 
             return board;
         }
+
+        private void Initialize()
+        {
+            var toggle = Color.White;
+
+            for (int rank = BoardConstants.Rank8; rank <= BoardConstants.Rank1; rank++)
+            {
+                for (int file = BoardConstants.FileA; file <= BoardConstants.FileH; file++)
+                {
+                    this.Matrix[rank][file] = new Square()
+                    {
+                        Position = Factory.GetPosition(rank, file),
+                        Color = toggle,
+                        Name = $"{(char)(file + 'a')}{8 - rank}",
+                    };
+
+                    if (file != 7)
+                    {
+                        toggle = toggle == Color.White ? Color.Black : Color.White;
+                    }
+                }
+            }
+        }
+
+        private Dictionary<string, IPiece> GetStandardSetup()
+            => new ()
+            {
+                { $"{BoardConstants.FileA},{BoardConstants.Rank1}", Factory.GetRook(Color.White) },
+                { $"{BoardConstants.FileB},{BoardConstants.Rank1}", Factory.GetKnight(Color.White) },
+                { $"{BoardConstants.FileC},{BoardConstants.Rank1}", Factory.GetBishop(Color.White) },
+                { $"{BoardConstants.FileD},{BoardConstants.Rank1}", Factory.GetQueen(Color.White) },
+                { $"{BoardConstants.FileE},{BoardConstants.Rank1}", Factory.GetKing(Color.White) },
+                { $"{BoardConstants.FileF},{BoardConstants.Rank1}", Factory.GetBishop(Color.White) },
+                { $"{BoardConstants.FileG},{BoardConstants.Rank1}", Factory.GetKnight(Color.White) },
+                { $"{BoardConstants.FileH},{BoardConstants.Rank1}", Factory.GetRook(Color.White) },
+                { $"{BoardConstants.FileA},{BoardConstants.Rank2}", Factory.GetPawn(Color.White) },
+                { $"{BoardConstants.FileB},{BoardConstants.Rank2}", Factory.GetPawn(Color.White) },
+                { $"{BoardConstants.FileC},{BoardConstants.Rank2}", Factory.GetPawn(Color.White) },
+                { $"{BoardConstants.FileD},{BoardConstants.Rank2}", Factory.GetPawn(Color.White) },
+                { $"{BoardConstants.FileE},{BoardConstants.Rank2}", Factory.GetPawn(Color.White) },
+                { $"{BoardConstants.FileF},{BoardConstants.Rank2}", Factory.GetPawn(Color.White) },
+                { $"{BoardConstants.FileG},{BoardConstants.Rank2}", Factory.GetPawn(Color.White) },
+                { $"{BoardConstants.FileH},{BoardConstants.Rank2}", Factory.GetPawn(Color.White) },
+                { $"{BoardConstants.FileA},{BoardConstants.Rank7}", Factory.GetPawn(Color.Black) },
+                { $"{BoardConstants.FileB},{BoardConstants.Rank7}", Factory.GetPawn(Color.Black) },
+                { $"{BoardConstants.FileC},{BoardConstants.Rank7}", Factory.GetPawn(Color.Black) },
+                { $"{BoardConstants.FileD},{BoardConstants.Rank7}", Factory.GetPawn(Color.Black) },
+                { $"{BoardConstants.FileE},{BoardConstants.Rank7}", Factory.GetPawn(Color.Black) },
+                { $"{BoardConstants.FileF},{BoardConstants.Rank7}", Factory.GetPawn(Color.Black) },
+                { $"{BoardConstants.FileG},{BoardConstants.Rank7}", Factory.GetPawn(Color.Black) },
+                { $"{BoardConstants.FileH},{BoardConstants.Rank7}", Factory.GetPawn(Color.Black) },
+                { $"{BoardConstants.FileA},{BoardConstants.Rank8}", Factory.GetRook(Color.Black) },
+                { $"{BoardConstants.FileB},{BoardConstants.Rank8}", Factory.GetKnight(Color.Black) },
+                { $"{BoardConstants.FileC},{BoardConstants.Rank8}", Factory.GetBishop(Color.Black) },
+                { $"{BoardConstants.FileD},{BoardConstants.Rank8}", Factory.GetQueen(Color.Black) },
+                { $"{BoardConstants.FileE},{BoardConstants.Rank8}", Factory.GetKing(Color.Black) },
+                { $"{BoardConstants.FileF},{BoardConstants.Rank8}", Factory.GetBishop(Color.Black) },
+                { $"{BoardConstants.FileG},{BoardConstants.Rank8}", Factory.GetKnight(Color.Black) },
+                { $"{BoardConstants.FileH},{BoardConstants.Rank8}", Factory.GetRook(Color.Black) },
+            };
     }
 }
