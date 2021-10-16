@@ -26,12 +26,12 @@
 
         public override string ToString()
         {
-            return "[" + this.Rank + ", " + this.File + "]";
+            return $"{this.File},{this.Rank}";
         }
 
         public override bool Equals(object obj)
         {
-            Position other = (Position)obj;
+            var other = (Position)obj;
             return this.File == other.File && this.Rank == other.Rank;
         }
 

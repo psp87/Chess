@@ -62,7 +62,7 @@
 
         public string GetAlgebraicNotation(AlgebraicNotationDto model)
         {
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new ();
 
             var turnNotation = this.GetTurnNotation(model.Turn);
             var moveNotation = this.GetMoveNotation(model);

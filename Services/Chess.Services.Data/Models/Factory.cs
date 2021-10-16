@@ -26,7 +26,7 @@
                 utilityService);
         }
 
-        public static Player GetPlayer(string name, string connectionId, string userId) => new Player(name, connectionId, userId);
+        public static Player GetPlayer(string name, string connectionId, string userId) => new (name, connectionId, userId);
 
         public static Square[][] GetMatrix()
         {
@@ -40,19 +40,19 @@
             return matrix;
         }
 
-        public static Move GetMove() => new Move();
+        public static Move GetMove() => new ();
 
-        public static Move GetMove(Square source, Square target) => new Move(source, target);
+        public static Move GetMove(Square source, Square target) => new (source, target);
 
-        public static Board GetBoard() => new Board();
+        public static Board GetBoard() => new ();
 
-        public static Square GetSquare() => new Square();
+        public static Square GetSquare() => new ();
 
-        public static Square GetSquare(int rank, int file) => new Square(rank, file);
+        public static Square GetSquare(int rank, int file) => new (rank, file);
 
-        public static Position GetPosition() => new Position();
+        public static Position GetPosition() => new ();
 
-        public static Position GetPosition(int rank, int file) => new Position(rank, file);
+        public static Position GetPosition(int rank, int file) => new (rank, file);
 
         public static IPiece GetPawn(Color color) => new Pawn(color);
 
@@ -66,14 +66,14 @@
 
         public static IPiece GetKing(Color color) => new King(color);
 
-        public static RookBehaviour GetRookBehaviour() => new RookBehaviour();
+        public static RookBehaviour GetRookBehaviour() => new ();
 
-        public static BishopBahaviour GetBishopBehaviour() => new BishopBahaviour();
+        public static BishopBahaviour GetBishopBehaviour() => new ();
 
-        public static CastlingArgs GetCastlingArgs() => new CastlingArgs();
+        public static CastlingArgs GetCastlingArgs() => new ();
 
-        public static EnPassantArgs GetEnPassantArgs() => new EnPassantArgs();
+        public static EnPassantArgs GetEnPassantArgs() => new ();
 
-        public static PawnPromotionArgs GetPawnPromotionArgs() => new PawnPromotionArgs();
+        public static PawnPromotionArgs GetPawnPromotionArgs() => new ();
     }
 }
