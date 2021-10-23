@@ -91,19 +91,19 @@
         {
             var oldPiece = move.Target.Piece;
             this.ChessBoard
-                .ShiftPiece(move);
+                .ShiftPiece(move.Source, move.Target);
 
             if (this.checkService.IsCheck(player, this.ChessBoard))
             {
                 this.ChessBoard
-                    .ReversePiece(move, oldPiece);
+                    .ShiftPiece(move.Target, move.Source, oldPiece);
                 return false;
             }
 
             if (player == this.Opponent)
             {
                 this.ChessBoard
-                    .ReversePiece(move, oldPiece);
+                    .ShiftPiece(move.Target, move.Source, oldPiece);
             }
 
             return true;
@@ -193,27 +193,25 @@
 
         private bool TryEnPassantMove()
         {
-            var neighbourEnPassant = this.ChessBoard
+            var neighbourSquare = this.ChessBoard
                .GetSquareByCoordinates(
                     this.Move.Source.Position.Rank,
                     this.Move.Target.Position.File);
 
-            var neighbourPiece = neighbourEnPassant.Piece;
+            var neighbourPiece = neighbourSquare.Piece;
 
             this.ChessBoard
-                .ShiftPiece(this.Move, neighbourEnPassant);
+                .ShiftEnPassant(this.Move.Source, this.Move.Target, neighbourSquare);
 
             if (this.checkService.IsCheck(this.MovingPlayer, this.ChessBoard))
             {
                 this.ChessBoard
-                    .ReversePiece(this.Move, null, neighbourEnPassant, neighbourPiece);
-
+                    .ShiftEnPassant(this.Move.Target, this.Move.Source, neighbourSquare, neighbourPiece);
                 return false;
             }
 
-            this.Move.EnPassantArgs.SquareTakenPiece = neighbourEnPassant;
+            this.Move.EnPassantArgs.SquareTakenPiece = neighbourSquare;
             this.Move.Type = MoveType.EnPassant;
-
             return true;
         }
 

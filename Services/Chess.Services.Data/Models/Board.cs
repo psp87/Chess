@@ -47,28 +47,26 @@
             }
         }
 
-        public void ShiftPiece(Move move, Square neighbourEnPassant = null)
+        public void ShiftPiece(
+            Square source,
+            Square target,
+            IPiece oldPiece = null)
         {
-            move.Target.Piece = move.Source.Piece;
-            move.Source.Piece = null;
-
-            if (neighbourEnPassant != null)
-            {
-                neighbourEnPassant.Piece = null;
-            }
+            target.Piece = source.Piece;
+            source.Piece = oldPiece;
 
             this.CalculateAttackedSquares();
         }
 
-        public void ReversePiece(Move move, IPiece oldPiece = null, Square neighbourEnPassant = null, IPiece neighbourOldPiece = null)
+        public void ShiftEnPassant(
+            Square source,
+            Square target,
+            Square neighbourSquare,
+            IPiece neighbourOldPiece = null)
         {
-            move.Source.Piece = move.Target.Piece;
-            move.Target.Piece = oldPiece;
-
-            if (neighbourEnPassant != null)
-            {
-                neighbourEnPassant.Piece = neighbourOldPiece;
-            }
+            target.Piece = source.Piece;
+            source.Piece = null;
+            neighbourSquare.Piece = neighbourOldPiece;
 
             this.CalculateAttackedSquares();
         }
