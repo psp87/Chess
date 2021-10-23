@@ -14,12 +14,9 @@
 
         public Square()
         {
-            this.IsAttacked = new List<IPiece>();
-            this.Position = Factory.GetPosition();
         }
 
         public Square(int rank, int file)
-            : this()
         {
             this.Position = Factory.GetPosition(rank, file);
         }
@@ -39,21 +36,20 @@
             }
         }
 
-        public Position Position { get; set; }
+        public Position Position { get; set; } = Factory.GetPosition();
 
         public string Name { get; set; }
 
         public Color Color { get; set; }
 
-        public List<IPiece> IsAttacked { get; set; }
+        public List<IPiece> IsAttacked { get; set; } = new List<IPiece>();
 
         public bool SameAllyPieceAttack(IPiece piece)
-        {
-            return this.IsAttacked
+            => this.IsAttacked
                 .Count(x =>
                     x.Color == piece.Color &&
-                    x.Name.Equals(piece.Name)) > 1;
-        }
+                    x.Name.Equals(piece.Name))
+                > 1;
 
         public override string ToString()
         {
@@ -62,7 +58,7 @@
 
         public override bool Equals(object obj)
         {
-            Square other = (Square)obj;
+            var other = (Square)obj;
             return this.Position.File == other.Position.File && this.Position.Rank == other.Position.Rank;
         }
 
@@ -72,8 +68,7 @@
         }
 
         public object Clone()
-        {
-            return new Square()
+            => new Square()
             {
                 Color = this.Color,
                 Name = this.Name,
@@ -81,6 +76,5 @@
                 Piece = this.Piece?.Clone() as Piece,
                 IsAttacked = this.IsAttacked.ToList(),
             };
-        }
     }
 }
