@@ -47,35 +47,30 @@
             }
         }
 
-        public void ShiftPiece(Move move)
+        public void ShiftPiece(Move move, Square neighbourEnPassant = null)
         {
             move.Target.Piece = move.Source.Piece;
             move.Source.Piece = null;
+
+            if (neighbourEnPassant != null)
+            {
+                neighbourEnPassant.Piece = null;
+            }
+
+            this.CalculateAttackedSquares();
         }
 
-        public void ReversePiece(Move move, IPiece piece)
+        public void ReversePiece(Move move, IPiece oldPiece = null, Square neighbourEnPassant = null, IPiece neighbourOldPiece = null)
         {
             move.Source.Piece = move.Target.Piece;
-            move.Target.Piece = piece;
-        }
+            move.Target.Piece = oldPiece;
 
-        public void ShiftEnPassant(Move move, int offsetX)
-        {
-            this.ShiftPiece(move);
-            var square = this.GetSquareByCoordinates(
-                move.Source.Position.Rank,
-                move.Source.Position.File + offsetX);
-            square.Piece = null;
-        }
+            if (neighbourEnPassant != null)
+            {
+                neighbourEnPassant.Piece = neighbourOldPiece;
+            }
 
-        public void ReverseEnPassant(Move move, int offsetX)
-        {
-            this.ReversePiece(move, null);
-            var square = this.GetSquareByCoordinates(
-                move.Source.Position.Rank,
-                move.Source.Position.File + offsetX);
-            var color = move.Source.Piece.Color == Color.White ? Color.Black : Color.White;
-            square.Piece = Factory.GetPawn(color);
+            this.CalculateAttackedSquares();
         }
 
         public Square GetKingSquare(Color color)
