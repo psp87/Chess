@@ -91,26 +91,19 @@
         {
             var oldPiece = move.Target.Piece;
             this.ChessBoard
-                .ShiftPiece(move);
-            this.ChessBoard
-                .CalculateAttackedSquares();
+                .ShiftPiece(move.Source, move.Target);
 
             if (this.checkService.IsCheck(player, this.ChessBoard))
             {
                 this.ChessBoard
-                    .ReversePiece(move, oldPiece);
-                this.ChessBoard
-                    .CalculateAttackedSquares();
-
+                    .ShiftPiece(move.Target, move.Source, oldPiece);
                 return false;
             }
 
             if (player == this.Opponent)
             {
                 this.ChessBoard
-                    .ReversePiece(move, oldPiece);
-                this.ChessBoard
-                    .CalculateAttackedSquares();
+                    .ShiftPiece(move.Target, move.Source, oldPiece);
             }
 
             return true;
@@ -200,19 +193,24 @@
 
         private bool TryEnPassantMove()
         {
-            int offsetX = this.Move.Target.Position.File > this.Move.Source.Position.File ? 1 : -1;
-            this.ChessBoard.ShiftEnPassant(this.Move, offsetX);
-            this.ChessBoard.CalculateAttackedSquares();
+            var neighbourSquare = this.ChessBoard
+               .GetSquareByCoordinates(
+                    this.Move.Source.Position.Rank,
+                    this.Move.Target.Position.File);
+
+            var neighbourPiece = neighbourSquare.Piece;
+
+            this.ChessBoard
+                .ShiftEnPassant(this.Move.Source, this.Move.Target, neighbourSquare);
 
             if (this.checkService.IsCheck(this.MovingPlayer, this.ChessBoard))
             {
-                this.ChessBoard.ReverseEnPassant(this.Move, offsetX);
-                this.ChessBoard.CalculateAttackedSquares();
+                this.ChessBoard
+                    .ShiftEnPassant(this.Move.Target, this.Move.Source, neighbourSquare, neighbourPiece);
                 return false;
             }
 
-            var square = this.ChessBoard.GetSquareByCoordinates(this.Move.Source.Position.Rank, this.Move.Source.Position.File + offsetX);
-            this.Move.EnPassantArgs.SquareTakenPiece = square;
+            this.Move.EnPassantArgs.SquareTakenPiece = neighbourSquare;
             this.Move.Type = MoveType.EnPassant;
             return true;
         }

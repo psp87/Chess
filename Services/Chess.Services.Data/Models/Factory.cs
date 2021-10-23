@@ -16,15 +16,13 @@
             ICheckService checkService,
             IDrawService drawService,
             IUtilityService utilityService)
-        {
-            return new Game(
+            => new Game(
                 player1,
                 player2,
                 notificationService,
                 checkService,
                 drawService,
                 utilityService);
-        }
 
         public static Player GetPlayer(string name, string connectionId, string userId) => new (name, connectionId, userId);
 
