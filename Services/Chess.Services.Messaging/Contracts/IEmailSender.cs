@@ -1,4 +1,4 @@
-﻿namespace Chess.Services.Messaging
+﻿namespace Chess.Services.Messaging.Contracts
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
