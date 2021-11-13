@@ -31,6 +31,7 @@ The following features are implemented:
 - [x] Stats Page
 - [x] ELO Rating Calculation
 - [x] Fifty-Move Draw
+- [x] Email Notifications
 - [ ] Timer Game Mode
 
 The project is inspired by [console version](https://github.com/psp87/Chess.Console) of chess.
