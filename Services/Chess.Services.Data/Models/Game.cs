@@ -1,7 +1,6 @@
 ﻿namespace Chess.Services.Data.Models
 {
     using System;
-    using System.Collections.Generic;
 
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Dtos;
@@ -160,38 +159,66 @@
 
         private bool EnPassantTake()
         {
-            if (this.Move.EnPassantArgs.SquareAvailable != null)
+            if (this.ValidEnPassant())
             {
-                var positions = this.GetAllowedPositions();
-
-                if (this.Move.EnPassantArgs.Turn == this.Turn &&
-                    this.Move.EnPassantArgs.SquareAvailable.Equals(this.Move.Target) &&
-                    this.Move.Source.Piece is Pawn &&
-                    (this.Move.Source.Position.Equals(positions[0]) ||
-                    this.Move.Source.Position.Equals(positions[1])))
+                if (!this.TryEnPassant())
                 {
-                    if (!this.TryEnPassantMove())
-                    {
-                        this.MovingPlayer.IsCheck = true;
-                        return false;
-                    }
-
-                    this.MovingPlayer.IsCheck = false;
-                    this.MovingPlayer.TakeFigure(this.Move.Target.Piece.Name);
-                    this.MovingPlayer.Points += this.Move.Target.Piece.Points;
-
-                    this.notificationService
-                        .UpdateTakenPiecesHistory(this.MovingPlayer, this.Move.Target.Piece.Name);
-                    this.Move.EnPassantArgs.SquareAvailable = null;
-
-                    return true;
+                    this.MovingPlayer.IsCheck = true;
+                    return false;
                 }
+
+                this.MovingPlayer.IsCheck = false;
+                this.MovingPlayer.TakeFigure(this.Move.Target.Piece.Name);
+                this.MovingPlayer.Points += this.Move.Target.Piece.Points;
+                this.Move.EnPassantArgs.SquareAvailable = null;
+                this.notificationService
+                    .UpdateTakenPiecesHistory(this.MovingPlayer, this.Move.Target.Piece.Name);
+                return true;
             }
 
             return false;
         }
 
-        private bool TryEnPassantMove()
+        private bool ValidEnPassant()
+        {
+            if (this.ValidTargetSquare() &&
+                this.Move.Source.Piece is Pawn &&
+                this.ValidSourcePosition())
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool ValidTargetSquare()
+        {
+            return this.Move.EnPassantArgs.SquareAvailable != null &&
+                this.Move.EnPassantArgs.Turn == this.Turn &&
+                this.Move.EnPassantArgs.SquareAvailable.Equals(this.Move.Target);
+        }
+
+        private bool ValidSourcePosition()
+        {
+            var offsetPlayer = this.MovingPlayer.Color == Color.White ? 1 : -1;
+
+            var position1 = Factory.GetPosition(
+                this.Move.EnPassantArgs.SquareAvailable.Position.Rank + offsetPlayer,
+                this.Move.EnPassantArgs.SquareAvailable.Position.File + 1);
+            var position2 = Factory.GetPosition(
+                this.Move.EnPassantArgs.SquareAvailable.Position.Rank + offsetPlayer,
+                this.Move.EnPassantArgs.SquareAvailable.Position.File - 1);
+
+            if (this.Move.Source.Position.Equals(position1) ||
+                this.Move.Source.Position.Equals(position2))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool TryEnPassant()
         {
             var neighbourSquare = this.ChessBoard
                .GetSquareByCoordinates(
@@ -297,25 +324,6 @@
                 this.Player2.HasToMove = false;
                 this.Player1.HasToMove = true;
             }
-        }
-
-        private List<Position> GetAllowedPositions()
-        {
-            var positions = new List<Position>();
-
-            var offsetPlayer = this.MovingPlayer.Color == Color.White ? 1 : -1;
-
-            int rank = this.Move.Target.Position.Rank + offsetPlayer;
-            int fileFirst = this.Move.Target.Position.File + 1;
-            int fileSecond = this.Move.Target.Position.File - 1;
-
-            var firstAllowedPosition = Factory.GetPosition(rank, fileFirst);
-            var secondAllowedPosition = Factory.GetPosition(rank, fileSecond);
-
-            positions.Add(firstAllowedPosition);
-            positions.Add(secondAllowedPosition);
-
-            return positions;
         }
 
         private void UpdateHistory(Square oldSource, Square oldTarget, Board oldBoard)
