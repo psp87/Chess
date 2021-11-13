@@ -12,6 +12,7 @@
     using Chess.Services.Data.Contracts;
     using Chess.Services.Mapping;
     using Chess.Services.Messaging;
+    using Chess.Services.Messaging.Contracts;
     using Chess.Web.Hubs;
     using Chess.Web.ViewModels;
     using Microsoft.AspNetCore.Builder;
@@ -65,7 +66,8 @@
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
 
             // Application services
-            services.AddTransient<IEmailSender, NullMessageSender>();
+            services.AddTransient<IEmailSender>(x =>
+                ActivatorUtilities.CreateInstance<SendGridEmailSender>(x, this.configuration.GetValue<string>("SendGridApiKey")));
             services.AddTransient<IGameService, GameService>();
             services.AddTransient<IStatsService, StatsService>();
             services.AddTransient<IDrawService, DrawService>();

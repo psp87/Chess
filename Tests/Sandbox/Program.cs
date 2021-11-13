@@ -11,7 +11,6 @@
     using Chess.Data.Models;
     using Chess.Data.Repositories;
     using Chess.Data.Seeding;
-    using Chess.Services.Messaging;
     using CommandLine;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
@@ -72,9 +71,6 @@
             services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(EfDeletableEntityRepository<>));
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
-
-            // Application services
-            services.AddTransient<IEmailSender, NullMessageSender>();
         }
     }
 }
