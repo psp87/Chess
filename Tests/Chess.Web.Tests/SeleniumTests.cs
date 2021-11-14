@@ -30,6 +30,7 @@
                 x => x.GetAttribute("href").EndsWith("/Home/Privacy"));
         }
 
+        [Fact]
         public void Dispose()
         {
             throw new System.NotImplementedException();
