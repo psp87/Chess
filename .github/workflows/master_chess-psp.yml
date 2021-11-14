@@ -15,10 +15,10 @@ jobs:
     steps:
     - uses: actions/checkout@master
 
-    - name: Set up .NET Core
+    - name: Set up .NET 5.0
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '5.0.0'
+        dotnet-version: '5.0.209'
 
     - name: Build with dotnet
       run: dotnet build --configuration Release
