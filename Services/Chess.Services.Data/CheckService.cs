@@ -98,7 +98,7 @@
             var attackSquare = this.board
                 .GetSquareByCoordinates(attackPiece.Position.Rank, attackPiece.Position.File);
 
-            if (attackSquare.IsAttacked.Where(x => x.Color == this.opponent.Color).Any())
+            if (attackSquare.IsAttackedByColor(this.opponent.Color))
             {
                 if ((attackSquare.IsAttacked.Count(x => x.Color == this.opponent.Color) > 1 ||
                     attackSquare.IsAttacked.Where(x => x.Color == this.opponent.Color).First().Symbol != SymbolConstants.King) &&
@@ -178,13 +178,13 @@
         {
             if (square.Piece != null &&
                 square.Piece.Color == this.movingPlayer.Color &&
-                !square.IsAttacked.Where(x => x.Color == this.movingPlayer.Color).Any())
+               !square.IsAttackedByColor(this.movingPlayer.Color))
             {
                 return true;
             }
 
             if (square.Piece == null &&
-                !square.IsAttacked.Where(x => x.Color == this.movingPlayer.Color).Any())
+               !square.IsAttackedByColor(this.movingPlayer.Color))
             {
                 return true;
             }
@@ -226,9 +226,12 @@
 
         private bool IsAbleToBlockWithAttackingPiece(Square square)
         {
-            if (square.IsAttacked.Where(piece => piece.Color == this.opponent.Color &&
-                !piece.IsType(SymbolConstants.King, SymbolConstants.Pawn))
-                .Any())
+            if (square.IsAttackedByPiece(
+                this.opponent.Color,
+                SymbolConstants.Queen,
+                SymbolConstants.Bishop,
+                SymbolConstants.Knight,
+                SymbolConstants.Rook))
             {
                 if (this.IsAnyPieceAbleToMoveWithoutOpenCheck(square))
                 {
