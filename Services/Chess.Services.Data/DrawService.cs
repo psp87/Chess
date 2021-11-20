@@ -49,11 +49,10 @@
                     var currentFigure = board
                         .GetSquareByCoordinates(rank, file).Piece;
 
-                    if (!(currentFigure == null || currentFigure.Symbol == SymbolConstants.King))
+                    if (currentFigure != null &&
+                       !currentFigure.IsType(SymbolConstants.King))
                     {
-                        if (currentFigure.Symbol == SymbolConstants.Pawn ||
-                            currentFigure.Symbol == SymbolConstants.Rook ||
-                            currentFigure.Symbol == SymbolConstants.Queen ||
+                        if (currentFigure.IsType(SymbolConstants.Pawn, SymbolConstants.Rook, SymbolConstants.Queen) ||
                             counterWhite > 1 || counterBlack > 1)
                         {
                             return false;
@@ -111,7 +110,7 @@
 
         public bool IsFiftyMoveDraw(Move move)
         {
-            if (!(move.Target.Piece?.Symbol == SymbolConstants.Pawn) && move.Type != MoveType.Taking)
+            if (!move.Target.Piece.IsType(SymbolConstants.Pawn) && move.Type != MoveType.Taking)
             {
                 this.fiftyMoveCounter += 1;
 

@@ -29,5 +29,7 @@
         bool Move(Position toPosition, Square[][] boardMatrix, int turn, Move move);
 
         bool Take(Position toPosition, Square[][] boardMatrix, int turn, Move move);
+
+        bool IsType(params char[] pieceSymbols);
     }
 }

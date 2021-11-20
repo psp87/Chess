@@ -73,8 +73,9 @@
         public Square GetKingSquare(Color color)
             => this.Matrix
                 .SelectMany(x => x)
-                .FirstOrDefault(x =>
-                    x.Piece?.Symbol == SymbolConstants.King &&
+                .SingleOrDefault(x =>
+                    x.Piece != null &&
+                    x.Piece.IsType(SymbolConstants.King) &&
                     x.Piece.Color == color);
 
         public Square GetSquareByCoordinates(int rank, int file)
