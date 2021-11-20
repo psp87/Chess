@@ -5,7 +5,7 @@
 
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Models;
-    using Chess.Services.Data.Models.Pieces;
+    using Common.Constants;
     using Common.Enums;
 
     public class CheckService : ICheckService
@@ -98,10 +98,10 @@
             var attackSquare = this.board
                 .GetSquareByCoordinates(attackPiece.Position.Rank, attackPiece.Position.File);
 
-            if (attackSquare.IsAttacked.Where(x => x.Color == this.opponent.Color).Any())
+            if (attackSquare.IsAttackedByColor(this.opponent.Color))
             {
                 if ((attackSquare.IsAttacked.Count(x => x.Color == this.opponent.Color) > 1 ||
-                    attackSquare.IsAttacked.Where(x => x.Color == this.opponent.Color).First().GetType() != typeof(King)) &&
+                    attackSquare.IsAttacked.Where(x => x.Color == this.opponent.Color).First().Symbol != SymbolConstants.King) &&
                     this.IsAnyPieceAbleToMoveWithoutOpenCheck(attackSquare))
                 {
                     return true;
@@ -119,7 +119,7 @@
                 .Where(piece => piece.Color == this.movingPlayer.Color)
                 .FirstOrDefault();
 
-            if (!(attackPiece is Knight || attackPiece is Pawn))
+            if (!attackPiece.IsType(SymbolConstants.Knight, SymbolConstants.Pawn))
             {
                 if (attackPiece.Position.Rank == kingSquare.Position.Rank)
                 {
@@ -178,13 +178,13 @@
         {
             if (square.Piece != null &&
                 square.Piece.Color == this.movingPlayer.Color &&
-                !square.IsAttacked.Where(x => x.Color == this.movingPlayer.Color).Any())
+               !square.IsAttackedByColor(this.movingPlayer.Color))
             {
                 return true;
             }
 
             if (square.Piece == null &&
-                !square.IsAttacked.Where(x => x.Color == this.movingPlayer.Color).Any())
+               !square.IsAttackedByColor(this.movingPlayer.Color))
             {
                 return true;
             }
@@ -226,8 +226,12 @@
 
         private bool IsAbleToBlockWithAttackingPiece(Square square)
         {
-            if (square.IsAttacked.Where(piece => piece.Color == this.opponent.Color &&
-                !(piece is King || piece is Pawn)).Any())
+            if (square.IsAttackedByPiece(
+                this.opponent.Color,
+                SymbolConstants.Queen,
+                SymbolConstants.Bishop,
+                SymbolConstants.Knight,
+                SymbolConstants.Rook))
             {
                 if (this.IsAnyPieceAbleToMoveWithoutOpenCheck(square))
                 {
@@ -267,7 +271,9 @@
 
         private bool IsOpponentPawn(Square square)
         {
-            if (square.Piece is Pawn && square.Piece.Color == this.opponent.Color)
+            if (square.Piece != null &&
+                square.Piece.IsType(SymbolConstants.Pawn) &&
+                square.Piece.Color == this.opponent.Color)
             {
                 return true;
             }
