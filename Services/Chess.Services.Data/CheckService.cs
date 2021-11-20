@@ -119,8 +119,7 @@
                 .Where(piece => piece.Color == this.movingPlayer.Color)
                 .FirstOrDefault();
 
-            if (!(attackPiece.Symbol == SymbolConstants.Knight ||
-                  attackPiece.Symbol == SymbolConstants.Pawn))
+            if (!attackPiece.IsType(SymbolConstants.Knight, SymbolConstants.Pawn))
             {
                 if (attackPiece.Position.Rank == kingSquare.Position.Rank)
                 {
@@ -228,7 +227,8 @@
         private bool IsAbleToBlockWithAttackingPiece(Square square)
         {
             if (square.IsAttacked.Where(piece => piece.Color == this.opponent.Color &&
-                !(piece.Symbol == SymbolConstants.King || piece.Symbol == SymbolConstants.Pawn)).Any())
+                !piece.IsType(SymbolConstants.King, SymbolConstants.Pawn))
+                .Any())
             {
                 if (this.IsAnyPieceAbleToMoveWithoutOpenCheck(square))
                 {
@@ -268,7 +268,8 @@
 
         private bool IsOpponentPawn(Square square)
         {
-            if (square.Piece.Symbol == SymbolConstants.Pawn &&
+            if (square.Piece != null &&
+                square.Piece.IsType(SymbolConstants.Pawn) &&
                 square.Piece.Color == this.opponent.Color)
             {
                 return true;

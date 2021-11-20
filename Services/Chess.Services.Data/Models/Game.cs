@@ -174,7 +174,7 @@
         private bool ValidEnPassant()
         {
             if (this.ValidTargetSquare() &&
-                this.Move.Source.Piece.Symbol == SymbolConstants.Pawn &&
+                this.Move.Source.Piece.IsType(SymbolConstants.Pawn) &&
                 this.ValidSourcePosition())
             {
                 return true;
@@ -279,7 +279,7 @@
 
         private void IsPawnPromotion(string targetFen)
         {
-            if (this.Move.Target.Piece?.Symbol == SymbolConstants.Pawn &&
+            if (this.Move.Target.Piece.IsType(SymbolConstants.Pawn) &&
                 this.Move.Target.Piece.IsLastMove)
             {
                 this.Move.Target.Piece = Factory.GetQueen(this.MovingPlayer.Color);
