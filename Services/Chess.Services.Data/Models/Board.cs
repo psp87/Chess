@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using Chess.Services.Data.Models.Pieces;
     using Chess.Services.Data.Models.Pieces.Contracts;
     using Common.Constants;
     using Common.Enums;
@@ -75,7 +74,7 @@
             => this.Matrix
                 .SelectMany(x => x)
                 .FirstOrDefault(x =>
-                    x.Piece is King &&
+                    x.Piece?.Symbol == SymbolConstants.King &&
                     x.Piece.Color == color);
 
         public Square GetSquareByCoordinates(int rank, int file)

@@ -4,7 +4,7 @@
 
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Dtos;
-    using Chess.Services.Data.Models.Pieces;
+    using Common.Constants;
     using Common.Enums;
 
     public class Game
@@ -182,7 +182,7 @@
         private bool ValidEnPassant()
         {
             if (this.ValidTargetSquare() &&
-                this.Move.Source.Piece is Pawn &&
+                this.Move.Source.Piece.Symbol == SymbolConstants.Pawn &&
                 this.ValidSourcePosition())
             {
                 return true;
@@ -244,14 +244,11 @@
 
         private void IsGameOver(string targetFen)
         {
-            if (this.checkService
-                .IsCheck(this.Opponent, this.ChessBoard))
+            if (this.checkService.IsCheck(this.Opponent, this.ChessBoard))
             {
-                this.notificationService
-                    .SendCheck(this.MovingPlayer);
+                this.notificationService.SendCheck(this.MovingPlayer);
 
-                if (this.checkService
-                    .IsCheckmate(this.ChessBoard, this.MovingPlayer, this.Opponent, this))
+                if (this.checkService.IsCheckmate(this.ChessBoard, this.MovingPlayer, this.Opponent, this))
                 {
                     this.GameOver = GameOver.Checkmate;
                 }
@@ -302,7 +299,8 @@
 
         private void IsPawnPromotion(string targetFen)
         {
-            if (this.Move.Target.Piece is Pawn && this.Move.Target.Piece.IsLastMove)
+            if (this.Move.Target.Piece?.Symbol == SymbolConstants.Pawn &&
+                this.Move.Target.Piece.IsLastMove)
             {
                 this.Move.Target.Piece = Factory.GetQueen(this.MovingPlayer.Color);
                 this.Move.Type = MoveType.PawnPromotion;
