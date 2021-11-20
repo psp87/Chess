@@ -51,6 +51,16 @@
                     x.Name.Equals(piece.Name))
                 > 1;
 
+        public bool IsAttackedByColor(Color color)
+            => this.IsAttacked
+                .Where(x => x.Color == color)
+                .Any();
+
+        public bool IsAttackedByPiece(Color color, params char[] pieceSymbols)
+            => this.IsAttacked
+                .Where(x => x.Color == color && x.IsType(pieceSymbols))
+                .Any();
+
         public override string ToString()
         {
             return this.Name.ToLower();

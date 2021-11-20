@@ -98,7 +98,8 @@
                     var lastPiece = matrix[this.Position.Rank][lastPiecePosition].Piece;
 
                     if (this.OccupiedSquaresCheck(to, matrix) &&
-                        lastPiece is Rook &&
+                        lastPiece != null &&
+                        lastPiece.IsType(SymbolConstants.Rook) &&
                         lastPiece.IsFirstMove &&
                         !firstSquareOnWay.IsAttacked.Where(x => x.Color != this.Color).Any() &&
                         !secondSquareOnWay.IsAttacked.Where(x => x.Color != this.Color).Any())

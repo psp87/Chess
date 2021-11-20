@@ -4,7 +4,7 @@
 
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Dtos;
-    using Chess.Services.Data.Models.Pieces;
+    using Common.Constants;
     using Common.Enums;
 
     public class Game
@@ -68,10 +68,8 @@
             if (this.MovePiece() || this.TakePiece() || this.EnPassantTake())
             {
                 this.IsPawnPromotion(targetFen);
-                this.notificationService
-                    .ClearCheck(this.MovingPlayer, this.Opponent);
-                this.checkService
-                    .IsCheck(this.Opponent, this.ChessBoard);
+                this.notificationService.ClearCheck(this.MovingPlayer, this.Opponent);
+                this.checkService.IsCheck(this.Opponent, this.ChessBoard);
                 this.UpdateHistory(oldSource, oldTarget, oldBoard);
                 this.IsGameOver(targetFen);
                 this.ChangeTurns();
@@ -80,8 +78,7 @@
                 return true;
             }
 
-            this.notificationService
-                .InvalidMove(oldIsCheck, this.MovingPlayer);
+            this.notificationService.InvalidMove(oldIsCheck, this.MovingPlayer);
 
             return false;
         }
@@ -89,20 +86,17 @@
         public bool TryMove(Player player, Move move)
         {
             var oldPiece = move.Target.Piece;
-            this.ChessBoard
-                .ShiftPiece(move.Source, move.Target);
+            this.ChessBoard.ShiftPiece(move.Source, move.Target);
 
             if (this.checkService.IsCheck(player, this.ChessBoard))
             {
-                this.ChessBoard
-                    .ShiftPiece(move.Target, move.Source, oldPiece);
+                this.ChessBoard.ShiftPiece(move.Target, move.Source, oldPiece);
                 return false;
             }
 
             if (player == this.Opponent)
             {
-                this.ChessBoard
-                    .ShiftPiece(move.Target, move.Source, oldPiece);
+                this.ChessBoard.ShiftPiece(move.Target, move.Source, oldPiece);
             }
 
             return true;
@@ -148,8 +142,7 @@
                 this.MovingPlayer.TakeFigure(piece.Name);
                 this.MovingPlayer.Points += piece.Points;
                 this.Move.Type = MoveType.Taking;
-                this.notificationService
-                    .UpdateTakenPiecesHistory(this.MovingPlayer, piece.Name);
+                this.notificationService.UpdateTakenPiecesHistory(this.MovingPlayer, piece.Name);
 
                 return true;
             }
@@ -171,8 +164,7 @@
                 this.MovingPlayer.TakeFigure(this.Move.Target.Piece.Name);
                 this.MovingPlayer.Points += this.Move.Target.Piece.Points;
                 this.Move.EnPassantArgs.SquareAvailable = null;
-                this.notificationService
-                    .UpdateTakenPiecesHistory(this.MovingPlayer, this.Move.Target.Piece.Name);
+                this.notificationService.UpdateTakenPiecesHistory(this.MovingPlayer, this.Move.Target.Piece.Name);
                 return true;
             }
 
@@ -182,7 +174,7 @@
         private bool ValidEnPassant()
         {
             if (this.ValidTargetSquare() &&
-                this.Move.Source.Piece is Pawn &&
+                this.Move.Source.Piece.IsType(SymbolConstants.Pawn) &&
                 this.ValidSourcePosition())
             {
                 return true;
@@ -225,15 +217,11 @@
                     this.Move.Source.Position.Rank,
                     this.Move.Target.Position.File);
 
-            var neighbourPiece = neighbourSquare.Piece;
-
-            this.ChessBoard
-                .ShiftEnPassant(this.Move.Source, this.Move.Target, neighbourSquare);
+            this.ChessBoard.ShiftEnPassant(this.Move.Source, this.Move.Target, neighbourSquare);
 
             if (this.checkService.IsCheck(this.MovingPlayer, this.ChessBoard))
             {
-                this.ChessBoard
-                    .ShiftEnPassant(this.Move.Target, this.Move.Source, neighbourSquare, neighbourPiece);
+                this.ChessBoard.ShiftEnPassant(this.Move.Target, this.Move.Source, neighbourSquare, neighbourSquare.Piece);
                 return false;
             }
 
@@ -244,70 +232,59 @@
 
         private void IsGameOver(string targetFen)
         {
-            if (this.checkService
-                .IsCheck(this.Opponent, this.ChessBoard))
+            if (this.checkService.IsCheck(this.Opponent, this.ChessBoard))
             {
-                this.notificationService
-                    .SendCheck(this.MovingPlayer);
+                this.notificationService.SendCheck(this.MovingPlayer);
 
-                if (this.checkService
-                    .IsCheckmate(this.ChessBoard, this.MovingPlayer, this.Opponent, this))
+                if (this.checkService.IsCheckmate(this.ChessBoard, this.MovingPlayer, this.Opponent, this))
                 {
                     this.GameOver = GameOver.Checkmate;
                 }
             }
 
             this.MovingPlayer.IsThreefoldDrawAvailable = false;
-            this.notificationService
-                .SendThreefoldDrawAvailability(this.MovingPlayer, false);
+            this.notificationService.SendThreefoldDrawAvailability(this.MovingPlayer, false);
 
-            if (this.drawService
-                .IsThreefoldRepetionDraw(targetFen))
+            if (this.drawService.IsThreefoldRepetionDraw(targetFen))
             {
                 this.Opponent.IsThreefoldDrawAvailable = true;
-                this.notificationService
-                    .SendThreefoldDrawAvailability(this.MovingPlayer, true);
+                this.notificationService.SendThreefoldDrawAvailability(this.MovingPlayer, true);
             }
 
-            if (this.drawService
-                .IsFivefoldRepetitionDraw(targetFen))
+            if (this.drawService.IsFivefoldRepetitionDraw(targetFen))
             {
                 this.GameOver = GameOver.FivefoldDraw;
             }
 
-            if (this.drawService
-                .IsFiftyMoveDraw(this.Move))
+            if (this.drawService.IsFiftyMoveDraw(this.Move))
             {
                 this.GameOver = GameOver.FiftyMoveDraw;
             }
 
-            if (this.drawService
-                .IsDraw(this.ChessBoard))
+            if (this.drawService.IsDraw(this.ChessBoard))
             {
                 this.GameOver = GameOver.Draw;
             }
 
-            if (this.drawService
-                .IsStalemate(this.ChessBoard, this.Opponent))
+            if (this.drawService.IsStalemate(this.ChessBoard, this.Opponent))
             {
                 this.GameOver = GameOver.Stalemate;
             }
 
             if (this.GameOver.ToString() != GameOver.None.ToString())
             {
-                this.notificationService
-                    .SendGameOver(this.MovingPlayer, this.GameOver);
+                this.notificationService.SendGameOver(this.MovingPlayer, this.GameOver);
             }
         }
 
         private void IsPawnPromotion(string targetFen)
         {
-            if (this.Move.Target.Piece is Pawn && this.Move.Target.Piece.IsLastMove)
+            if (this.Move.Target.Piece.IsType(SymbolConstants.Pawn) &&
+                this.Move.Target.Piece.IsLastMove)
             {
                 this.Move.Target.Piece = Factory.GetQueen(this.MovingPlayer.Color);
                 this.Move.Type = MoveType.PawnPromotion;
-                this.utilityService
-                    .GetPawnPromotionFenString(targetFen, this.MovingPlayer, this.Move);
+                this.utilityService.GetPawnPromotionFenString(targetFen, this.MovingPlayer, this.Move);
                 this.ChessBoard.CalculateAttackedSquares();
             }
         }
@@ -339,8 +316,7 @@
                     Move = this.Move,
                 });
 
-            this.notificationService
-                .UpdateMoveHistory(this.MovingPlayer, notation);
+            this.notificationService.UpdateMoveHistory(this.MovingPlayer, notation);
         }
     }
 }

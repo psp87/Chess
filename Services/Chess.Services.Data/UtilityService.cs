@@ -6,7 +6,7 @@
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Dtos;
     using Chess.Services.Data.Models;
-    using Chess.Services.Data.Models.Pieces;
+    using Common.Constants;
     using Common.Enums;
 
     public class UtilityService : IUtilityService
@@ -68,12 +68,9 @@
             var moveNotation = this.GetMoveNotation(model);
             var checkNotation = this.GetCheckNotation(model.Opponent);
 
-            builder
-                .Append(turnNotation);
-            builder
-                .Append(moveNotation);
-            builder
-                .Append(checkNotation);
+            builder.Append(turnNotation);
+            builder.Append(moveNotation);
+            builder.Append(checkNotation);
 
             return builder.ToString();
         }
@@ -100,7 +97,7 @@
                 return this.GetPawnPromotionNotation(model.OldTarget);
             }
 
-            if (model.OldSource.Piece is Pawn)
+            if (model.OldSource.Piece.IsType(SymbolConstants.Pawn))
             {
                 return this.GetPawnMoveNotation(model.OldSource, model.OldTarget);
             }

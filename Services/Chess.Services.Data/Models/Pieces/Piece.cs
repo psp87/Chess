@@ -1,6 +1,7 @@
 ﻿namespace Chess.Services.Data.Models.Pieces
 {
     using System;
+    using System.Linq;
 
     using Chess.Services.Data.Models.Pieces.Contracts;
     using Common.Enums;
@@ -42,6 +43,11 @@
         public abstract bool Move(Position toPosition, Square[][] boardMatrix, int turn, Move move);
 
         public abstract bool Take(Position toPosition, Square[][] boardMatrix, int turn, Move move);
+
+        public bool IsType(params char[] pieceSymbols)
+        {
+            return pieceSymbols.Contains(this.Symbol);
+        }
 
         public override string ToString()
         {
