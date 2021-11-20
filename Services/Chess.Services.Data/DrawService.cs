@@ -4,7 +4,6 @@
 
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Models;
-    using Chess.Services.Data.Models.Pieces;
     using Common.Constants;
     using Common.Enums;
 
@@ -50,9 +49,11 @@
                     var currentFigure = board
                         .GetSquareByCoordinates(rank, file).Piece;
 
-                    if (!(currentFigure == null || currentFigure is King))
+                    if (!(currentFigure == null || currentFigure.Symbol == SymbolConstants.King))
                     {
-                        if (currentFigure is Pawn || currentFigure is Rook || currentFigure is Queen ||
+                        if (currentFigure.Symbol == SymbolConstants.Pawn ||
+                            currentFigure.Symbol == SymbolConstants.Rook ||
+                            currentFigure.Symbol == SymbolConstants.Queen ||
                             counterWhite > 1 || counterBlack > 1)
                         {
                             return false;
@@ -110,7 +111,7 @@
 
         public bool IsFiftyMoveDraw(Move move)
         {
-            if (!(move.Target.Piece is Pawn) && move.Type != MoveType.Taking)
+            if (!(move.Target.Piece?.Symbol == SymbolConstants.Pawn) && move.Type != MoveType.Taking)
             {
                 this.fiftyMoveCounter += 1;
 

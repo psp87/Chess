@@ -6,7 +6,7 @@
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Dtos;
     using Chess.Services.Data.Models;
-    using Chess.Services.Data.Models.Pieces;
+    using Common.Constants;
     using Common.Enums;
 
     public class UtilityService : IUtilityService
@@ -100,7 +100,7 @@
                 return this.GetPawnPromotionNotation(model.OldTarget);
             }
 
-            if (model.OldSource.Piece is Pawn)
+            if (model.OldSource.Piece.Symbol == SymbolConstants.Pawn)
             {
                 return this.GetPawnMoveNotation(model.OldSource, model.OldTarget);
             }

@@ -5,7 +5,7 @@
 
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Models;
-    using Chess.Services.Data.Models.Pieces;
+    using Common.Constants;
     using Common.Enums;
 
     public class CheckService : ICheckService
@@ -101,7 +101,7 @@
             if (attackSquare.IsAttacked.Where(x => x.Color == this.opponent.Color).Any())
             {
                 if ((attackSquare.IsAttacked.Count(x => x.Color == this.opponent.Color) > 1 ||
-                    attackSquare.IsAttacked.Where(x => x.Color == this.opponent.Color).First().GetType() != typeof(King)) &&
+                    attackSquare.IsAttacked.Where(x => x.Color == this.opponent.Color).First().Symbol != SymbolConstants.King) &&
                     this.IsAnyPieceAbleToMoveWithoutOpenCheck(attackSquare))
                 {
                     return true;
@@ -119,7 +119,8 @@
                 .Where(piece => piece.Color == this.movingPlayer.Color)
                 .FirstOrDefault();
 
-            if (!(attackPiece is Knight || attackPiece is Pawn))
+            if (!(attackPiece.Symbol == SymbolConstants.Knight ||
+                  attackPiece.Symbol == SymbolConstants.Pawn))
             {
                 if (attackPiece.Position.Rank == kingSquare.Position.Rank)
                 {
@@ -227,7 +228,7 @@
         private bool IsAbleToBlockWithAttackingPiece(Square square)
         {
             if (square.IsAttacked.Where(piece => piece.Color == this.opponent.Color &&
-                !(piece is King || piece is Pawn)).Any())
+                !(piece.Symbol == SymbolConstants.King || piece.Symbol == SymbolConstants.Pawn)).Any())
             {
                 if (this.IsAnyPieceAbleToMoveWithoutOpenCheck(square))
                 {
@@ -267,7 +268,8 @@
 
         private bool IsOpponentPawn(Square square)
         {
-            if (square.Piece is Pawn && square.Piece.Color == this.opponent.Color)
+            if (square.Piece.Symbol == SymbolConstants.Pawn &&
+                square.Piece.Color == this.opponent.Color)
             {
                 return true;
             }
