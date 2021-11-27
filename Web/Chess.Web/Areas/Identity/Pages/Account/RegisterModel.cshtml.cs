@@ -8,10 +8,10 @@
     using System.Threading.Tasks;
 
     using Chess.Data.Models;
+    using Chess.Services.Messaging.Contracts;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
-    using Microsoft.AspNetCore.Identity.UI.Services;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
     using Microsoft.AspNetCore.WebUtilities;
@@ -70,10 +70,17 @@
                         values: new { area = "Identity", userId = user.Id, code, returnUrl },
                         protocol: this.Request.Scheme);
 
+                    //await this.emailSender.SendEmailAsync(
+                    //    this.Input.Email,
+                    //    "Confirm your email",
+                    //    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
                     await this.emailSender.SendEmailAsync(
+                        "psp87@abv.bg",
+                        "Plamen Petrov ",
                         this.Input.Email,
-                        "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                        "Successful Registration",
+                        "Enjoy playing chess!");
 
                     if (this.userManager.Options.SignIn.RequireConfirmedAccount)
                     {
