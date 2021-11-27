@@ -13,7 +13,7 @@
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Input.Email"></label>
-                <input asp-for="Input.Email" name="email" class="form-control" />
+                <input asp-for="Input.Email" class="form-control" />
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -26,7 +26,7 @@
                 <input asp-for="Input.ConfirmPassword" class="form-control" />
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
-            <button type="submit" class="btn btn-secondary" asp-area="" asp-controller="Email" asp-action="Send">Register</button>
+            <button type="submit" class="btn btn-secondary">Register</button>
         </form>
     </div>
 </div>
