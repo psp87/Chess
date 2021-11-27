@@ -17,9 +17,37 @@
 
         public Square[][] Matrix { get; set; } = Factory.GetMatrix();
 
+        public static int GetSquaresBetween(
+            Position attackPosition,
+            Position kingPosition,
+            AttackType attackType)
+        {
+            if (attackType == AttackType.Rank)
+            {
+                return Math.Abs(attackPosition.File - kingPosition.File) - 1;
+            }
+
+            return Math.Abs(attackPosition.Rank - kingPosition.Rank) - 1;
+        }
+
+        public static AttackType GetAttackType(Position attackPosition, Position kingPosition)
+        {
+            if (attackPosition.Rank == kingPosition.Rank)
+            {
+                return AttackType.Rank;
+            }
+
+            if (attackPosition.File == kingPosition.File)
+            {
+                return AttackType.File;
+            }
+
+            return AttackType.Diagonal;
+        }
+
         public void ArrangePieces()
         {
-            var setup = this.GetStandardSetup();
+            var setup = GetStandardSetup();
 
             foreach (var square in this.Matrix.SelectMany(x => x))
             {
@@ -115,30 +143,7 @@
             return board;
         }
 
-        private void Initialize()
-        {
-            var toggle = Color.White;
-
-            for (int rank = BoardConstants.Rank8; rank <= BoardConstants.Rank1; rank++)
-            {
-                for (int file = BoardConstants.FileA; file <= BoardConstants.FileH; file++)
-                {
-                    this.Matrix[rank][file] = new Square()
-                    {
-                        Position = Factory.GetPosition(rank, file),
-                        Color = toggle,
-                        Name = $"{(char)(file + 'a')}{8 - rank}",
-                    };
-
-                    if (file != 7)
-                    {
-                        toggle = toggle == Color.White ? Color.Black : Color.White;
-                    }
-                }
-            }
-        }
-
-        private Dictionary<string, IPiece> GetStandardSetup()
+        private static Dictionary<string, IPiece> GetStandardSetup()
             => new ()
             {
                 { $"{BoardConstants.FileA},{BoardConstants.Rank1}", Factory.GetRook(Color.White) },
@@ -174,5 +179,28 @@
                 { $"{BoardConstants.FileG},{BoardConstants.Rank8}", Factory.GetKnight(Color.Black) },
                 { $"{BoardConstants.FileH},{BoardConstants.Rank8}", Factory.GetRook(Color.Black) },
             };
+
+        private void Initialize()
+        {
+            var toggle = Color.White;
+
+            for (int rank = BoardConstants.Rank8; rank <= BoardConstants.Rank1; rank++)
+            {
+                for (int file = BoardConstants.FileA; file <= BoardConstants.FileH; file++)
+                {
+                    this.Matrix[rank][file] = new Square()
+                    {
+                        Position = Factory.GetPosition(rank, file),
+                        Color = toggle,
+                        Name = $"{(char)(file + 'a')}{8 - rank}",
+                    };
+
+                    if (file != 7)
+                    {
+                        toggle = toggle == Color.White ? Color.Black : Color.White;
+                    }
+                }
+            }
+        }
     }
 }
