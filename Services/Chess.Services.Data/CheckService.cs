@@ -1,6 +1,5 @@
 ﻿namespace Chess.Services.Data
 {
-    using System;
     using System.Linq;
 
     using Chess.Services.Data.Contracts;
@@ -121,53 +120,37 @@
 
             if (!attackPiece.IsType(SymbolConstants.Knight, SymbolConstants.Pawn))
             {
-                if (attackPiece.Position.Rank == kingSquare.Position.Rank)
+                var attackType = Board.GetAttackType(attackPiece.Position, kingSquare.Position);
+
+                return this.AbleToBlock(attackPiece.Position, kingSquare.Position, attackType);
+            }
+
+            return false;
+        }
+
+        private bool AbleToBlock(Position attack, Position king, AttackType attackType)
+        {
+            var squaresBetween = Board.GetSquaresBetween(attack, king, attackType);
+
+            for (int i = 1; i <= squaresBetween; i++)
+            {
+                var offsetX = attackType == AttackType.File
+                    ? 0
+                    : attack.File - king.File < 0 ? i : -i;
+                int offsetY = attackType == AttackType.Rank
+                    ? 0
+                    : attack.Rank - king.Rank < 0 ? i : -i;
+
+                var offsetSquare = this.board
+                    .GetSquareByCoordinates(attack.Rank + offsetY, attack.File + offsetX);
+
+                var canBlock = attackType == AttackType.File
+                    ? this.IsAbleToBlockWithAttackingPiece(offsetSquare)
+                    : this.IsAbleToBlockWithAttackingPiece(offsetSquare) || this.IsAbleToBlockWithPawn(offsetSquare);
+
+                if (canBlock)
                 {
-                    for (int i = 1; i <= this.SquaresBetween(attackPiece.Position.File, kingSquare.Position.File); i++)
-                    {
-                        int offsetX = attackPiece.Position.File - kingSquare.Position.File < 0 ? i : -i;
-                        var offsetSquare = this.board
-                            .GetSquareByCoordinates(attackPiece.Position.Rank, attackPiece.Position.File + offsetX);
-
-                        if (this.IsAbleToBlockWithAttackingPiece(offsetSquare) ||
-                            this.IsAbleToBlockWithPawn(offsetSquare))
-                        {
-                            return true;
-                        }
-                    }
-                }
-
-                if (attackPiece.Position.File == kingSquare.Position.File)
-                {
-                    for (int i = 1; i <= this.SquaresBetween(attackPiece.Position.Rank, kingSquare.Position.Rank); i++)
-                    {
-                        int offsetY = attackPiece.Position.Rank - kingSquare.Position.Rank < 0 ? i : -i;
-                        var offsetSquare = this.board
-                            .GetSquareByCoordinates(attackPiece.Position.Rank + offsetY, attackPiece.Position.File);
-
-                        if (this.IsAbleToBlockWithAttackingPiece(offsetSquare))
-                        {
-                            return true;
-                        }
-                    }
-                }
-
-                if (attackPiece.Position.Rank != kingSquare.Position.Rank &&
-                    attackPiece.Position.File != kingSquare.Position.File)
-                {
-                    for (int i = 1; i <= this.SquaresBetween(attackPiece.Position.Rank, kingSquare.Position.Rank); i++)
-                    {
-                        int offsetX = attackPiece.Position.File - kingSquare.Position.File < 0 ? i : -i;
-                        int offsetY = attackPiece.Position.Rank - kingSquare.Position.Rank < 0 ? i : -i;
-                        var offsetSquare = this.board
-                            .GetSquareByCoordinates(attackPiece.Position.Rank + offsetY, attackPiece.Position.File + offsetX);
-
-                        if (this.IsAbleToBlockWithAttackingPiece(offsetSquare) ||
-                            this.IsAbleToBlockWithPawn(offsetSquare))
-                        {
-                            return true;
-                        }
-                    }
+                    return true;
                 }
             }
 
@@ -292,11 +275,6 @@
             }
 
             return true;
-        }
-
-        private int SquaresBetween(int a, int b)
-        {
-            return Math.Abs(a - b) - 1;
         }
     }
 }
