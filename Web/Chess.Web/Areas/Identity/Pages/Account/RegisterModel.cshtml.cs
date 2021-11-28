@@ -8,7 +8,9 @@
     using System.Threading.Tasks;
 
     using Chess.Data.Models;
+    using Chess.Services.Messaging;
     using Chess.Services.Messaging.Contracts;
+    using Common.Constants;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
@@ -76,11 +78,13 @@
                     //    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     await this.emailSender.SendEmailAsync(
-                        "psp87@abv.bg",
-                        "Plamen Petrov ",
-                        this.Input.Email,
-                        "Successful Registration",
-                        "Enjoy playing chess!");
+                        new MailMessageBuilder()
+                        .From(MailConstants.From)
+                        .FromName(MailConstants.FromName)
+                        .To(this.Input.Email)
+                        .Subject(MailConstants.Subject)
+                        .HtmlContent(MailConstants.Body)
+                        .Build());
 
                     if (this.userManager.Options.SignIn.RequireConfirmedAccount)
                     {
