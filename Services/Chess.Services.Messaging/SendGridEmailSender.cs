@@ -1,7 +1,6 @@
 ﻿namespace Chess.Services.Messaging
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -18,25 +17,19 @@
             this.client = new SendGridClient(apiKey);
         }
 
-        public async Task SendEmailAsync(
-            string from,
-            string fromName,
-            string to,
-            string subject,
-            string htmlContent,
-            IEnumerable<EmailAttachment> attachments = null)
+        public async Task SendEmailAsync(MailMessage mailMessage)
         {
-            if (string.IsNullOrWhiteSpace(subject) && string.IsNullOrWhiteSpace(htmlContent))
+            if (string.IsNullOrWhiteSpace(mailMessage.Subject) && string.IsNullOrWhiteSpace(mailMessage.HtmlContent))
             {
                 throw new ArgumentException("Subject and message should be provided.");
             }
 
-            var fromAddress = new EmailAddress(from, fromName);
-            var toAddress = new EmailAddress(to);
-            var message = MailHelper.CreateSingleEmail(fromAddress, toAddress, subject, null, htmlContent);
-            if (attachments?.Any() == true)
+            var fromAddress = new EmailAddress(mailMessage.From, mailMessage.FromName);
+            var toAddress = new EmailAddress(mailMessage.To);
+            var message = MailHelper.CreateSingleEmail(fromAddress, toAddress, mailMessage.Subject, null, mailMessage.HtmlContent);
+            if (mailMessage.Attachments?.Any() == true)
             {
-                foreach (var attachment in attachments)
+                foreach (var attachment in mailMessage.Attachments)
                 {
                     message.AddAttachment(attachment.FileName, Convert.ToBase64String(attachment.Content), attachment.MimeType);
                 }
