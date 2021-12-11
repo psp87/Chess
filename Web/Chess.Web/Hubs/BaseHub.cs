@@ -108,18 +108,18 @@
         private int GetUserRating(Player player)
         {
             using var scope = this.serviceProvider.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ChessDbContext>();
 
-            return dbContext.Stats.Where(x => x.Owner.Id == player.UserId).Select(x => x.Rating).FirstOrDefault();
+            return dbContext.Stats.Where(x => x.User.Id == player.UserId).Select(x => x.EloRating).FirstOrDefault();
         }
 
         private void UpdateStats(Player sender, Player opponent, Game game, GameOver gameOver)
         {
             using var scope = this.serviceProvider.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ChessDbContext>();
 
-            var senderStats = dbContext.Stats.Where(x => x.Owner.Id == sender.UserId).FirstOrDefault();
-            var opponentStats = dbContext.Stats.Where(x => x.Owner.Id == opponent.UserId).FirstOrDefault();
+            var senderStats = dbContext.Stats.Where(x => x.User.Id == sender.UserId).FirstOrDefault();
+            var opponentStats = dbContext.Stats.Where(x => x.User.Id == opponent.UserId).FirstOrDefault();
 
             senderStats.Games += 1;
             opponentStats.Games += 1;
@@ -127,17 +127,17 @@
             if (gameOver == GameOver.Checkmate || gameOver == GameOver.Resign || gameOver == GameOver.Disconnected)
             {
                 var utilityService = this.serviceProvider.GetRequiredService<IUtilityService>();
-                int points = utilityService.CalculateRatingPoints(senderStats.Rating, opponentStats.Rating);
+                int points = utilityService.CalculateRatingPoints(senderStats.EloRating, opponentStats.EloRating);
 
-                senderStats.Wins += 1;
-                opponentStats.Losses += 1;
-                senderStats.Rating += points;
-                opponentStats.Rating -= points;
+                senderStats.Win += 1;
+                opponentStats.Loss += 1;
+                senderStats.EloRating += points;
+                opponentStats.EloRating -= points;
             }
             else if (gameOver == GameOver.Stalemate || gameOver == GameOver.Draw || gameOver == GameOver.ThreefoldDraw || gameOver == GameOver.FivefoldDraw)
             {
-                senderStats.Draws += 1;
-                opponentStats.Draws += 1;
+                senderStats.Draw += 1;
+                opponentStats.Draw += 1;
             }
 
             dbContext.Stats.Update(senderStats);

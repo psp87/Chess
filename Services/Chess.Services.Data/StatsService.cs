@@ -18,17 +18,17 @@
 
         public T GetUserStats<T>(string userId)
         {
-            return this.statsRepository.All().Where(x => x.OwnerId == userId).To<T>().FirstOrDefault();
+            return this.statsRepository.All().Where(x => x.UserId == userId).To<T>().FirstOrDefault();
         }
 
         public bool IsStatsInitiated(string id)
         {
-            return this.statsRepository.All().Where(x => x.Owner.Id == id).Any();
+            return this.statsRepository.All().Where(x => x.User.Id == id).Any();
         }
 
         public int GetUserRating(string userId)
         {
-            return this.statsRepository.All().Where(x => x.OwnerId == userId).Select(x => x.Rating).FirstOrDefault();
+            return this.statsRepository.All().Where(x => x.UserId == userId).Select(x => x.EloRating).FirstOrDefault();
         }
 
         public int GetTotalGames()
@@ -40,14 +40,14 @@
         {
             int maxGames = this.statsRepository.All().Max(x => x.Games);
 
-            return this.statsRepository.All().Where(x => x.Games == maxGames).Select(x => x.Owner.UserName).FirstOrDefault();
+            return this.statsRepository.All().Where(x => x.Games == maxGames).Select(x => x.User.UserName).FirstOrDefault();
         }
 
         public string GetMostWinsUser()
         {
-            int maxWins = this.statsRepository.All().Max(x => x.Wins);
+            int maxWins = this.statsRepository.All().Max(x => x.Win);
 
-            return this.statsRepository.All().Where(x => x.Wins == maxWins).Select(x => x.Owner.UserName).FirstOrDefault();
+            return this.statsRepository.All().Where(x => x.Win == maxWins).Select(x => x.User.UserName).FirstOrDefault();
         }
 
         public void InitiateStats(string id)
@@ -55,11 +55,11 @@
             var stats = new Stats
             {
                 Games = 0,
-                Wins = 0,
-                Draws = 0,
-                Losses = 0,
-                OwnerId = id,
-                Rating = 1200,
+                Win = 0,
+                Draw = 0,
+                Loss = 0,
+                UserId = id,
+                EloRating = 1200,
             };
 
             this.statsRepository.AddAsync(stats);

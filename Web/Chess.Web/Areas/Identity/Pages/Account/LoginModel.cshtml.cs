@@ -16,11 +16,11 @@
     [AllowAnonymous]
     public class LoginModel : PageModel
     {
-        private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly SignInManager<ChessUser> signInManager;
         private readonly ILogger<LoginModel> logger;
 
         public LoginModel(
-            SignInManager<ApplicationUser> signInManager,
+            SignInManager<ChessUser> signInManager,
             ILogger<LoginModel> logger)
         {
             this.signInManager = signInManager;
