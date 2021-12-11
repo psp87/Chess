@@ -6,9 +6,9 @@
     using Chess.Data.Common.Models;
     using Microsoft.AspNetCore.Identity;
 
-    public class ApplicationUser : IdentityUser, IAuditInfo, IDeletableEntity
+    public class ChessUser : IdentityUser, IAuditInfo, IDeletableEntity
     {
-        public ApplicationUser()
+        public ChessUser()
         {
             this.Id = Guid.NewGuid().ToString();
             this.Roles = new HashSet<IdentityUserRole<string>>();

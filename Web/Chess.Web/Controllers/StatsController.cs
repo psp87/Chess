@@ -15,9 +15,9 @@
     public class StatsController : BaseController
     {
         private readonly IStatsService statsService;
-        private readonly UserManager<ApplicationUser> userManager;
+        private readonly UserManager<ChessUser> userManager;
 
-        public StatsController(IStatsService statsService, UserManager<ApplicationUser> userManager)
+        public StatsController(IStatsService statsService, UserManager<ChessUser> userManager)
         {
             this.statsService = statsService;
             this.userManager = userManager;

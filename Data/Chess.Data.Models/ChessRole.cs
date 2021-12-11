@@ -6,14 +6,14 @@ namespace Chess.Data.Models
     using Chess.Data.Common.Models;
     using Microsoft.AspNetCore.Identity;
 
-    public class ApplicationRole : IdentityRole, IAuditInfo, IDeletableEntity
+    public class ChessRole : IdentityRole, IAuditInfo, IDeletableEntity
     {
-        public ApplicationRole()
+        public ChessRole()
             : this(null)
         {
         }
 
-        public ApplicationRole(string name)
+        public ChessRole(string name)
             : base(name)
         {
             this.Id = Guid.NewGuid().ToString();

@@ -9,9 +9,9 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
 
-    public class ApplicationDbContextSeeder : ISeeder
+    public class ChessDbContextSeeder : ISeeder
     {
-        public async Task SeedAsync(ApplicationDbContext dbContext, IServiceProvider serviceProvider)
+        public async Task SeedAsync(ChessDbContext dbContext, IServiceProvider serviceProvider)
         {
             if (dbContext == null)
             {
@@ -23,7 +23,7 @@
                 throw new ArgumentNullException(nameof(serviceProvider));
             }
 
-            var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger(typeof(ApplicationDbContextSeeder));
+            var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger(typeof(ChessDbContextSeeder));
 
             var seeders = this.GetInstances<ISeeder>();
 

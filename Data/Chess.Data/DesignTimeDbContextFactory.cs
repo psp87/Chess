@@ -2,24 +2,24 @@
 {
     using System.IO;
 
+    using Chess.Common.Extensions;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Design;
     using Microsoft.Extensions.Configuration;
 
-    public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
+    public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<ChessDbContext>
     {
-        public ApplicationDbContext CreateDbContext(string[] args)
+        public ChessDbContext CreateDbContext(string[] args)
         {
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true)
                 .Build();
 
-            var builder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
-            builder.UseSqlServer(connectionString);
+            var builder = new DbContextOptionsBuilder<ChessDbContext>();
+            builder.UseSqlServer(configuration.GetChessDbConnectionString());
 
-            return new ApplicationDbContext(builder.Options);
+            return new ChessDbContext(builder.Options);
         }
     }
 }

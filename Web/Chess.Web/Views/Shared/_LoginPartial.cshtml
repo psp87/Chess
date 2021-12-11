@@ -1,8 +1,8 @@
 ﻿@using Chess.Data.Models
 @using Chess.Common.Constants
 @using Microsoft.AspNetCore.Identity
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ChessUser> SignInManager
+@inject UserManager<ChessUser> UserManager
 
 <ul class="navbar-nav">
     @if (this.SignInManager.IsSignedIn(this.User))
