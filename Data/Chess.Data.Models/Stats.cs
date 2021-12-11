@@ -7,16 +7,16 @@
     {
         public int Games { get; set; }
 
-        public int Wins { get; set; }
+        public int Win { get; set; }
 
-        public int Draws { get; set; }
+        public int Draw { get; set; }
 
-        public int Losses { get; set; }
+        public int Loss { get; set; }
 
-        public int Rating { get; set; }
+        public int EloRating { get; set; }
 
-        public string OwnerId { get; set; }
+        public string UserId { get; set; }
 
-        public virtual ApplicationUser Owner { get; set; }
+        public virtual ChessUser User { get; set; }
     }
 }

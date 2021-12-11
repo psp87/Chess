@@ -8,12 +8,12 @@
 
     public class DbQueryRunner : IDbQueryRunner
     {
-        public DbQueryRunner(ApplicationDbContext context)
+        public DbQueryRunner(ChessDbContext context)
         {
             this.Context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public ApplicationDbContext Context { get; set; }
+        public ChessDbContext Context { get; set; }
 
         public Task RunQueryAsync(string query, params object[] parameters)
         {
