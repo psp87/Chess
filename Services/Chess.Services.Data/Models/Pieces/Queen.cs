@@ -1,13 +1,13 @@
 ﻿namespace Chess.Services.Data.Models.Pieces
 {
+    using Chess.Common.Constants;
+    using Chess.Common.Enums;
     using Chess.Services.Data.Models.Pieces.Helpers;
-    using Common.Constants;
-    using Common.Enums;
 
     public class Queen : Piece
     {
-        private RookBehaviour rook;
-        private BishopBahaviour bishop;
+        private readonly RookBehaviour rook;
+        private readonly BishopBahaviour bishop;
 
         public Queen(Color color)
             : base(color)

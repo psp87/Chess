@@ -2,10 +2,10 @@
 {
     using System;
 
+    using Chess.Common.Constants;
+    using Chess.Common.Enums;
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Dtos;
-    using Common.Constants;
-    using Common.Enums;
 
     public class Game
     {

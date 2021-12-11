@@ -1,4 +1,4 @@
-﻿namespace Common.Extensions
+﻿namespace Chess.Common.Extensions
 {
     using Microsoft.Extensions.Configuration;
 

@@ -2,7 +2,7 @@
 {
     using System;
 
-    using Common.Enums;
+    using Chess.Common.Enums;
 
     public class MoveArgs : EventArgs
     {

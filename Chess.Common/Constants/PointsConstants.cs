@@ -1,4 +1,4 @@
-﻿namespace Common.Constants
+﻿namespace Chess.Common.Constants
 {
     public class PointsConstants
     {

@@ -2,6 +2,8 @@
 {
     using System.Reflection;
 
+    using Chess.Common.Configuration;
+    using Chess.Common.Extensions;
     using Chess.Data;
     using Chess.Data.Common;
     using Chess.Data.Common.Repositories;
@@ -15,8 +17,6 @@
     using Chess.Services.Messaging.Contracts;
     using Chess.Web.Hubs;
     using Chess.Web.ViewModels;
-    using Common.Configuration;
-    using Common.Extensions;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;

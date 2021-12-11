@@ -1,11 +1,10 @@
-﻿using Common.Constants;
-
-namespace Chess.Data.Seeding
+﻿namespace Chess.Data.Seeding
 {
     using System;
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Chess.Common.Constants;
     using Chess.Data.Models;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.Extensions.DependencyInjection;
