@@ -11,7 +11,7 @@
     public class EfDeletableEntityRepository<TEntity> : EfRepository<TEntity>, IDeletableEntityRepository<TEntity>
         where TEntity : class, IDeletableEntity
     {
-        public EfDeletableEntityRepository(ApplicationDbContext context)
+        public EfDeletableEntityRepository(ChessDbContext context)
             : base(context)
         {
         }

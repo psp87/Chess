@@ -37,11 +37,11 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options => options
-                .UseSqlServer(this.configuration.GetConnectionString("defaultConnection")));
+            services.AddDbContext<ChessDbContext>(options => options
+                .UseSqlServer(this.configuration.GetChessDbConnectionString()));
 
-            services.AddDefaultIdentity<ApplicationUser>(IdentityOptionsProvider.GetIdentityOptions)
-                .AddRoles<ApplicationRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddDefaultIdentity<ChessUser>(IdentityOptionsProvider.GetIdentityOptions)
+                .AddRoles<ChessRole>().AddEntityFrameworkStores<ChessDbContext>();
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -71,8 +71,9 @@
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
 
             // Application services
-            services.AddTransient<IEmailSender>(x =>
-                ActivatorUtilities.CreateInstance<SendGridEmailSender>(x, this.configuration.GetValue<string>("SendGridApiKey")));
+            services.AddTransient<IEmailSender>(x => new SendGridEmailSender(this.configuration.GetValue<string>("SendGridApiKey")));
+            //services.AddTransient<IEmailSender>(x =>
+            //    ActivatorUtilities.CreateInstance<SendGridEmailSender>(x, this.configuration.GetValue<string>("SendGridApiKey")));
             services.AddTransient<IGameService, GameService>();
             services.AddTransient<IStatsService, StatsService>();
             services.AddTransient<IDrawService, DrawService>();
@@ -88,16 +89,16 @@
             // Seed data on application startup
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {
-                var dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var dbContext = serviceScope.ServiceProvider.GetRequiredService<ChessDbContext>();
 
                 if (env.IsDevelopment())
                 {
-                    // dbContext.Database.EnsureDeleted();
-                    // dbContext.Database.EnsureCreated();
+                    //dbContext.Database.EnsureDeleted();
+                    //dbContext.Database.EnsureCreated();
                     dbContext.Database.Migrate();
                 }
 
-                new ApplicationDbContextSeeder().SeedAsync(dbContext, serviceScope.ServiceProvider).GetAwaiter().GetResult();
+                new ChessDbContextSeeder().SeedAsync(dbContext, serviceScope.ServiceProvider).GetAwaiter().GetResult();
             }
 
             if (env.IsDevelopment())

@@ -8,9 +8,9 @@
 
     public class GameService : IGameService
     {
-        private readonly IDeletableEntityRepository<ApplicationUser> usersRepository;
+        private readonly IDeletableEntityRepository<ChessUser> usersRepository;
 
-        public GameService(IDeletableEntityRepository<ApplicationUser> usersRepository)
+        public GameService(IDeletableEntityRepository<ChessUser> usersRepository)
         {
             this.usersRepository = usersRepository;
         }
