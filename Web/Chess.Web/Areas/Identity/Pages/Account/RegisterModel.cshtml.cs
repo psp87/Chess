@@ -3,21 +3,20 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
-    using System.Text;
-    using System.Text.Encodings.Web;
     using System.Threading.Tasks;
 
+    using Chess.Common.Configuration;
+    using Chess.Common.Constants;
     using Chess.Data.Models;
     using Chess.Services.Messaging;
     using Chess.Services.Messaging.Contracts;
-    using Common.Constants;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
-    using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
 
     [AllowAnonymous]
     public class RegisterModel : PageModel
@@ -26,17 +25,20 @@
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ILogger<RegisterModel> logger;
         private readonly IEmailSender emailSender;
+        private readonly EmailConfiguration configuration;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IOptions<EmailConfiguration> options)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.logger = logger;
             this.emailSender = emailSender;
+            this.configuration = options.Value;
         }
 
         [BindProperty]
@@ -64,37 +66,26 @@
                 {
                     this.logger.LogInformation("User created a new account with password.");
 
-                    var code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = this.Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code, returnUrl },
-                        protocol: this.Request.Scheme);
-
-                    //await this.emailSender.SendEmailAsync(
-                    //    this.Input.Email,
-                    //    "Confirm your email",
-                    //    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
                     await this.emailSender.SendEmailAsync(
                         new MailMessageBuilder()
-                        .From(MailConstants.From)
-                        .FromName(MailConstants.FromName)
+                        .From(this.configuration.MyAbvMail)
+                        .FromName(MailConstants.MyName)
                         .To(this.Input.Email)
                         .Subject(MailConstants.Subject)
                         .HtmlContent(MailConstants.Body)
                         .Build());
 
-                    if (this.userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return this.RedirectToPage("RegisterConfirmation", new { email = this.Input.Email, returnUrl });
-                    }
-                    else
-                    {
-                        await this.signInManager.SignInAsync(user, isPersistent: false);
-                        return this.LocalRedirect(returnUrl);
-                    }
+                    await this.emailSender.SendEmailAsync(
+                        new MailMessageBuilder()
+                        .From(this.configuration.MyAbvMail)
+                        .FromName(MailConstants.MyName)
+                        .To(this.configuration.MyGmail)
+                        .Subject("My-chess Registration")
+                        .HtmlContent($"New user ({this.Input.Email}) has been just registered.")
+                        .Build());
+
+                    await this.signInManager.SignInAsync(user, isPersistent: false);
+                    return this.LocalRedirect(returnUrl);
                 }
 
                 foreach (var error in result.Errors)

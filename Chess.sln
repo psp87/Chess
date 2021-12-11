@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.Data", "Data\Chess.Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.Data.Common", "Data\Chess.Data.Common\Chess.Data.Common.csproj", "{D0D59508-CF8B-4656-A344-396C530BB9DF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Chess.Common\Common.csproj", "{A2288C46-0FBF-43B6-80B6-3072FD65BC32}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.Common", "Chess.Common\Chess.Common.csproj", "{A2288C46-0FBF-43B6-80B6-3072FD65BC32}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.Services.Data", "Services\Chess.Services.Data\Chess.Services.Data.csproj", "{4D39C126-3FB5-4B26-B08C-1BF48EFFA23E}"
 EndProject

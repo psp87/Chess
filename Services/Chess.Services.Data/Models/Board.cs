@@ -4,9 +4,9 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Chess.Common.Constants;
+    using Chess.Common.Enums;
     using Chess.Services.Data.Models.Pieces.Contracts;
-    using Common.Constants;
-    using Common.Enums;
 
     public class Board : ICloneable
     {

@@ -3,8 +3,8 @@
     using System;
     using System.Linq;
 
-    using Common.Constants;
-    using Common.Enums;
+    using Chess.Common.Constants;
+    using Chess.Common.Enums;
 
     public class King : Piece
     {
