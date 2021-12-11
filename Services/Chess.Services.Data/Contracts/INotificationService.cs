@@ -2,8 +2,8 @@
 {
     using System;
 
+    using Chess.Common.Enums;
     using Chess.Services.Data.Models;
-    using Common.Enums;
 
     public interface INotificationService
     {

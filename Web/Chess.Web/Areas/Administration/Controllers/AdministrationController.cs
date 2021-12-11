@@ -1,7 +1,7 @@
 ﻿namespace Chess.Web.Areas.Administration.Controllers
 {
+    using Chess.Common.Constants;
     using Chess.Web.Controllers;
-    using Common.Constants;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 

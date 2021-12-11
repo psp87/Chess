@@ -1,7 +1,7 @@
 ﻿namespace Chess.Services.Data.Models.Pieces
 {
-    using Common.Constants;
-    using Common.Enums;
+    using Chess.Common.Constants;
+    using Chess.Common.Enums;
 
     public class Pawn : Piece
     {

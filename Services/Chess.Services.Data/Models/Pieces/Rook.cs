@@ -1,12 +1,12 @@
 ﻿namespace Chess.Services.Data.Models.Pieces
 {
+    using Chess.Common.Constants;
+    using Chess.Common.Enums;
     using Chess.Services.Data.Models.Pieces.Helpers;
-    using Common.Constants;
-    using Common.Enums;
 
     public class Rook : Piece
     {
-        private RookBehaviour rook;
+        private readonly RookBehaviour rook;
 
         public Rook(Color color)
             : base(color)
@@ -20,7 +20,7 @@
 
         public override void IsMoveAvailable(Square[][] matrix)
         {
-            this.IsMovable = this.rook.IsMoveAvailable(this, matrix) ? true : false;
+            this.IsMovable = this.rook.IsMoveAvailable(this, matrix);
         }
 
         public override void Attacking(Square[][] matrix)

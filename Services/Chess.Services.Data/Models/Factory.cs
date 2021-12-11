@@ -1,11 +1,11 @@
 ﻿namespace Chess.Services.Data.Models
 {
+    using Chess.Common.Constants;
+    using Chess.Common.Enums;
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Models.Pieces;
     using Chess.Services.Data.Models.Pieces.Contracts;
     using Chess.Services.Data.Models.Pieces.Helpers;
-    using Common.Constants;
-    using Common.Enums;
 
     public class Factory
     {
@@ -16,7 +16,7 @@
             ICheckService checkService,
             IDrawService drawService,
             IUtilityService utilityService)
-            => new Game(
+            => new (
                 player1,
                 player2,
                 notificationService,
