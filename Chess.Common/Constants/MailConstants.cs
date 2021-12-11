@@ -2,9 +2,7 @@
 {
     public class MailConstants
     {
-        public const string From = "psp87@abv.bg";
-
-        public const string FromName = "Plamen Petrov";
+        public const string MyName = "Plamen Petrov";
 
         public const string Subject = "My-chess Successful Registration";
 

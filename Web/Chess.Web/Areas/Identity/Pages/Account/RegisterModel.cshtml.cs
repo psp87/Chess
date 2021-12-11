@@ -10,7 +10,9 @@
     using Chess.Data.Models;
     using Chess.Services.Messaging;
     using Chess.Services.Messaging.Contracts;
+    using Common.Configuration;
     using Common.Constants;
+    using Common.Extensions;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
@@ -18,6 +20,7 @@
     using Microsoft.AspNetCore.Mvc.RazorPages;
     using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
 
     [AllowAnonymous]
     public class RegisterModel : PageModel
@@ -26,17 +29,20 @@
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ILogger<RegisterModel> logger;
         private readonly IEmailSender emailSender;
+        private readonly EmailConfiguration configuration;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IOptions<EmailConfiguration> options)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.logger = logger;
             this.emailSender = emailSender;
+            this.configuration = options.Value;
         }
 
         [BindProperty]
@@ -64,26 +70,35 @@
                 {
                     this.logger.LogInformation("User created a new account with password.");
 
-                    var code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = this.Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code, returnUrl },
-                        protocol: this.Request.Scheme);
+                    // var code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
+                    // code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    // var callbackUrl = this.Url.Page(
+                    //    "/Account/ConfirmEmail",
+                    //    pageHandler: null,
+                    //    values: new { area = "Identity", userId = user.Id, code, returnUrl },
+                    //    protocol: this.Request.Scheme);
 
-                    //await this.emailSender.SendEmailAsync(
+                    // await this.emailSender.SendEmailAsync(
                     //    this.Input.Email,
                     //    "Confirm your email",
                     //    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     await this.emailSender.SendEmailAsync(
                         new MailMessageBuilder()
-                        .From(MailConstants.From)
-                        .FromName(MailConstants.FromName)
+                        .From(this.configuration.MyMail)
+                        .FromName(MailConstants.MyName)
                         .To(this.Input.Email)
                         .Subject(MailConstants.Subject)
                         .HtmlContent(MailConstants.Body)
+                        .Build());
+
+                    await this.emailSender.SendEmailAsync(
+                        new MailMessageBuilder()
+                        .From(this.configuration.MyMail)
+                        .FromName(MailConstants.MyName)
+                        .To(this.configuration.MyMail)
+                        .Subject("My-chess Registration")
+                        .HtmlContent($"New user ({this.Input.Email}) has been just registered.")
                         .Build());
 
                     if (this.userManager.Options.SignIn.RequireConfirmedAccount)
