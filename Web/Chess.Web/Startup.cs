@@ -15,6 +15,8 @@
     using Chess.Services.Messaging.Contracts;
     using Chess.Web.Hubs;
     using Chess.Web.ViewModels;
+    using Common.Configuration;
+    using Common.Extensions;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -56,6 +58,9 @@
                 });
             services.AddRazorPages();
             services.AddSignalR();
+
+            // Configure settings
+            services.Configure<EmailConfiguration>(this.configuration.GetEmailConfigurationSection());
 
             // SignalR hub
             services.AddSingleton<GameHub>();
