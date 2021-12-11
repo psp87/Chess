@@ -2,6 +2,8 @@
 {
     using System.Reflection;
 
+    using Chess.Common.Configuration;
+    using Chess.Common.Extensions;
     using Chess.Data;
     using Chess.Data.Common;
     using Chess.Data.Common.Repositories;
@@ -56,6 +58,9 @@
                 });
             services.AddRazorPages();
             services.AddSignalR();
+
+            // Configure settings
+            services.Configure<EmailConfiguration>(this.configuration.GetEmailConfigurationSection());
 
             // SignalR hub
             services.AddSingleton<GameHub>();

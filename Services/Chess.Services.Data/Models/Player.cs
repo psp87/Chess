@@ -2,8 +2,8 @@
 {
     using System.Collections.Generic;
 
+    using Chess.Common.Enums;
     using Chess.Services.Data.Models.Pieces;
-    using Common.Enums;
 
     public class Player
     {

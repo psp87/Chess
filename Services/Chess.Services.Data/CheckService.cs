@@ -2,10 +2,10 @@
 {
     using System.Linq;
 
+    using Chess.Common.Constants;
+    using Chess.Common.Enums;
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Models;
-    using Common.Constants;
-    using Common.Enums;
 
     public class CheckService : ICheckService
     {
