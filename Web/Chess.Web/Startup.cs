@@ -37,64 +37,30 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ChessDbContext>(options => options
-                .UseSqlServer(this.configuration.GetChessDbConnectionString()));
-
-            services.AddDefaultIdentity<ChessUser>(IdentityOptionsProvider.GetIdentityOptions)
-                .AddRoles<ChessRole>().AddEntityFrameworkStores<ChessDbContext>();
-
+            this.AddDatabase(services);
+            this.AddIdentity(services);
+            this.AddCookiePolicy(services);
+            this.AddControllers(services);
+            this.AddSettings(services);
+            this.AddSignalR(services);
+            this.AddRepositories(services);
+            this.AddServices(services);
             services.AddDatabaseDeveloperPageExceptionFilter();
-
-            services.Configure<CookiePolicyOptions>(
-                options =>
-                    {
-                        options.CheckConsentNeeded = context => true;
-                        options.MinimumSameSitePolicy = SameSiteMode.None;
-                    });
-
-            services.AddControllersWithViews(options =>
-                {
-                    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-                });
             services.AddRazorPages();
-            services.AddSignalR();
-
-            // Configure settings
-            services.Configure<EmailConfiguration>(this.configuration.GetEmailConfigurationSection());
-
-            // SignalR hub
-            services.AddSingleton<GameHub>();
-
-            // Data repositories
-            services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(EfDeletableEntityRepository<>));
-            services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
-            services.AddScoped<IDbQueryRunner, DbQueryRunner>();
-
-            // Application services
-            services.AddTransient<IEmailSender>(x => new SendGridEmailSender(this.configuration.GetValue<string>("SendGridApiKey")));
-            //services.AddTransient<IEmailSender>(x =>
-            //    ActivatorUtilities.CreateInstance<SendGridEmailSender>(x, this.configuration.GetValue<string>("SendGridApiKey")));
-            services.AddTransient<IGameService, GameService>();
-            services.AddTransient<IStatsService, StatsService>();
-            services.AddTransient<IDrawService, DrawService>();
-            services.AddTransient<ICheckService, CheckService>();
-            services.AddTransient<IUtilityService, UtilityService>();
-            services.AddSingleton<INotificationService, NotificationService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).GetTypeInfo().Assembly);
 
-            // Seed data on application startup
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {
                 var dbContext = serviceScope.ServiceProvider.GetRequiredService<ChessDbContext>();
 
                 if (env.IsDevelopment())
                 {
-                    //dbContext.Database.EnsureDeleted();
-                    //dbContext.Database.EnsureCreated();
+                    // dbContext.Database.EnsureDeleted();
+                    // dbContext.Database.EnsureCreated();
                     dbContext.Database.Migrate();
                 }
 
@@ -129,6 +95,66 @@
                         endpoints.MapRazorPages();
                         endpoints.MapHub<GameHub>("/hub");
                     });
+        }
+
+        private void AddDatabase(IServiceCollection services)
+        {
+            services.AddDbContext<ChessDbContext>(options => options
+                .UseSqlServer(this.configuration.GetChessDbConnectionString()));
+        }
+
+        private void AddIdentity(IServiceCollection services)
+        {
+            services.AddDefaultIdentity<ChessUser>(IdentityOptionsProvider.GetIdentityOptions)
+                .AddRoles<ChessRole>().AddEntityFrameworkStores<ChessDbContext>();
+        }
+
+        private void AddCookiePolicy(IServiceCollection services)
+        {
+            services.Configure<CookiePolicyOptions>(
+                            options =>
+                            {
+                                options.CheckConsentNeeded = context => true;
+                                options.MinimumSameSitePolicy = SameSiteMode.None;
+                            });
+        }
+
+        private void AddControllers(IServiceCollection services)
+        {
+            services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            });
+        }
+
+        private void AddSettings(IServiceCollection services)
+        {
+            services.Configure<EmailConfiguration>(this.configuration.GetEmailConfigurationSection());
+        }
+
+        private void AddSignalR(IServiceCollection services)
+        {
+            services.AddSignalR();
+            services.AddSingleton<GameHub>();
+        }
+
+        private void AddRepositories(IServiceCollection services)
+        {
+            services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(EfDeletableEntityRepository<>));
+            services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+            services.AddScoped<IDbQueryRunner, DbQueryRunner>();
+        }
+
+        private void AddServices(IServiceCollection services)
+        {
+            services.AddTransient<IEmailSender>(x =>
+                new SendGridEmailSender(this.configuration.GetValue<string>("SendGridApiKey")));
+            services.AddTransient<IGameService, GameService>();
+            services.AddTransient<IStatsService, StatsService>();
+            services.AddTransient<IDrawService, DrawService>();
+            services.AddTransient<ICheckService, CheckService>();
+            services.AddTransient<IUtilityService, UtilityService>();
+            services.AddSingleton<INotificationService, NotificationService>();
         }
     }
 }
