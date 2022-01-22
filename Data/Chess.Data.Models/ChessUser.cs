@@ -32,6 +32,6 @@
 
         public virtual ICollection<IdentityUserLogin<string>> Logins { get; set; }
 
-        public virtual Stats Stats { get; set; }
+        public virtual Statistic Stats { get; set; }
     }
 }

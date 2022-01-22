@@ -3,7 +3,7 @@
     using Chess.Data.Common.Models;
     using Chess.Data.Models.Contracts;
 
-    public class Stats : BaseModel<int>, IHaveOwner
+    public class Statistic : BaseModel<int>, IHaveOwner
     {
         public int Games { get; set; }
 

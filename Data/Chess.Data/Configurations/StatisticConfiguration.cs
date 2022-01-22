@@ -4,9 +4,9 @@
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-    public class StatsConfiguration : IEntityTypeConfiguration<Stats>
+    public class StatisticConfiguration : IEntityTypeConfiguration<Statistic>
     {
-        public void Configure(EntityTypeBuilder<Stats> builder)
+        public void Configure(EntityTypeBuilder<Statistic> builder)
         {
             builder
                 .ToTable("stats");

@@ -9,9 +9,9 @@
 
     public class StatsService : IStatsService
     {
-        private readonly IRepository<Stats> statsRepository;
+        private readonly IRepository<Statistic> statsRepository;
 
-        public StatsService(IRepository<Stats> statsRepository)
+        public StatsService(IRepository<Statistic> statsRepository)
         {
             this.statsRepository = statsRepository;
         }
@@ -52,7 +52,7 @@
 
         public void InitiateStats(string id)
         {
-            var stats = new Stats
+            var stats = new Statistic
             {
                 Games = 0,
                 Win = 0,
