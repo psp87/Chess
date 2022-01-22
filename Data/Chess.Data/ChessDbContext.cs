@@ -23,7 +23,7 @@
         {
         }
 
-        public DbSet<Stats> Stats { get; set; }
+        public DbSet<Statistic> Stats { get; set; }
 
         public override int SaveChanges() => this.SaveChanges(true);
 
