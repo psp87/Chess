@@ -23,7 +23,13 @@
         {
         }
 
-        public DbSet<Stats> Stats { get; set; }
+        public DbSet<StatisticEntity> Stats { get; set; }
+
+        public DbSet<GameEntity> Games { get; set; }
+
+        public DbSet<MoveEntity> Moves { get; set; }
+
+        public DbSet<ErrorLogEntity> ErrorLogs { get; set; }
 
         public override int SaveChanges() => this.SaveChanges(true);
 
@@ -49,7 +55,7 @@
             // Needed for Identity models configuration
             base.OnModelCreating(builder);
 
-            this.ConfigureUserIdentityRelations(builder);
+            builder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
 
             EntityIndexesConfiguration.Configure(builder);
 
@@ -79,10 +85,6 @@
             builder.Entity<T>().HasQueryFilter(e => !e.IsDeleted);
         }
 
-        // Applies configurations
-        private void ConfigureUserIdentityRelations(ModelBuilder builder)
-             => builder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
-
         private void ApplyAuditInfoRules()
         {
             var changedEntries = this.ChangeTracker
@@ -96,11 +98,11 @@
                 var entity = (IAuditInfo)entry.Entity;
                 if (entry.State == EntityState.Added && entity.CreatedOn == default)
                 {
-                    entity.CreatedOn = DateTime.UtcNow;
+                    entity.CreatedOn = DateTime.Now;
                 }
                 else
                 {
-                    entity.ModifiedOn = DateTime.UtcNow;
+                    entity.ModifiedOn = DateTime.Now;
                 }
             }
         }

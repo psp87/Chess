@@ -1,28 +1,29 @@
 ﻿namespace Chess.Services.Data.Models
 {
+    using System;
+
     using Chess.Common.Constants;
     using Chess.Common.Enums;
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Models.Pieces;
     using Chess.Services.Data.Models.Pieces.Contracts;
     using Chess.Services.Data.Models.Pieces.Helpers;
+    using Microsoft.Extensions.DependencyInjection;
 
     public class Factory
     {
         public static Game GetGame(
             Player player1,
             Player player2,
-            INotificationService notificationService,
-            ICheckService checkService,
-            IDrawService drawService,
-            IUtilityService utilityService)
-            => new (
-                player1,
-                player2,
-                notificationService,
-                checkService,
-                drawService,
-                utilityService);
+            IServiceProvider serviceProvider)
+        {
+            var notificationService = serviceProvider.GetRequiredService<INotificationService>();
+            var checkService = serviceProvider.GetRequiredService<ICheckService>();
+            var drawService = serviceProvider.GetRequiredService<IDrawService>();
+            var utilityService = serviceProvider.GetRequiredService<IUtilityService>();
+
+            return new (player1, player2, notificationService, checkService, drawService, utilityService, serviceProvider);
+        }
 
         public static Player GetPlayer(string name, string connectionId, string userId) => new (name, connectionId, userId);
 

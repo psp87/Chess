@@ -1,11 +1,15 @@
 ﻿namespace Chess.Services.Data.Models
 {
     using System;
+    using System.Threading.Tasks;
 
     using Chess.Common.Constants;
     using Chess.Common.Enums;
+    using Chess.Data.Common.Repositories;
+    using Chess.Data.Models;
     using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Dtos;
+    using Microsoft.Extensions.DependencyInjection;
 
     public class Game
     {
@@ -13,6 +17,7 @@
         private readonly ICheckService checkService;
         private readonly IDrawService drawService;
         private readonly IUtilityService utilityService;
+        private readonly IServiceProvider serviceProvider;
 
         public Game(
             Player player1,
@@ -20,13 +25,14 @@
             INotificationService notificationService,
             ICheckService checkService,
             IDrawService drawService,
-            IUtilityService utilityService)
+            IUtilityService utilityService,
+            IServiceProvider serviceProvider)
         {
             this.notificationService = notificationService;
             this.checkService = checkService;
             this.drawService = drawService;
             this.utilityService = utilityService;
-
+            this.serviceProvider = serviceProvider;
             this.Player1 = player1;
             this.Player2 = player2;
             this.Player1.GameId = this.Id;
@@ -70,7 +76,7 @@
                 this.IsPawnPromotion(targetFen);
                 this.notificationService.ClearCheck(this.MovingPlayer, this.Opponent);
                 this.checkService.IsCheck(this.Opponent, this.ChessBoard);
-                this.UpdateHistory(oldSource, oldTarget, oldBoard);
+                this.UpdateHistory(oldSource, oldTarget, oldBoard).GetAwaiter().GetResult();
                 this.IsGameOver(targetFen);
                 this.ChangeTurns();
                 this.Turn++;
@@ -303,7 +309,7 @@
             }
         }
 
-        private void UpdateHistory(Square oldSource, Square oldTarget, Board oldBoard)
+        private async Task UpdateHistory(Square oldSource, Square oldTarget, Board oldBoard)
         {
             var notation = this.utilityService
                 .GetAlgebraicNotation(new AlgebraicNotationDto
@@ -315,6 +321,18 @@
                     Turn = this.Turn,
                     Move = this.Move,
                 });
+
+            using var scope = this.serviceProvider.CreateScope();
+            var moveRepository = scope.ServiceProvider.GetRequiredService<IRepository<MoveEntity>>();
+
+            await moveRepository.AddAsync(new MoveEntity
+            {
+                Notation = notation,
+                GameId = this.Id,
+                UserId = this.MovingPlayer.Id,
+            });
+
+            await moveRepository.SaveChangesAsync();
 
             this.notificationService.UpdateMoveHistory(this.MovingPlayer, notation);
         }

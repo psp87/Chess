@@ -1,10 +1,14 @@
 ﻿namespace Chess.Web.Hubs
 {
+    using System;
     using System.Threading.Tasks;
 
     using Chess.Common.Enums;
+    using Chess.Data.Common.Repositories;
+    using Chess.Data.Models;
     using Chess.Services.Data.Models;
     using Microsoft.AspNetCore.SignalR;
+    using Microsoft.Extensions.DependencyInjection;
 
     public partial class GameHub
     {
@@ -38,14 +42,7 @@
             player2.Color = Color.Black;
             player1.HasToMove = true;
 
-            var game = Factory.GetGame(
-                    player1,
-                    player2,
-                    this.notificationService,
-                    this.checkService,
-                    this.drawService,
-                    this.utilityService);
-
+            var game = Factory.GetGame(player1, player2, this.serviceProvider);
             this.games[game.Id] = game;
 
             await Task.WhenAll(
@@ -57,6 +54,18 @@
             await this.GameSendInternalMessage(game.Id, player2.Name, null);
 
             this.waitingPlayers.Remove(player1);
+
+            using var scope = this.serviceProvider.CreateScope();
+
+            var gameRepository = scope.ServiceProvider.GetRequiredService<IRepository<GameEntity>>();
+            await gameRepository.AddAsync(new GameEntity
+                {
+                    Id = game.Id,
+                    PlayerOneName = game.Player1.Name,
+                    PlayerTwoName = game.Player2.Name,
+                });
+
+            await gameRepository.SaveChangesAsync();
         }
     }
 }

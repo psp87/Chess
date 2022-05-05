@@ -9,9 +9,9 @@
 
     public class StatsService : IStatsService
     {
-        private readonly IRepository<Stats> statsRepository;
+        private readonly IRepository<StatisticEntity> statsRepository;
 
-        public StatsService(IRepository<Stats> statsRepository)
+        public StatsService(IRepository<StatisticEntity> statsRepository)
         {
             this.statsRepository = statsRepository;
         }
@@ -33,31 +33,31 @@
 
         public int GetTotalGames()
         {
-            return this.statsRepository.All().Select(x => x.Games).Sum() / 2;
+            return this.statsRepository.All().Select(x => x.Played).Sum() / 2;
         }
 
         public string GetMostGamesUser()
         {
-            int maxGames = this.statsRepository.All().Max(x => x.Games);
+            int maxGames = this.statsRepository.All().Max(x => x.Played);
 
-            return this.statsRepository.All().Where(x => x.Games == maxGames).Select(x => x.User.UserName).FirstOrDefault();
+            return this.statsRepository.All().Where(x => x.Played == maxGames).Select(x => x.User.UserName).FirstOrDefault();
         }
 
         public string GetMostWinsUser()
         {
-            int maxWins = this.statsRepository.All().Max(x => x.Win);
+            int maxWins = this.statsRepository.All().Max(x => x.Won);
 
-            return this.statsRepository.All().Where(x => x.Win == maxWins).Select(x => x.User.UserName).FirstOrDefault();
+            return this.statsRepository.All().Where(x => x.Won == maxWins).Select(x => x.User.UserName).FirstOrDefault();
         }
 
         public void InitiateStats(string id)
         {
-            var stats = new Stats
+            var stats = new StatisticEntity
             {
-                Games = 0,
-                Win = 0,
-                Draw = 0,
-                Loss = 0,
+                Played = 0,
+                Won = 0,
+                Drawn = 0,
+                Lost = 0,
                 UserId = id,
                 EloRating = 1200,
             };
