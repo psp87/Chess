@@ -1,16 +1,12 @@
 ﻿namespace Chess.Data.Models
 {
-    using System;
+    using Chess.Data.Common.Models;
 
-    public class ErrorLog
+    public class ErrorLogEntity : BaseModel<int>
     {
-        public int Id { get; set; }
-
         public string GameId { get; set; }
 
-        public virtual Game Game { get; set; }
-
-        public DateTime CreatedOn { get; set; }
+        public virtual GameEntity Game { get; set; }
 
         public string Source { get; set; }
 

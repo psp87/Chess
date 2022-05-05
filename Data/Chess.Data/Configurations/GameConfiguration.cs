@@ -4,32 +4,54 @@
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-    public class GameConfiguration : IEntityTypeConfiguration<Game>
+    public class GameConfiguration : IEntityTypeConfiguration<GameEntity>
     {
-        public void Configure(EntityTypeBuilder<Game> builder)
+        public void Configure(EntityTypeBuilder<GameEntity> builder)
         {
             builder
                 .ToTable("games");
+
             builder
                 .HasKey(x => x.Id);
+
             builder
                 .Property(x => x.Id)
-                .HasColumnName("id");
+                .HasColumnName("id")
+                .IsRequired();
+
+            builder
+                .Property(x => x.PlayerOneName)
+                .HasColumnName("player_one_name")
+                .IsRequired();
+
+            builder
+                .Property(x => x.PlayerOneUserId)
+                .HasColumnName("player_one_user_id")
+                .IsRequired();
+
+            builder
+                .Property(x => x.PlayerTwoName)
+                .HasColumnName("player_two_name")
+                .IsRequired();
+
+            builder
+                .Property(x => x.PlayerTwoUserId)
+                .HasColumnName("player_two_user_id")
+                .IsRequired();
+
             builder
                 .Property(x => x.CreatedOn)
                 .HasColumnName("created_on")
                 .IsRequired();
+
             builder
                 .Property(x => x.ModifiedOn)
                 .HasColumnName("modified_on");
+
             builder
-                .Property(x => x.Player1)
-                .HasColumnName("player_1")
-                .IsRequired();
-            builder
-                .Property(x => x.Player2)
-                .HasColumnName("player_2")
-                .IsRequired();
+                .HasMany(x => x.Moves)
+                .WithOne(x => x.Game)
+                .HasForeignKey(x => x.GameId);
         }
     }
 }

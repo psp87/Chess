@@ -10,18 +10,21 @@
         {
             builder
                 .ToTable("users");
+
             builder
                 .HasMany(e => e.Claims)
                 .WithOne()
                 .HasForeignKey(e => e.UserId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
+
             builder
                 .HasMany(e => e.Logins)
                 .WithOne()
                 .HasForeignKey(e => e.UserId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
+
             builder
                 .HasMany(e => e.Roles)
                 .WithOne()

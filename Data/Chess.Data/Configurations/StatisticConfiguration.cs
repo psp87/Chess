@@ -4,42 +4,56 @@
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-    public class StatisticConfiguration : IEntityTypeConfiguration<Statistic>
+    public class StatisticConfiguration : IEntityTypeConfiguration<StatisticEntity>
     {
-        public void Configure(EntityTypeBuilder<Statistic> builder)
+        public void Configure(EntityTypeBuilder<StatisticEntity> builder)
         {
             builder
                 .ToTable("stats");
+
             builder
                 .HasKey(x => x.Id);
+
             builder
                 .Property(x => x.Id)
                 .HasColumnName("id")
                 .ValueGeneratedOnAdd();
+
             builder
-                .Property(x => x.Games)
-                .HasColumnName("games");
+                .Property(x => x.Played)
+                .HasColumnName("played")
+                .IsRequired();
+
             builder
-                .Property(x => x.Win)
-                .HasColumnName("win");
+                .Property(x => x.Won)
+                .HasColumnName("won")
+                .IsRequired();
+
             builder
-                .Property(x => x.Draw)
-                .HasColumnName("draw");
+                .Property(x => x.Drawn)
+                .HasColumnName("drawn")
+                .IsRequired();
+
             builder
-                .Property(x => x.Loss)
-                .HasColumnName("loss");
+                .Property(x => x.Lost)
+                .HasColumnName("lost")
+                .IsRequired();
+
             builder
                 .Property(x => x.EloRating)
                 .HasColumnName("elo_rating")
                 .IsRequired();
+
             builder
                 .Property(x => x.UserId)
                 .HasColumnName("user_id")
                 .IsRequired();
+
             builder
                 .Property(x => x.CreatedOn)
                 .HasColumnName("created_on")
                 .IsRequired();
+
             builder
                 .Property(x => x.ModifiedOn)
                 .HasColumnName("modified_on");

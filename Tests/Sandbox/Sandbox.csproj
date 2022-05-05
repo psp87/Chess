@@ -40,7 +40,8 @@
     <ProjectReference Include="..\..\Services\Chess.Services.Data\Chess.Services.Data.csproj" />
     <ProjectReference Include="..\..\Services\Chess.Services.Mapping\Chess.Services.Mapping.csproj" />
     <ProjectReference Include="..\..\Services\Chess.Services.Messaging\Chess.Services.Messaging.csproj" />
-    <ProjectReference Include="..\..\Services\Chess.Services\Chess.Services.csproj" />
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

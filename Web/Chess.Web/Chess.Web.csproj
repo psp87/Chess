@@ -18,6 +18,7 @@
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\.editorconfig" Link=".editorconfig" />
     <None Include="wwwroot\img\ezgif.com-crop.gif" />
   </ItemGroup>
 
@@ -32,6 +33,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>-->
+    <PackageReference Include="Microsoft.AspNet.SignalR.Core" Version="2.4.3" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.113" />
@@ -48,7 +50,6 @@
     <ProjectReference Include="..\..\Services\Chess.Services.Data\Chess.Services.Data.csproj" />
     <ProjectReference Include="..\..\Services\Chess.Services.Mapping\Chess.Services.Mapping.csproj" />
     <ProjectReference Include="..\..\Services\Chess.Services.Messaging\Chess.Services.Messaging.csproj" />
-    <ProjectReference Include="..\..\Services\Chess.Services\Chess.Services.csproj" />
     <ProjectReference Include="..\Chess.Web.ViewModels\Chess.Web.ViewModels.csproj" />
   </ItemGroup>
 

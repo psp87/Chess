@@ -4,9 +4,12 @@
     using System.Threading.Tasks;
 
     using Chess.Common.Enums;
+    using Chess.Data.Common.Repositories;
+    using Chess.Data.Models;
     using Chess.Services.Data.Models;
     using Chess.Services.Data.Models.EventArgs;
     using Microsoft.AspNetCore.SignalR;
+    using Microsoft.Extensions.DependencyInjection;
 
     public partial class GameHub
     {
@@ -15,16 +18,36 @@
             var player = this.GetPlayer();
             var game = this.GetGame(player);
 
-            if (player.HasToMove && game.MakeMove(source, target, targetFen))
+            try
             {
-                await this.OpponentBoardMove(source, target, game);
-                await this.HighlightMove(source, target, game);
-                await this.IsSpecialMove(target, game);
-                await this.UpdateStatus(game);
+                if (player.HasToMove && game.MakeMove(source, target, targetFen))
+                {
+                    await this.OpponentBoardMove(source, target, game);
+                    await this.HighlightMove(source, target, game);
+                    await this.IsSpecialMove(target, game);
+                    await this.UpdateStatus(game);
+                }
+                else
+                {
+                    await this.Snapback(sourceFen);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                await this.Snapback(sourceFen);
+                using var scope = this.serviceProvider.CreateScope();
+                var errorLogRepository = scope.ServiceProvider.GetRequiredService<IRepository<ErrorLogEntity>>();
+
+                await errorLogRepository.AddAsync(new ErrorLogEntity
+                {
+                    GameId = game.Id,
+                    Source = source,
+                    Target = target,
+                    FenString = sourceFen,
+                    ExceptionMessage = ex.Message,
+                    CreatedOn = DateTime.Now,
+                });
+
+                await errorLogRepository.SaveChangesAsync();
             }
         }
 

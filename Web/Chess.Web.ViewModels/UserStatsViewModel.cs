@@ -3,7 +3,7 @@
     using Chess.Data.Models;
     using Chess.Services.Mapping;
 
-    public class UserStatsViewModel : IMapFrom<Statistic>
+    public class UserStatsViewModel : IMapFrom<StatisticEntity>
     {
         public int Games { get; set; }
 

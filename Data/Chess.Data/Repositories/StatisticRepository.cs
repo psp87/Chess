@@ -2,7 +2,7 @@
 {
     using Chess.Data.Models;
 
-    public class StatisticRepository : EfRepository<Game>
+    public class StatisticRepository : EfRepository<StatisticEntity>
     {
         public StatisticRepository(ChessDbContext context)
             : base(context)
