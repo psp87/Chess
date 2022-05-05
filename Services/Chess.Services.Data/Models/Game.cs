@@ -325,11 +325,12 @@
             using var scope = this.serviceProvider.CreateScope();
             var moveRepository = scope.ServiceProvider.GetRequiredService<IRepository<MoveEntity>>();
 
+            var onlyMoveNotation = notation.Split(' ', StringSplitOptions.RemoveEmptyEntries)[1];
             await moveRepository.AddAsync(new MoveEntity
             {
-                Notation = notation,
+                Notation = onlyMoveNotation,
                 GameId = this.Id,
-                UserId = this.MovingPlayer.Id,
+                UserId = this.MovingPlayer.UserId,
             });
 
             await moveRepository.SaveChangesAsync();

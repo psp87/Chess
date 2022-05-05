@@ -62,7 +62,9 @@
                 {
                     Id = game.Id,
                     PlayerOneName = game.Player1.Name,
+                    PlayerOneUserId = player1.Id,
                     PlayerTwoName = game.Player2.Name,
+                    PlayerTwoUserId = player2.Id,
                 });
 
             await gameRepository.SaveChangesAsync();
