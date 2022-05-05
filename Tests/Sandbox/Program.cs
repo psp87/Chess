@@ -29,10 +29,8 @@
 
             using (var serviceScope = serviceProvider.CreateScope())
             {
-                var context = serviceScope.ServiceProvider
-                    .GetRequiredService<ChessDbContext>();
-                context.Database
-                    .Migrate();
+                var context = serviceScope.ServiceProvider.GetRequiredService<ChessDbContext>();
+                context.Database.Migrate();
                 new ChessDbContextSeeder()
                     .SeedAsync(context, serviceScope.ServiceProvider)
                     .GetAwaiter()
@@ -60,7 +58,7 @@
                 .Include(x => x.User)
                 .ToListAsync();
 
-            stats.ForEach(x => Console.WriteLine($"User: {x.User.UserName}, Games: {x.Games}, Rating: {x.EloRating}"));
+            stats.ForEach(x => Console.WriteLine($"User: {x.User.UserName}, Games: {x.Played}, Rating: {x.EloRating}"));
 
             return await Task.FromResult(0);
         }
@@ -72,7 +70,6 @@
                 .AddJsonFile("appsettings.json", false, true)
                 .AddEnvironmentVariables()
                 .Build();
-
             services.AddSingleton<IConfiguration>(configuration);
 
             services.AddDbContext<ChessDbContext>(
@@ -80,7 +77,8 @@
                     .UseSqlServer(configuration.GetChessDbConnectionString())
                     .UseLoggerFactory(new LoggerFactory()));
 
-            services.AddDefaultIdentity<ChessUser>(IdentityOptionsProvider.GetIdentityOptions)
+            services
+                .AddDefaultIdentity<ChessUser>(IdentityOptionsProvider.GetIdentityOptions)
                 .AddRoles<ChessRole>()
                 .AddEntityFrameworkStores<ChessDbContext>();
 

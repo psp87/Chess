@@ -2,7 +2,7 @@
 {
     using Chess.Data.Models;
 
-    public class ErrorLogRepository : EfRepository<ErrorLog>
+    public class ErrorLogRepository : EfRepository<ErrorLogEntity>
     {
         public ErrorLogRepository(ChessDbContext context)
             : base(context)

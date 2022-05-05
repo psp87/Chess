@@ -4,14 +4,16 @@ using Chess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Chess.Data.Migrations
 {
     [DbContext(typeof(ChessDbContext))]
-    partial class ChessDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220129114205_ModifyNewTables")]
+    partial class ModifyNewTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,7 +141,7 @@ namespace Chess.Data.Migrations
                     b.ToTable("users");
                 });
 
-            modelBuilder.Entity("Chess.Data.Models.ErrorLogEntity", b =>
+            modelBuilder.Entity("Chess.Data.Models.ErrorLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -165,9 +167,6 @@ namespace Chess.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("game_id");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Source")
                         .IsRequired()
@@ -200,25 +199,15 @@ namespace Chess.Data.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("modified_on");
 
-                    b.Property<string>("PlayerOneName")
+                    b.Property<string>("Player1")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
-                        .HasColumnName("player_one_name");
+                        .HasColumnName("player_1");
 
-                    b.Property<string>("PlayerOneUserId")
+                    b.Property<string>("Player2")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
-                        .HasColumnName("player_one_user_id");
-
-                    b.Property<string>("PlayerTwoName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("player_two_name");
-
-                    b.Property<string>("PlayerTwoUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("player_two_user_id");
+                        .HasColumnName("player_2");
 
                     b.HasKey("Id");
 
@@ -247,25 +236,18 @@ namespace Chess.Data.Migrations
                         .HasColumnName("modified_on");
 
                     b.Property<string>("Notation")
-                        .IsRequired()
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("notation");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("user_id");
 
                     b.HasKey("Id");
 
                     b.HasIndex("GameId");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("moves");
                 });
 
-            modelBuilder.Entity("Chess.Data.Models.StatisticEntity", b =>
+            modelBuilder.Entity("Chess.Data.Models.Statistic", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -277,38 +259,39 @@ namespace Chess.Data.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("created_on");
 
-                    b.Property<int>("Drawn")
+                    b.Property<int>("Draw")
                         .HasColumnType("int")
-                        .HasColumnName("drawn");
+                        .HasColumnName("draw");
 
                     b.Property<int>("EloRating")
                         .HasColumnType("int")
                         .HasColumnName("elo_rating");
 
-                    b.Property<int>("Lost")
+                    b.Property<int>("Games")
                         .HasColumnType("int")
-                        .HasColumnName("lost");
+                        .HasColumnName("games");
+
+                    b.Property<int>("Loss")
+                        .HasColumnType("int")
+                        .HasColumnName("loss");
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2")
                         .HasColumnName("modified_on");
-
-                    b.Property<int>("Played")
-                        .HasColumnType("int")
-                        .HasColumnName("played");
 
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("user_id");
 
-                    b.Property<int>("Won")
+                    b.Property<int>("Win")
                         .HasColumnType("int")
-                        .HasColumnName("won");
+                        .HasColumnName("win");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("stats");
                 });
@@ -417,7 +400,7 @@ namespace Chess.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Chess.Data.Models.ErrorLogEntity", b =>
+            modelBuilder.Entity("Chess.Data.Models.ErrorLog", b =>
                 {
                     b.HasOne("Chess.Data.Models.GameEntity", "Game")
                         .WithMany()
@@ -436,22 +419,14 @@ namespace Chess.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Chess.Data.Models.ChessUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Game");
-
-                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Chess.Data.Models.StatisticEntity", b =>
+            modelBuilder.Entity("Chess.Data.Models.Statistic", b =>
                 {
                     b.HasOne("Chess.Data.Models.ChessUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .WithOne("Stats")
+                        .HasForeignKey("Chess.Data.Models.Statistic", "UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -516,6 +491,8 @@ namespace Chess.Data.Migrations
                     b.Navigation("Logins");
 
                     b.Navigation("Roles");
+
+                    b.Navigation("Stats");
                 });
 
             modelBuilder.Entity("Chess.Data.Models.GameEntity", b =>

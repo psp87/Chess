@@ -16,32 +16,19 @@
     public partial class GameHub : Hub
     {
         private readonly IServiceProvider serviceProvider;
-        private readonly INotificationService notificationService;
-        private readonly ICheckService checkService;
-        private readonly IDrawService drawService;
-        private readonly IUtilityService utilityService;
-
         private readonly ConcurrentDictionary<string, Player> players;
         private readonly ConcurrentDictionary<string, Game> games;
         private readonly List<Player> waitingPlayers;
+        private readonly INotificationService notificationService;
 
-        public GameHub(
-            IServiceProvider serviceProvider,
-            INotificationService notificationService,
-            ICheckService checkService,
-            IDrawService drawService,
-            IUtilityService utilityService)
+        public GameHub(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
-            this.notificationService = notificationService;
-            this.checkService = checkService;
-            this.drawService = drawService;
-            this.utilityService = utilityService;
-
             this.players = new ConcurrentDictionary<string, Player>(StringComparer.OrdinalIgnoreCase);
             this.games = new ConcurrentDictionary<string, Game>(StringComparer.OrdinalIgnoreCase);
             this.waitingPlayers = new List<Player>();
 
+            this.notificationService = this.serviceProvider.GetRequiredService<INotificationService>();
             this.notificationService.OnGameOver += this.Game_OnGameOver;
             this.notificationService.OnTakePiece += this.Game_OnTakePiece;
             this.notificationService.OnAvailableThreefoldDraw += this.Game_OnAvailableThreefoldDraw;
@@ -121,23 +108,23 @@
             var senderStats = dbContext.Stats.Where(x => x.User.Id == sender.UserId).FirstOrDefault();
             var opponentStats = dbContext.Stats.Where(x => x.User.Id == opponent.UserId).FirstOrDefault();
 
-            senderStats.Games += 1;
-            opponentStats.Games += 1;
+            senderStats.Played += 1;
+            opponentStats.Played += 1;
 
             if (gameOver == GameOver.Checkmate || gameOver == GameOver.Resign || gameOver == GameOver.Disconnected)
             {
                 var utilityService = this.serviceProvider.GetRequiredService<IUtilityService>();
                 int points = utilityService.CalculateRatingPoints(senderStats.EloRating, opponentStats.EloRating);
 
-                senderStats.Win += 1;
-                opponentStats.Loss += 1;
+                senderStats.Won += 1;
+                opponentStats.Lost += 1;
                 senderStats.EloRating += points;
                 opponentStats.EloRating -= points;
             }
             else if (gameOver == GameOver.Stalemate || gameOver == GameOver.Draw || gameOver == GameOver.ThreefoldDraw || gameOver == GameOver.FivefoldDraw)
             {
-                senderStats.Draw += 1;
-                opponentStats.Draw += 1;
+                senderStats.Drawn += 1;
+                opponentStats.Drawn += 1;
             }
 
             dbContext.Stats.Update(senderStats);

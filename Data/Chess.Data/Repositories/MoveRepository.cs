@@ -2,7 +2,7 @@
 {
     using Chess.Data.Models;
 
-    public class MoveRepository : EfRepository<Move>
+    public class MoveRepository : EfRepository<MoveEntity>
     {
         public MoveRepository(ChessDbContext context)
             : base(context)
