@@ -4,10 +4,10 @@
     using System.Threading.Tasks;
 
     using Chess.Common.Enums;
+    using Chess.Common.EventArgs;
     using Chess.Data.Common.Repositories;
     using Chess.Data.Models;
     using Chess.Services.Data.Models;
-    using Chess.Services.Data.Models.EventArgs;
     using Microsoft.AspNetCore.SignalR;
     using Microsoft.Extensions.DependencyInjection;
 

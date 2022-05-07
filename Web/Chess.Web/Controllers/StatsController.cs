@@ -5,7 +5,7 @@
     using System.Security.Claims;
 
     using Chess.Data.Models;
-    using Chess.Services.Data.Contracts;
+    using Chess.Services.Data.Services.Contracts;
     using Chess.Web.ViewModels;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;

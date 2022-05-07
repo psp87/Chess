@@ -1,10 +1,10 @@
-﻿namespace Chess.Services.Data
+﻿namespace Chess.Services.Data.Services
 {
     using System.Linq;
 
     using Chess.Data.Common.Repositories;
     using Chess.Data.Models;
-    using Chess.Services.Data.Contracts;
+    using Chess.Services.Data.Services.Contracts;
 
     public class GameService : IGameService
     {

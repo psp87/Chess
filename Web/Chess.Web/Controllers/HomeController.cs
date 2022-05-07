@@ -3,7 +3,7 @@
     using System.Diagnostics;
     using System.Security.Claims;
 
-    using Chess.Services.Data.Contracts;
+    using Chess.Services.Data.Services.Contracts;
     using Chess.Web.ViewModels;
     using Microsoft.AspNetCore.Mvc;
 

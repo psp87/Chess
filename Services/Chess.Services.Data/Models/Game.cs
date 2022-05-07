@@ -7,8 +7,8 @@
     using Chess.Common.Enums;
     using Chess.Data.Common.Repositories;
     using Chess.Data.Models;
-    using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Dtos;
+    using Chess.Services.Data.Services.Contracts;
     using Microsoft.Extensions.DependencyInjection;
 
     public class Game

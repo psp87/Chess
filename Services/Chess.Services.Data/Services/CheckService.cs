@@ -1,11 +1,11 @@
-﻿namespace Chess.Services.Data
+﻿namespace Chess.Services.Data.Services
 {
     using System.Linq;
 
     using Chess.Common.Constants;
     using Chess.Common.Enums;
-    using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Models;
+    using Chess.Services.Data.Services.Contracts;
 
     public class CheckService : ICheckService
     {

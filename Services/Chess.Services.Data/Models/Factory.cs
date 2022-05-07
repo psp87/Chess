@@ -4,10 +4,10 @@
 
     using Chess.Common.Constants;
     using Chess.Common.Enums;
-    using Chess.Services.Data.Contracts;
     using Chess.Services.Data.Models.Pieces;
     using Chess.Services.Data.Models.Pieces.Contracts;
     using Chess.Services.Data.Models.Pieces.Helpers;
+    using Chess.Services.Data.Services.Contracts;
     using Microsoft.Extensions.DependencyInjection;
 
     public class Factory

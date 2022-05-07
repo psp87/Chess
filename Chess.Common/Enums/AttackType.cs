@@ -4,6 +4,6 @@
     {
         File = 0,
         Rank = 1,
-        Diagonal = 3,
+        Diagonal = 2,
     }
 }

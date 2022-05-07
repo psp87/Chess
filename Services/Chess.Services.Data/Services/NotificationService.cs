@@ -1,11 +1,11 @@
-﻿namespace Chess.Services.Data
+﻿namespace Chess.Services.Data.Services
 {
     using System;
 
     using Chess.Common.Enums;
-    using Chess.Services.Data.Contracts;
+    using Chess.Common.EventArgs;
     using Chess.Services.Data.Models;
-    using Chess.Services.Data.Models.EventArgs;
+    using Chess.Services.Data.Services.Contracts;
 
     public class NotificationService : INotificationService
     {

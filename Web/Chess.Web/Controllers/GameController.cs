@@ -1,7 +1,6 @@
 ﻿namespace Chess.Web.Controllers
 {
-    using Chess.Services.Data.Contracts;
-
+    using Chess.Services.Data.Services.Contracts;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 

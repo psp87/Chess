@@ -1,4 +1,4 @@
-﻿namespace Chess.Services.Data.Contracts
+﻿namespace Chess.Services.Data.Services.Contracts
 {
     using Chess.Services.Data.Models;
 

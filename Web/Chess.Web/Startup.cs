@@ -10,8 +10,8 @@
     using Chess.Data.Models;
     using Chess.Data.Repositories;
     using Chess.Data.Seeding;
-    using Chess.Services.Data;
-    using Chess.Services.Data.Contracts;
+    using Chess.Services.Data.Services;
+    using Chess.Services.Data.Services.Contracts;
     using Chess.Services.Mapping;
     using Chess.Services.Messaging;
     using Chess.Services.Messaging.Contracts;
