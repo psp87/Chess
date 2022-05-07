@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy ASP.Net Core app to Azure Web App - chess-psp
+name: Build and deploy ASP.Net Core 6.0 app to Azure Web App - chess-psp
 
 on:
   push:
@@ -15,10 +15,10 @@ jobs:
     steps:
     - uses: actions/checkout@master
 
-    - name: Set up .NET 5.0
+    - name: Set up .NET 6.0
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '5.0.209'
+        dotnet-version: '6.0.x'
 
     - name: Build with dotnet
       run: dotnet build --configuration Release
