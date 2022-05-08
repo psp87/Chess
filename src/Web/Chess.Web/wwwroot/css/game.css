@@ -1,0 +1,177 @@
+﻿#board {
+    width: 530px;
+}
+
+.main-playground {
+    display: none;
+}
+
+.player-stats {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.player-name-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: row nowrap;
+    font-size: 2.5rem;
+    width: 100%;
+}
+
+.player-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0px 0px 0px 5px;
+}
+
+.player-rating {
+    color: green;
+}
+
+.player-points {
+    font-size: 1.2rem;
+    margin: 10px;
+}
+
+.taken-pieces-container {
+    display: flex;
+}
+
+.taken-pieces img {
+    width: 85%;
+}
+
+.player-move-history {
+    display: flex;
+    flex-flow: row wrap;
+    width: 80%;
+    padding-top: 10px;
+}
+
+.main-playground-black-move-history .list-group-item {
+    background-color: black;
+    color: white;
+    border-color: lightgray;
+}
+
+.list-group-item {
+    padding: 3px;
+    text-align: left;
+    width: 50%;
+    text-indent: 10px;
+}
+
+.list-group-item + .list-group-item {
+    border-top-width: 1px;
+}
+
+.highlight-white {
+    -webkit-box-shadow: inset 0 0 3px 3px yellow;
+    -moz-box-shadow: inset 0 0 3px 3px yellow;
+    box-shadow: inset 0 0 3px 3px yellow;
+}
+
+.highlight-black {
+    -webkit-box-shadow: inset 0 0 3px 3px blue;
+    -moz-box-shadow: inset 0 0 3px 3px blue;
+    box-shadow: inset 0 0 3px 3px blue;
+}
+
+.option-btn {
+    width: 30%;
+    margin: 1px;
+}
+
+.draw-offer-container {
+    margin: 4px;
+}
+
+.draw-offer-button {
+    margin: 1px;
+    text-align: center;
+    color: white;
+    border: none;
+    width: 65px;
+    font-weight: 600;
+}
+
+.draw-offer-yes-btn {
+    background-color: #557d5f;
+}
+
+.draw-offer-yes-btn:hover {
+    background-color: #78b086;
+}
+
+.draw-offer-no-btn {
+    background-color: #e84d4d;
+}
+
+.draw-offer-no-btn:hover {
+    background-color: #ff5454;
+}
+
+.game-chat-container {
+    margin-top: 7px;
+    height: 30vh;
+}
+
+.game-chat-window-wrapper {
+    border: 1px solid;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    height: 85%;
+    border-color: gray;
+}
+
+.game-chat-input-wrapper {
+    height: 15%;
+}
+
+.game-chat-window {
+        height: 20vh;
+    }
+
+.game-chat-input {
+    border-radius: 0 0 0 10px;
+    border: 1px solid;
+    border-color: gray;
+}
+
+.game-chat-send-btn {
+    width: 14%;
+}
+
+.flex-start {
+    align-self: flex-start;
+}
+
+.flex-end {
+    align-self: flex-end;
+}
+
+.white-chat-msg {
+    background-color: white;
+}
+
+.black-chat-msg {
+    background-color: black;
+    color: white;
+    list-style-type: none;
+}
+
+.column {
+    padding: 10px;
+}
+
+.left, .right {
+    width: 25%;
+}
+
+.middle {
+    width: 50%;
+}

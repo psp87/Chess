@@ -1,0 +1,121 @@
+﻿.game-lobby-input-container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    margin-top: 10px;
+    height: 7vh;
+    margin: 10px 0;
+}
+
+.game-lobby-input-name {
+    flex-grow: 1;
+    text-indent: 10px;
+    font-size: 1.7em;
+}
+
+.game-lobby-input-name:focus {
+    outline: none;
+}
+
+.game-lobby-input-create-btn {
+    background-color: #454a52;
+    color: white;
+    width: 25%;
+    font-size: 1.7em;
+    border-radius: 0 5px 5px 0;
+}
+
+.game-lobby-title-container {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.game-lobby-title-room {
+    width: 50%;
+    background-color: darkslategray;
+    color: white;
+    padding: 5px;
+    border-radius: 5px 0 0 0;
+    font-size: 1.1em;
+}
+
+.game-lobby-title-chat {
+    flex-grow: 1;
+    background-color: darkslategray;
+    color: white;
+    padding: 5px;
+    border-radius: 0 5px 0 0;
+    font-size: 1.1em;
+}
+
+.game-lobby-room-chat-container {
+    display: flex;
+    flex-flow: row wrap;
+    height: 70vh;
+}
+
+.game-lobby-room-container {
+    display: flex;
+    flex-flow: column nowrap;
+    border: 1px solid;
+    border-radius: 0 0 0 7px;
+    background-color: whitesmoke;
+    width: 50%;
+    height: inherit;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.game-lobby-room-container div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid;
+    border-radius: 5px;
+    padding: 3px;
+    margin: 2px 2px 0px 2px;
+    background-color: lightslategray;
+    color: white;
+}
+
+.game-lobby-room-name {
+    font-weight: bold;
+    text-indent: 5px;
+}
+
+.game-lobby-room-join-btn {
+    width: 20%;
+    border: none;
+    text-transform: uppercase;
+}
+
+.game-lobby-chat-container {
+    height: inherit;
+    flex-grow: 1;
+    border: 1px solid;
+    border-radius: 0 0 7px 0;
+}
+
+.game-lobby-chat-window-wrapper {
+    height: 94%;
+    background-color: whitesmoke;
+}
+
+.game-lobby-chat-window {
+    height: inherit;
+}
+
+.game-lobby-chat-input-wrapper {
+    height: 6%;
+}
+
+.game-lobby-chat-input {
+    border: none;
+    border-top: 1px solid;
+}
+
+.game-lobby-chat-send-btn {
+    width: 15%;
+    border: none;
+    font-weight: bold;
+}

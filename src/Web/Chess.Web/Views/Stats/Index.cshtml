@@ -1,0 +1,55 @@
+﻿@model Chess.Web.ViewModels.StatsViewModel
+
+@{
+    this.ViewData["Title"] = "Stats";
+}
+
+<article class="elo-rating-container">
+    <section class="elo-rating-text">YOUR ELO RATING</section>
+    <section class="elo-rating-value">@Model.UserStats.Rating</section>
+</article>
+
+<div id="piechart"></div>
+
+<table>
+    <tr class="table-title">
+        <th colspan="5">ALL USERS</th>
+    </tr>
+    <tr>
+        <th class="col-title">TOTAL USERS</th>
+        <th class="col-title">LAST 30 DAYS NEW USERS</th>
+        <th class="col-title">TOTAL GAMES</th>
+        <th class="col-title">MOST GAMES USER</th>
+        <th class="col-title">MOST WINS USER</th>
+    </tr>
+    <tr>
+        <td>@Model.TotalUsers</td>
+        <td>@Model.LastThirtyDaysRegisteredUsers</td>
+        <td>@Model.TotalGames</td>
+        <td>@Model.MostGamesUser</td>
+        <td>@Model.MostWinsUser</td>
+    </tr>
+</table>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+            ['Games', 'Ending'],
+            ['Wins', @Model.UserStats.Wins],
+            ['Draws', @Model.UserStats.Draws],
+            ['Losses', @Model.UserStats.Losses],
+        ]);
+
+        var options = {
+            title: 'Statistics for @Model.UserStats.Games total games',
+            colors: ['#70e663', '#A9A9A9', '#2F4F4F'],
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        chart.draw(data, options);
+    }
+</script>

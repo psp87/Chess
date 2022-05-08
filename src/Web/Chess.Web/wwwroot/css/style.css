@@ -1,0 +1,195 @@
+﻿@import url("../lib/bootstrap/dist/css/bootstrap.css");
+@import url("../lib/chessboard-js/chessboard-1.0.0.css");
+@import url("home.css");
+@import url("game.css");
+@import url("about.css");
+@import url("lobby.css");
+@import url("stats.css");
+
+html {
+    font-size: 16px;
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    background-image: url("../img/background-image.jpg");
+    background-attachment: fixed;
+    margin-bottom: 60px;
+}
+
+.title-text {
+    display: flex;
+    justify-content: center;
+    color: white;
+    margin: 0px;
+    padding: 5px;
+    letter-spacing: 1px;
+}
+
+.body-renderer {
+    padding-top: 52px;
+}
+
+.navbar {
+    padding: 0px;
+    margin: 0px;
+    position: fixed;
+    width: 100%;
+    z-index: 1;
+}
+
+.nav-item {
+    padding: 5px;
+}
+
+li.nav-item {
+    height: 52px;
+}
+
+.nav-item:hover {
+    background-color: #454a52;
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: black;
+}
+
+.navbar-light .navbar-nav .nav-item:hover .nav-link {
+    color: white;
+}
+
+[disabled] {
+    cursor: default;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.border-top {
+    border-top: 1px solid #e5e5e5;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+    font-size: 1rem;
+    line-height: inherit;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    height: 60px;
+    line-height: 60px;
+}
+
+.game-btn-container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    margin-top: 7px;
+}
+
+.game-btn {
+    background-color: #454a52;
+    color: white;
+}
+
+.game-btn:active {
+    outline: none;
+}
+
+.game-btn:focus {
+    outline: none;
+}
+
+.game-btn:disabled {
+    opacity: 0.65;
+}
+
+.game-btn:not([disabled]):hover {
+    background-color: #557d5f;
+    color: white;
+}
+
+.game-btn[disabled]:hover {
+    color: white;
+    cursor: not-allowed;
+}
+
+.chat-container {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-between;
+}
+
+.chat-window-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+
+.chat-window {
+    display: flex;
+    flex-flow: column;
+    overflow-y: auto;
+    padding: 5px;
+}
+
+.chat-input-wrapper {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.chat-input {
+    flex-grow: 1;
+    padding-left: 10px;
+    font-size: 1em;
+}
+
+.chat-input:focus {
+    outline: none;
+}
+
+.chat-send-btn {
+    border-radius: 0px 0px 5px 0px;
+    font-size: 1em;
+    height: 100%;
+}
+
+.chat-msg {
+    max-width: 85%;
+    word-break: break-all;
+    margin-bottom: 2px;
+}
+
+.chat-user-msg {
+    text-align: left;
+    border: 1px solid gray;
+    border-radius: 10px;
+    padding: 2px 7px;
+}
+
+.chat-internal-msg {
+    color: dimgray;
+    text-indent: 10px;
+    list-style-type: none;
+    font-style: italic;
+}
+
+.col-centered {
+    float: none;
+    margin: 0 auto;
+}

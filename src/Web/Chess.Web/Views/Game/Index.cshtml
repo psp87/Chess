@@ -1,0 +1,131 @@
+﻿@{
+    this.ViewData["Title"] = "Game Lobby";
+}
+
+<environment names="Development">
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
+    <script src="~/lib/chessboard-js/chessboard-1.0.0.js" asp-append-version="true"></script>
+</environment>
+<environment names="Staging,Production">
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js" asp-append-version="true"></script>
+    <script src="~/lib/chessboard-js/chessboard-1.0.0.min.js" asp-append-version="true"></script>
+</environment>
+
+<main class="main container-fluid text-center">
+    <article class="main-playground row">
+        <section class="main-playground-white player-stats column left">
+            <div class="player-name-container">
+                <i class="far fa-user fa-sm"></i>
+                <h1 class="main-playground-white-name player-name"></h1>
+            </div>
+            <div class="main-playground-white-rating player-rating"></div>
+            <div class="main-playground-white-points player-points"><span class="white-points-value player-points-value">0</span> pts</div>
+            <div class="main-playground-white-taken-pieces taken-pieces-container">
+                <div class="taken-pieces">
+                    <img src="~/img/chesspieces/wikipedia/bP.png" alt="Pawn: " />
+                    <span class="taken-pieces-black-pawn-value">0</span>
+                </div>
+                <div class="taken-pieces">
+                    <img src="~/img/chesspieces/wikipedia/bN.png" alt="Knight: " />
+                    <span class="taken-pieces-black-knight-value">0</span>
+                </div>
+                <div class="taken-pieces">
+                    <img src="~/img/chesspieces/wikipedia/bB.png" alt="Bishop: " />
+                    <span class="taken-pieces-black-bishop-value">0</span>
+                </div>
+                <div class="taken-pieces">
+                    <img src="~/img/chesspieces/wikipedia/bR.png" alt="Rook: " />
+                    <span class="taken-pieces-black-rook-value">0</span>
+                </div>
+                <div class="taken-pieces">
+                    <img src="~/img/chesspieces/wikipedia/bQ.png" alt="Queen: " />
+                    <span class="taken-pieces-black-queen-value">0</span>
+                </div>
+            </div>
+            <ul class="main-playground-white-move-history player-move-history list-group"></ul>
+        </section>
+
+        <section class="main-playground-board-container column middle">
+            <h6 class="status-bar-container"><i class="fas fa-arrow-alt-circle-right"></i> <span class="status-bar-text"></span>   <span class="status-bar-check-notification"></span></h6>
+            <div id="board"></div>
+            <div class="game-btn-container">
+                <button type="submit" class="threefold-draw-btn option-btn game-btn btn" disabled><i class="fas fa-equals"></i> Declare 3F Draw</button>
+                <button type="submit" class="offer-draw-btn option-btn game-btn btn"><i class="far fa-handshake"></i> Offer Draw</button>
+                <button type="submit" class="resign-btn option-btn game-btn btn"><i class="far fa-flag"></i> Resign</button>
+            </div>
+            <div class="game-chat-container chat-container">
+                <div class="game-chat-window-wrapper chat-window-wrapper">
+                    <ul class="game-chat-window chat-window"></ul>
+                </div>
+                <div class="game-chat-input-wrapper chat-input-wrapper">
+                    <input type="text" class="game-chat-input chat-input" placeholder="Type a message" autofocus />
+                    <button type="submit" class="game-chat-send-btn chat-send-btn game-btn">></button>
+                </div>
+            </div>
+        </section>
+
+        <section class="main-playground-black player-stats column right">
+            <div class="player-name-container">
+                <i class="fas fa-user fa-sm"></i>
+                <h1 class="main-playground-black-name player-name"></h1>
+            </div>
+            <div class="main-playground-black-rating player-rating"></div>
+            <div class="main-playground-black-points player-points"><span class="black-points-value player-points-value">0</span> pts</div>
+            <div class="main-playground-black-taken-pieces taken-pieces-container">
+                <div class="taken-pieces">
+                    <img src="~/img/chesspieces/wikipedia/wP.png" alt="Pawn: " />
+                    <span class="taken-pieces-white-pawn-value">0</span>
+                </div>
+                <div class="taken-pieces">
+                    <img src="~/img/chesspieces/wikipedia/wN.png" alt="Knight: " />
+                    <span class="taken-pieces-white-knight-value">0</span>
+                </div>
+                <div class="taken-pieces">
+                    <img src="~/img/chesspieces/wikipedia/wB.png" alt="Bishop: " />
+                    <span class="taken-pieces-white-bishop-value">0</span>
+                </div>
+                <div class="taken-pieces">
+                    <img src="~/img/chesspieces/wikipedia/wR.png" alt="Rook: " />
+                    <span class="taken-pieces-white-rook-value">0</span>
+                </div>
+                <div class="taken-pieces">
+                    <img src="~/img/chesspieces/wikipedia/wQ.png" alt="Queen: " />
+                    <span class="taken-pieces-white-queen-value">0</span>
+                </div>
+            </div>
+            <ul class="main-playground-black-move-history player-move-history list-group"></ul>
+        </section>
+    </article>
+
+    <article class="game-lobby">
+        <section class="game-lobby-input-container form">
+            <input type="text" class="game-lobby-input-name" placeholder="Enter your name" autofocus />
+            <button type="submit" class="game-lobby-input-create-btn game-btn">CREATE ROOM</button>
+        </section>
+
+        <section class="game-lobby-title-container">
+            <div class="game-lobby-title-room">GAME ROOMS</div>
+            <div class="game-lobby-title-chat">CHAT</div>
+        </section>
+
+        <section class="game-lobby-room-chat-container">
+            <div class="game-lobby-room-container"></div>
+            <div class="game-lobby-chat-container chat-container">
+                <div class="game-lobby-chat-window-wrapper chat-window-wrapper">
+                    <ul class="game-lobby-chat-window chat-window"></ul>
+                </div>
+                <div class="game-lobby-chat-input-wrapper chat-input-wrapper">
+                    <input type="text" class="game-lobby-chat-input chat-input" placeholder="Type a message" autofocus />
+                    <button type="submit" class="game-lobby-chat-send-btn chat-send-btn game-btn">></button>
+                </div>
+            </div>
+        </section>
+    </article>
+</main>
+
+<environment names="Development">
+    <script src="~/js/game.js" asp-append-version="true"></script>
+</environment>
+<environment names="Staging,Production">
+    <script src="~/js/game.min.js" asp-append-version="true"></script>
+</environment>

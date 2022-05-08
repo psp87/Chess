@@ -1,0 +1,56 @@
+﻿.elo-rating-container {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.elo-rating-text {
+    width: 70%;
+    background-color: darkslategray;
+    color: white;
+    font-size: 2em;
+    text-align: center;
+    padding: 4px;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+
+.elo-rating-value {
+    width: 30%;
+    background-color: darkcyan;
+    color: white;
+    font-size: 2em;
+    text-align: center;
+    padding: 4px;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+
+#piechart {
+    width: 100%;
+    height: 600px;
+}
+
+table {
+    width: 100%;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+    width: 20%;
+}
+
+.table-title {
+    background-color: darkcyan;
+    color: white;
+}
+
+.col-title {
+    background-color: darkslategray;
+    color: white;
+}
+
+td {
+    background-color: white;
+}
