@@ -33,5 +33,6 @@ The following features are implemented:
 - [x] Fifty-Move Draw
 - [x] Email Notifications
 - [ ] Timer Game Mode
+- [ ] Stateless App
 
 The project is inspired by [console version](https://github.com/psp87/Chess.Console) of chess.
