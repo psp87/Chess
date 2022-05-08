@@ -26,6 +26,7 @@ jobs:
 
     - name: dotnet publish
       run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+      working-directory: src
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
