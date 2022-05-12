@@ -1,7 +1,7 @@
 # Chess.Web
-Online **ASP.NET Core** multiplayer chess game with **SignalR** and **chessboardjs**.
+**ASP.NET Core** multiplayer **CHESS** board game with **SignalR** and **chessboardjs**.
 
-![game](Web/Chess.Web/wwwroot/img/ezgif.com-gif-maker.gif)
+![game](src/Web/Chess.Web/wwwroot/img/ezgif.com-gif-maker.gif)
 
 The game is developed main for practicing **C# OOP**, **ASP.NET Core**, **Entity Framework Core**, **JS**, **HTML** and **CSS**. 
 
