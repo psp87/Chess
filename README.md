@@ -6,9 +6,7 @@
 
 ## Build status
 
-![GitHub CI](https://github.com/psp87/Chess/actions/workflows/master_chess-bg/badge.svg)
-
-***
+![GitHub CI](https://github.com/psp87/Chess/.github/workflows/master_chess-bg/badge.svg)
 
 ## Technologies
 
@@ -22,8 +20,6 @@
 * HTML
 * CSS
 * Bootstrap
-
-***
 
 ## Features
 
