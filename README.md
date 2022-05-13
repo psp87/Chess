@@ -7,7 +7,7 @@
 ## Build Status
 
 ![GitHub CI](https://github.com/psp87/Chess/actions/workflows/master_chess-bg.yml/badge.svg)
-[![HitCount](https://hits.dwyl.com/psp87/Chess.svg?style=flat-square)](http://hits.dwyl.com/psp87/Chess)
+[![HitCount](https://hits.dwyl.com/psp87/Chess.svg?style=flat-square&show=unique)](http://hits.dwyl.com/psp87/Chess)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
 
 ## Technologies
