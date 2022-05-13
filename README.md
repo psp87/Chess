@@ -1,13 +1,32 @@
 # Chess.Web
-**ASP.NET Core** multiplayer **CHESS** board game with **SignalR** and **chessboardjs**.
+
+**ASP.NET Core** multiplayer board game with **SignalR** and **chessboardjs**.
 
 ![game](src/Web/Chess.Web/wwwroot/img/ezgif.com-gif-maker.gif)
 
-The game is developed main for practicing **C# OOP**, **ASP.NET Core**, **Entity Framework Core**, **JS**, **HTML** and **CSS**. 
+## Build status
 
-**SignalR** is used for live multiplayer and **chessboardjs** for board rendering.
+![GitHub CI](https://github.com/psp87/Chess/actions/workflows/master_chess-bg/badge.svg)
 
-The following features are implemented:
+***
+
+## Technologies
+
+* C#
+* ASP.NET Core
+* ASP.NET Core MVC
+* Entity Framework Core
+* SignalR
+* JavaScript
+* jQuery
+* HTML
+* CSS
+* Bootstrap
+
+***
+
+## Features
+
 - [x] Move Validation
 - [x] Check
 - [x] Checkmate
@@ -34,5 +53,3 @@ The following features are implemented:
 - [x] Email Notifications
 - [ ] Timer Game Mode
 - [ ] Stateless App
-
-The project is inspired by [console version](https://github.com/psp87/Chess.Console) of chess.
