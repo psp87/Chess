@@ -1,0 +1,11 @@
+/* The name of the Storage Account Resource Group */
+resource_group_name = "cloud-shell-storage-westeurope"
+
+/* The name of the Storage Account */
+storage_account_name = "csb10032001aaa50a0b"
+
+/* The Name of the Storage Container within the Storage Account */
+container_name = "tfstate"
+
+/* The name of the Blob used to retrieve/store Terraform's State file inside the Storage Container */
+key = "prod.terraform.tfstate"
