@@ -1,0 +1,152 @@
+# ASP.NET Core (.NET Framework)
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+  workDir: '$(System.DefaultWorkingDirectory)'
+
+trigger:
+  branches:
+    include:
+    - main
+
+jobs:
+
+  - job: Terraform
+    steps:
+
+    # Install Terraform
+    - task: TerraformInstaller@0
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: 'latest'
+      
+    # Init
+    - task: TerraformCLI@0
+      displayName: Terraform Init
+      inputs:
+        command: 'init'
+        workingDirectory: '$(workDir)/terraform'
+        backendType: 'azurerm'
+        backendServiceArm: 'Azure DevOps'
+        ensureBackend: true
+        backendAzureRmResourceGroupName: '$(ResourceGroupName)'
+        backendAzureRmResourceGroupLocation: '$(ResourceGroupLocation)'
+        backendAzureRmStorageAccountName: '$(StorageAccountName)'
+        backendAzureRmContainerName: '$(ContainerName)'
+        backendAzureRmKey: '$(Key)'
+        allowTelemetryCollection: true
+
+    # Validate
+    - task: TerraformCLI@0
+      displayName: Terraform Validate
+      inputs:
+        command: 'validate'
+        workingDirectory: '$(workDir)/terraform'
+        allowTelemetryCollection: true
+
+    # Plan
+    - task: TerraformCLI@0
+      displayName: Terraform Plan
+      inputs:
+        command: 'plan'
+        workingDirectory: '$(workDir)/terraform'
+        environmentServiceName: 'Azure DevOps'
+        commandOptions: '-var "sql_admin_password=$(secret_password)"'
+        allowTelemetryCollection: true
+
+    # Apply
+    - task: TerraformCLI@0
+      displayName: Terraform Apply
+      inputs:
+        command: 'apply'
+        workingDirectory: '$(workDir)/terraform'
+        environmentServiceName: 'Azure DevOps'
+        commandOptions: '-var "sql_admin_password=$(secret_password)"'
+        allowTelemetryCollection: true
+    
+#######################################################  
+
+  - job: Build_Test_Deploy
+    displayName: Build, Test and Deploy
+    steps:
+
+    # Install .NET SDK 6.0.x
+    - task: UseDotNet@2
+      inputs:
+        version: '6.0.x'
+    
+    # Restore dependencies
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet restore'
+      inputs:
+        command: 'restore'
+        projects: '**/*.csproj'
+        workingDirectory: '$(workDir)/src'
+        feedsToUse: 'select'
+        verbosityRestore: 'Minimal'
+
+    # Build 
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet build'
+      inputs:
+        command: 'build'
+        arguments: '--no-restore -c $(buildConfiguration)'
+        workingDirectory: '$(workDir)/src'
+    
+    # Run Tests
+    - task: DotNetCoreCLI@2
+      displayName: dotnet test
+      inputs:
+        command: 'test'
+        arguments: '-c $(buildConfiguration)'
+        workingDirectory: '$(workDir)/src'
+    
+    # Publish Artifact
+    - task: DotNetCoreCLI@2
+      displayName: dotnet publish
+      inputs:
+        command: 'publish'
+        publishWebProjects: true
+        arguments: '-c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)'
+        workingDirectory: '$(workDir)/src'
+  
+    - task: PublishBuildArtifacts@1
+      displayName: Publish the artifact
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
+
+####################################################### 
+
+  - job: Upload_to_Web_App
+    displayName: Upload artifact to Web App
+    dependsOn:
+      - Terraform
+      - Build_Test_Deploy
+    steps:
+    
+    # Download the artifact
+    - task: DownloadBuildArtifacts@1
+      displayName: Downloads the artifact
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'drop'
+        downloadPath: '$(Build.ArtifactStagingDirectory)'
+    
+    # Upload the artifact to a web application
+    - task: AzureRmWebAppDeployment@4
+      displayName: Upload the artifact
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'Azure DevOps'
+        appType: 'webAppLinux'
+        WebAppName: '$(web-app-name)'
+        packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
