@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace Chess.Data.Migrations
 {
     [DbContext(typeof(ChessDbContext))]
@@ -15,11 +17,140 @@ namespace Chess.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .UseIdentityColumns()
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.12");
+                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            modelBuilder.Entity("Chess.Data.Models.ChessRole", b =>
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("Chess.Data.Models.ErrorLogEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_on");
+
+                    b.Property<string>("ExceptionMessage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("exception_message");
+
+                    b.Property<string>("FenString")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("fen_string");
+
+                    b.Property<string>("GameId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("game_id");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("source");
+
+                    b.Property<string>("Target")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("target");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameId");
+
+                    b.ToTable("error_logs", (string)null);
+                });
+
+            modelBuilder.Entity("Chess.Data.Models.GameEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_on");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("modified_on");
+
+                    b.Property<string>("PlayerOneName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("player_one_name");
+
+                    b.Property<string>("PlayerOneUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("player_one_user_id");
+
+                    b.Property<string>("PlayerTwoName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("player_two_name");
+
+                    b.Property<string>("PlayerTwoUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("player_two_user_id");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("games", (string)null);
+                });
+
+            modelBuilder.Entity("Chess.Data.Models.MoveEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_on");
+
+                    b.Property<string>("GameId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("game_id");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("modified_on");
+
+                    b.Property<string>("Notation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("notation");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("moves", (string)null);
+                });
+
+            modelBuilder.Entity("Chess.Data.Models.RoleEntity", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -57,10 +188,59 @@ namespace Chess.Data.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("roles");
+                    b.ToTable("roles", (string)null);
                 });
 
-            modelBuilder.Entity("Chess.Data.Models.ChessUser", b =>
+            modelBuilder.Entity("Chess.Data.Models.StatisticEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_on");
+
+                    b.Property<int>("Drawn")
+                        .HasColumnType("int")
+                        .HasColumnName("drawn");
+
+                    b.Property<int>("EloRating")
+                        .HasColumnType("int")
+                        .HasColumnName("elo_rating");
+
+                    b.Property<int>("Lost")
+                        .HasColumnType("int")
+                        .HasColumnName("lost");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("modified_on");
+
+                    b.Property<int>("Played")
+                        .HasColumnType("int")
+                        .HasColumnName("played");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("Won")
+                        .HasColumnType("int")
+                        .HasColumnName("won");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("stats", (string)null);
+                });
+
+            modelBuilder.Entity("Chess.Data.Models.UserEntity", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -136,189 +316,16 @@ namespace Chess.Data.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("users");
-                });
-
-            modelBuilder.Entity("Chess.Data.Models.ErrorLogEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("created_on");
-
-                    b.Property<string>("ExceptionMessage")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("exception_message");
-
-                    b.Property<string>("FenString")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("fen_string");
-
-                    b.Property<string>("GameId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("game_id");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Source")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("source");
-
-                    b.Property<string>("Target")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("target");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("error_logs");
-                });
-
-            modelBuilder.Entity("Chess.Data.Models.GameEntity", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("created_on");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("modified_on");
-
-                    b.Property<string>("PlayerOneName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("player_one_name");
-
-                    b.Property<string>("PlayerOneUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("player_one_user_id");
-
-                    b.Property<string>("PlayerTwoName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("player_two_name");
-
-                    b.Property<string>("PlayerTwoUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("player_two_user_id");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("games");
-                });
-
-            modelBuilder.Entity("Chess.Data.Models.MoveEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("created_on");
-
-                    b.Property<string>("GameId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("game_id");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("modified_on");
-
-                    b.Property<string>("Notation")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("notation");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GameId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("moves");
-                });
-
-            modelBuilder.Entity("Chess.Data.Models.StatisticEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("created_on");
-
-                    b.Property<int>("Drawn")
-                        .HasColumnType("int")
-                        .HasColumnName("drawn");
-
-                    b.Property<int>("EloRating")
-                        .HasColumnType("int")
-                        .HasColumnName("elo_rating");
-
-                    b.Property<int>("Lost")
-                        .HasColumnType("int")
-                        .HasColumnName("lost");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("modified_on");
-
-                    b.Property<int>("Played")
-                        .HasColumnType("int")
-                        .HasColumnName("played");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("user_id");
-
-                    b.Property<int>("Won")
-                        .HasColumnType("int")
-                        .HasColumnName("won");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("stats");
+                    b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -334,15 +341,16 @@ namespace Chess.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims");
+                    b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -358,7 +366,7 @@ namespace Chess.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims");
+                    b.ToTable("AspNetUserClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -380,7 +388,7 @@ namespace Chess.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins");
+                    b.ToTable("AspNetUserLogins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -395,7 +403,7 @@ namespace Chess.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles");
+                    b.ToTable("AspNetUserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -414,7 +422,7 @@ namespace Chess.Data.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens");
+                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("Chess.Data.Models.ErrorLogEntity", b =>
@@ -436,7 +444,7 @@ namespace Chess.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Chess.Data.Models.ChessUser", "User")
+                    b.HasOne("Chess.Data.Models.UserEntity", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -449,7 +457,7 @@ namespace Chess.Data.Migrations
 
             modelBuilder.Entity("Chess.Data.Models.StatisticEntity", b =>
                 {
-                    b.HasOne("Chess.Data.Models.ChessUser", "User")
+                    b.HasOne("Chess.Data.Models.UserEntity", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -460,7 +468,7 @@ namespace Chess.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Chess.Data.Models.ChessRole", null)
+                    b.HasOne("Chess.Data.Models.RoleEntity", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -469,7 +477,7 @@ namespace Chess.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Chess.Data.Models.ChessUser", null)
+                    b.HasOne("Chess.Data.Models.UserEntity", null)
                         .WithMany("Claims")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -478,7 +486,7 @@ namespace Chess.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Chess.Data.Models.ChessUser", null)
+                    b.HasOne("Chess.Data.Models.UserEntity", null)
                         .WithMany("Logins")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -487,13 +495,13 @@ namespace Chess.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Chess.Data.Models.ChessRole", null)
+                    b.HasOne("Chess.Data.Models.RoleEntity", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Chess.Data.Models.ChessUser", null)
+                    b.HasOne("Chess.Data.Models.UserEntity", null)
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -502,25 +510,25 @@ namespace Chess.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Chess.Data.Models.ChessUser", null)
+                    b.HasOne("Chess.Data.Models.UserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Chess.Data.Models.ChessUser", b =>
+            modelBuilder.Entity("Chess.Data.Models.GameEntity", b =>
+                {
+                    b.Navigation("Moves");
+                });
+
+            modelBuilder.Entity("Chess.Data.Models.UserEntity", b =>
                 {
                     b.Navigation("Claims");
 
                     b.Navigation("Logins");
 
                     b.Navigation("Roles");
-                });
-
-            modelBuilder.Entity("Chess.Data.Models.GameEntity", b =>
-                {
-                    b.Navigation("Moves");
                 });
 #pragma warning restore 612, 618
         }

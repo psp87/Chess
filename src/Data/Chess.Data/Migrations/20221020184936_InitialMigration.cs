@@ -1,12 +1,31 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
+#nullable disable
+
 namespace Chess.Data.Migrations
 {
-    public partial class Initial : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "games",
+                columns: table => new
+                {
+                    id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    player_one_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    player_one_user_id = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    player_two_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    player_two_user_id = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    created_on = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    modified_on = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_games", x => x.id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "roles",
                 columns: table => new
@@ -52,6 +71,31 @@ namespace Chess.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "error_logs",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    game_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    source = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    target = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    fen_string = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    exception_message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    created_on = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_error_logs", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_error_logs_games_game_id",
+                        column: x => x.game_id,
+                        principalTable: "games",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -161,15 +205,44 @@ namespace Chess.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "moves",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    notation = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    user_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    game_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    created_on = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    modified_on = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_moves", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_moves_games_game_id",
+                        column: x => x.game_id,
+                        principalTable: "games",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_moves_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "stats",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    games = table.Column<int>(type: "int", nullable: false),
-                    win = table.Column<int>(type: "int", nullable: false),
-                    draw = table.Column<int>(type: "int", nullable: false),
-                    loss = table.Column<int>(type: "int", nullable: false),
+                    played = table.Column<int>(type: "int", nullable: false),
+                    won = table.Column<int>(type: "int", nullable: false),
+                    drawn = table.Column<int>(type: "int", nullable: false),
+                    lost = table.Column<int>(type: "int", nullable: false),
                     elo_rating = table.Column<int>(type: "int", nullable: false),
                     user_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     created_on = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -207,6 +280,21 @@ namespace Chess.Data.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_error_logs_game_id",
+                table: "error_logs",
+                column: "game_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_moves_game_id",
+                table: "moves",
+                column: "game_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_moves_user_id",
+                table: "moves",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_roles_IsDeleted",
                 table: "roles",
                 column: "IsDeleted");
@@ -221,8 +309,7 @@ namespace Chess.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_stats_user_id",
                 table: "stats",
-                column: "user_id",
-                unique: true);
+                column: "user_id");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
@@ -260,10 +347,19 @@ namespace Chess.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "error_logs");
+
+            migrationBuilder.DropTable(
+                name: "moves");
+
+            migrationBuilder.DropTable(
                 name: "stats");
 
             migrationBuilder.DropTable(
                 name: "roles");
+
+            migrationBuilder.DropTable(
+                name: "games");
 
             migrationBuilder.DropTable(
                 name: "users");
