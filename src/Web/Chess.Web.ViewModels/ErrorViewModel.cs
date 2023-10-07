@@ -1,9 +1,8 @@
-﻿namespace Chess.Web.ViewModels
-{
-    public class ErrorViewModel
-    {
-        public string RequestId { get; set; }
+﻿namespace Chess.Web.ViewModels;
 
-        public bool ShowRequestId => !string.IsNullOrEmpty(this.RequestId);
-    }
+public class ErrorViewModel
+{
+    public string RequestId { get; set; }
+
+    public bool ShowRequestId => !string.IsNullOrEmpty(this.RequestId);
 }

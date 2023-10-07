@@ -1,22 +1,21 @@
-﻿namespace Chess.Data
+﻿namespace Chess.Data;
+
+using System.Linq;
+
+using Chess.Data.Common.Models;
+using Microsoft.EntityFrameworkCore;
+
+internal static class EntityIndexesConfiguration
 {
-    using System.Linq;
-
-    using Chess.Data.Common.Models;
-    using Microsoft.EntityFrameworkCore;
-
-    internal static class EntityIndexesConfiguration
+    public static void Configure(ModelBuilder modelBuilder)
     {
-        public static void Configure(ModelBuilder modelBuilder)
+        // IDeletableEntity.IsDeleted index
+        var deletableEntityTypes = modelBuilder.Model
+            .GetEntityTypes()
+            .Where(et => et.ClrType != null && typeof(IDeletableEntity).IsAssignableFrom(et.ClrType));
+        foreach (var deletableEntityType in deletableEntityTypes)
         {
-            // IDeletableEntity.IsDeleted index
-            var deletableEntityTypes = modelBuilder.Model
-                .GetEntityTypes()
-                .Where(et => et.ClrType != null && typeof(IDeletableEntity).IsAssignableFrom(et.ClrType));
-            foreach (var deletableEntityType in deletableEntityTypes)
-            {
-                modelBuilder.Entity(deletableEntityType.ClrType).HasIndex(nameof(IDeletableEntity.IsDeleted));
-            }
+            modelBuilder.Entity(deletableEntityType.ClrType).HasIndex(nameof(IDeletableEntity.IsDeleted));
         }
     }
 }

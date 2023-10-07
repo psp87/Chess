@@ -1,41 +1,40 @@
-﻿namespace Chess.Web.Controllers
+﻿namespace Chess.Web.Controllers;
+
+using System.Diagnostics;
+using System.Security.Claims;
+
+using Chess.Services.Data.Services.Contracts;
+using Chess.Web.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+
+public class HomeController : BaseController
 {
-    using System.Diagnostics;
-    using System.Security.Claims;
+    private readonly IStatsService statsService;
 
-    using Chess.Services.Data.Services.Contracts;
-    using Chess.Web.ViewModels;
-    using Microsoft.AspNetCore.Mvc;
-
-    public class HomeController : BaseController
+    public HomeController(IStatsService statsService)
     {
-        private readonly IStatsService statsService;
+        this.statsService = statsService;
+    }
 
-        public HomeController(IStatsService statsService)
+    public IActionResult Index()
+    {
+        if (this.User.Identity.IsAuthenticated)
         {
-            this.statsService = statsService;
-        }
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        public IActionResult Index()
-        {
-            if (this.User.Identity.IsAuthenticated)
+            if (!this.statsService.IsStatsInitiated(userId))
             {
-                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-                if (!this.statsService.IsStatsInitiated(userId))
-                {
-                    this.statsService.InitiateStats(userId);
-                }
+                this.statsService.InitiateStats(userId);
             }
-
-            return this.View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return this.View(
-                new ErrorViewModel { RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier });
-        }
+        return this.View();
+    }
+
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return this.View(
+            new ErrorViewModel { RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier });
     }
 }

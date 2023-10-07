@@ -1,12 +1,11 @@
-﻿namespace Chess.Data.Repositories
-{
-    using Chess.Data.Models;
+﻿namespace Chess.Data.Repositories;
 
-    public class GameRepository : EfRepository<GameEntity>
+using Chess.Data.Models;
+
+public class GameRepository : EfRepository<GameEntity>
+{
+    public GameRepository(ChessDbContext context)
+        : base(context)
     {
-        public GameRepository(ChessDbContext context)
-            : base(context)
-        {
-        }
     }
 }

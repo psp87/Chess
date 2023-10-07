@@ -1,14 +1,13 @@
-﻿namespace Chess.Services.Data.Services.Contracts
+﻿namespace Chess.Services.Data.Services.Contracts;
+
+using Chess.Services.Data.Dtos;
+using Chess.Services.Data.Models;
+
+public interface IUtilityService
 {
-    using Chess.Services.Data.Dtos;
-    using Chess.Services.Data.Models;
+    string GetAlgebraicNotation(AlgebraicNotationDto model);
 
-    public interface IUtilityService
-    {
-        string GetAlgebraicNotation(AlgebraicNotationDto model);
+    void GetPawnPromotionFenString(string targetFen, Player movingPlayer, Move move);
 
-        void GetPawnPromotionFenString(string targetFen, Player movingPlayer, Move move);
-
-        int CalculateRatingPoints(int yourRating, int opponentRating);
-    }
+    int CalculateRatingPoints(int yourRating, int opponentRating);
 }

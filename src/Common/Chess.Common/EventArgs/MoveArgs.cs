@@ -1,16 +1,15 @@
-﻿namespace Chess.Common.EventArgs
+﻿namespace Chess.Common.EventArgs;
+
+using System;
+
+using Chess.Common.Enums;
+
+public class MoveArgs : EventArgs
 {
-    using System;
-
-    using Chess.Common.Enums;
-
-    public class MoveArgs : EventArgs
+    public MoveArgs(Message type)
     {
-        public MoveArgs(Message type)
-        {
-            this.Type = type;
-        }
-
-        public Message Type { get; set; }
+        this.Type = type;
     }
+
+    public Message Type { get; set; }
 }

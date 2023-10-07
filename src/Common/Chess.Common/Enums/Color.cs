@@ -1,8 +1,7 @@
-﻿namespace Chess.Common.Enums
+﻿namespace Chess.Common.Enums;
+
+public enum Color
 {
-    public enum Color
-    {
-        White = 0,
-        Black = 1,
-    }
+    White = 0,
+    Black = 1,
 }

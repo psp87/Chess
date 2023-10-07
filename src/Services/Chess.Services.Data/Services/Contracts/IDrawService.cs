@@ -1,17 +1,16 @@
-﻿namespace Chess.Services.Data.Services.Contracts
+﻿namespace Chess.Services.Data.Services.Contracts;
+
+using Chess.Services.Data.Models;
+
+public interface IDrawService
 {
-    using Chess.Services.Data.Models;
+    bool IsStalemate(Board board, Player opponent);
 
-    public interface IDrawService
-    {
-        bool IsStalemate(Board board, Player opponent);
+    bool IsDraw(Board board);
 
-        bool IsDraw(Board board);
+    bool IsThreefoldRepetionDraw(string fen);
 
-        bool IsThreefoldRepetionDraw(string fen);
+    bool IsFivefoldRepetitionDraw(string fen);
 
-        bool IsFivefoldRepetitionDraw(string fen);
-
-        bool IsFiftyMoveDraw(Move move);
-    }
+    bool IsFiftyMoveDraw(Move move);
 }

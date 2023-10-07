@@ -1,16 +1,15 @@
-﻿namespace Chess.Common.EventArgs
+﻿namespace Chess.Common.EventArgs;
+
+using System;
+
+using Chess.Common.Enums;
+
+public class GameOverEventArgs : EventArgs
 {
-    using System;
-
-    using Chess.Common.Enums;
-
-    public class GameOverEventArgs : EventArgs
+    public GameOverEventArgs(GameOver gameOver)
     {
-        public GameOverEventArgs(GameOver gameOver)
-        {
-            this.GameOver = gameOver;
-        }
-
-        public GameOver GameOver { get; set; }
+        this.GameOver = gameOver;
     }
+
+    public GameOver GameOver { get; set; }
 }

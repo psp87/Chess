@@ -1,9 +1,8 @@
-﻿namespace Chess.Common.Enums
+﻿namespace Chess.Common.Enums;
+
+public enum AttackType
 {
-    public enum AttackType
-    {
-        File = 0,
-        Rank = 1,
-        Diagonal = 2,
-    }
+    File = 0,
+    Rank = 1,
+    Diagonal = 2,
 }

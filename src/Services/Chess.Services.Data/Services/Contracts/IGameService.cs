@@ -1,7 +1,6 @@
-﻿namespace Chess.Services.Data.Services.Contracts
+﻿namespace Chess.Services.Data.Services.Contracts;
+
+public interface IGameService
 {
-    public interface IGameService
-    {
-        int GetCount();
-    }
+    int GetCount();
 }

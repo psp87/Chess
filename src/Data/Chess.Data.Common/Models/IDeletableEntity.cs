@@ -1,11 +1,10 @@
-﻿namespace Chess.Data.Common.Models
+﻿namespace Chess.Data.Common.Models;
+
+using System;
+
+public interface IDeletableEntity
 {
-    using System;
+    bool IsDeleted { get; set; }
 
-    public interface IDeletableEntity
-    {
-        bool IsDeleted { get; set; }
-
-        DateTime? DeletedOn { get; set; }
-    }
+    DateTime? DeletedOn { get; set; }
 }

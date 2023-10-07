@@ -1,8 +1,7 @@
-﻿namespace Chess.Web.Controllers
-{
-    using Microsoft.AspNetCore.Mvc;
+﻿namespace Chess.Web.Controllers;
 
-    public class BaseController : Controller
-    {
-    }
+using Microsoft.AspNetCore.Mvc;
+
+public class BaseController : Controller
+{
 }

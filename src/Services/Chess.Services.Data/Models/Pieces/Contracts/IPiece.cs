@@ -1,35 +1,34 @@
-﻿namespace Chess.Services.Data.Models.Pieces.Contracts
+﻿namespace Chess.Services.Data.Models.Pieces.Contracts;
+
+using System;
+
+using Chess.Common.Enums;
+
+public interface IPiece : ICloneable
 {
-    using System;
+    string Name { get; }
 
-    using Chess.Common.Enums;
+    Color Color { get; }
 
-    public interface IPiece : ICloneable
-    {
-        string Name { get; }
+    char Symbol { get; }
 
-        Color Color { get; }
+    Position Position { get; set; }
 
-        char Symbol { get; }
+    bool IsFirstMove { get; set; }
 
-        Position Position { get; set; }
+    bool IsLastMove { get; set; }
 
-        bool IsFirstMove { get; set; }
+    bool IsMovable { get; set; }
 
-        bool IsLastMove { get; set; }
+    public int Points { get; }
 
-        bool IsMovable { get; set; }
+    void IsMoveAvailable(Square[][] matrix);
 
-        public int Points { get; }
+    void Attacking(Square[][] matrix);
 
-        void IsMoveAvailable(Square[][] matrix);
+    bool Move(Position toPosition, Square[][] boardMatrix, int turn, Move move);
 
-        void Attacking(Square[][] matrix);
+    bool Take(Position toPosition, Square[][] boardMatrix, int turn, Move move);
 
-        bool Move(Position toPosition, Square[][] boardMatrix, int turn, Move move);
-
-        bool Take(Position toPosition, Square[][] boardMatrix, int turn, Move move);
-
-        bool IsType(params char[] pieceSymbols);
-    }
+    bool IsType(params char[] pieceSymbols);
 }

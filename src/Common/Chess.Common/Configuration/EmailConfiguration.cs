@@ -1,9 +1,8 @@
-﻿namespace Chess.Common.Configuration
-{
-    public class EmailConfiguration
-    {
-        public string MyAbvMail { get; set; }
+﻿namespace Chess.Common.Configuration;
 
-        public string MyGmail { get; set; }
-    }
+public class EmailConfiguration
+{
+    public string MyAbvMail { get; set; }
+
+    public string MyGmail { get; set; }
 }

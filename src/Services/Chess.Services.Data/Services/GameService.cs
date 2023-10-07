@@ -1,23 +1,22 @@
-﻿namespace Chess.Services.Data.Services
+﻿namespace Chess.Services.Data.Services;
+
+using System.Linq;
+
+using Chess.Data.Common.Repositories;
+using Chess.Data.Models;
+using Chess.Services.Data.Services.Contracts;
+
+public class GameService : IGameService
 {
-    using System.Linq;
+    private readonly IDeletableEntityRepository<UserEntity> usersRepository;
 
-    using Chess.Data.Common.Repositories;
-    using Chess.Data.Models;
-    using Chess.Services.Data.Services.Contracts;
-
-    public class GameService : IGameService
+    public GameService(IDeletableEntityRepository<UserEntity> usersRepository)
     {
-        private readonly IDeletableEntityRepository<UserEntity> usersRepository;
+        this.usersRepository = usersRepository;
+    }
 
-        public GameService(IDeletableEntityRepository<UserEntity> usersRepository)
-        {
-            this.usersRepository = usersRepository;
-        }
-
-        public int GetCount()
-        {
-            return this.usersRepository.All().Count();
-        }
+    public int GetCount()
+    {
+        return this.usersRepository.All().Count();
     }
 }

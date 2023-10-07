@@ -1,22 +1,21 @@
-﻿namespace Chess.Web.Controllers
+﻿namespace Chess.Web.Controllers;
+
+using Chess.Services.Data.Services.Contracts;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+[Authorize]
+public class GameController : BaseController
 {
-    using Chess.Services.Data.Services.Contracts;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
+    private readonly IGameService gameService;
 
-    [Authorize]
-    public class GameController : BaseController
+    public GameController(IGameService gameService)
     {
-        private readonly IGameService gameService;
+        this.gameService = gameService;
+    }
 
-        public GameController(IGameService gameService)
-        {
-            this.gameService = gameService;
-        }
-
-        public IActionResult Index()
-        {
-            return this.View();
-        }
+    public IActionResult Index()
+    {
+        return this.View();
     }
 }

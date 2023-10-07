@@ -1,11 +1,10 @@
-﻿namespace Chess.Common.Enums
+﻿namespace Chess.Common.Enums;
+
+public enum Message
 {
-    public enum Message
-    {
-        InvalidMove = 0,
-        CheckClear = 1,
-        CheckOpponent = 2,
-        CheckSelf = 3,
-        CheckOpen = 4,
-    }
+    InvalidMove = 0,
+    CheckClear = 1,
+    CheckOpponent = 2,
+    CheckSelf = 3,
+    CheckOpen = 4,
 }

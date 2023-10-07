@@ -1,19 +1,18 @@
-﻿namespace Chess.Services.Data.Services.Contracts
+﻿namespace Chess.Services.Data.Services.Contracts;
+
+public interface IStatsService
 {
-    public interface IStatsService
-    {
-        T GetUserStats<T>(string userId);
+    T GetUserStats<T>(string userId);
 
-        bool IsStatsInitiated(string userId);
+    bool IsStatsInitiated(string userId);
 
-        int GetUserRating(string userId);
+    int GetUserRating(string userId);
 
-        int GetTotalGames();
+    int GetTotalGames();
 
-        string GetMostGamesUser();
+    string GetMostGamesUser();
 
-        string GetMostWinsUser();
+    string GetMostWinsUser();
 
-        void InitiateStats(string userId);
-    }
+    void InitiateStats(string userId);
 }

@@ -1,21 +1,20 @@
-﻿namespace Chess.Data.Common.Repositories
+﻿namespace Chess.Data.Common.Repositories;
+
+using System.Linq;
+using System.Threading.Tasks;
+
+using Chess.Data.Common.Models;
+
+public interface IDeletableEntityRepository<TEntity> : IRepository<TEntity>
+    where TEntity : class, IDeletableEntity
 {
-    using System.Linq;
-    using System.Threading.Tasks;
+    IQueryable<TEntity> AllWithDeleted();
 
-    using Chess.Data.Common.Models;
+    IQueryable<TEntity> AllAsNoTrackingWithDeleted();
 
-    public interface IDeletableEntityRepository<TEntity> : IRepository<TEntity>
-        where TEntity : class, IDeletableEntity
-    {
-        IQueryable<TEntity> AllWithDeleted();
+    Task<TEntity> GetByIdWithDeletedAsync(params object[] id);
 
-        IQueryable<TEntity> AllAsNoTrackingWithDeleted();
+    void HardDelete(TEntity entity);
 
-        Task<TEntity> GetByIdWithDeletedAsync(params object[] id);
-
-        void HardDelete(TEntity entity);
-
-        void Undelete(TEntity entity);
-    }
+    void Undelete(TEntity entity);
 }

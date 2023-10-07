@@ -1,7 +1,6 @@
-﻿namespace Chess.Services.Data.Models.Pieces.Helpers
+﻿namespace Chess.Services.Data.Models.Pieces.Helpers;
+
+public class PawnPromotionArgs
 {
-    public class PawnPromotionArgs
-    {
-        public string FenString { get; set; }
-    }
+    public string FenString { get; set; }
 }

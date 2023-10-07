@@ -1,9 +1,8 @@
-﻿namespace Chess.Services.Mapping
-{
-    using AutoMapper;
+﻿namespace Chess.Services.Mapping;
 
-    public interface IHaveCustomMappings
-    {
-        void CreateMappings(IProfileExpression configuration);
-    }
+using AutoMapper;
+
+public interface IHaveCustomMappings
+{
+    void CreateMappings(IProfileExpression configuration);
 }

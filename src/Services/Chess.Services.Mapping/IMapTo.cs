@@ -1,7 +1,5 @@
-﻿namespace Chess.Services.Mapping
+﻿namespace Chess.Services.Mapping;
+
+public interface IMapTo<T>
 {
-    // ReSharper disable once UnusedTypeParameter
-    public interface IMapTo<T>
-    {
-    }
 }

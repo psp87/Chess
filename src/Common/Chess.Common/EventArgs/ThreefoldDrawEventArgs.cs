@@ -1,14 +1,13 @@
-﻿namespace Chess.Common.EventArgs
+﻿namespace Chess.Common.EventArgs;
+
+using System;
+
+public class ThreefoldDrawEventArgs : EventArgs
 {
-    using System;
-
-    public class ThreefoldDrawEventArgs : EventArgs
+    public ThreefoldDrawEventArgs(bool isAvailable)
     {
-        public ThreefoldDrawEventArgs(bool isAvailable)
-        {
-            this.IsAvailable = isAvailable;
-        }
-
-        public bool IsAvailable { get; set; }
+        this.IsAvailable = isAvailable;
     }
+
+    public bool IsAvailable { get; set; }
 }

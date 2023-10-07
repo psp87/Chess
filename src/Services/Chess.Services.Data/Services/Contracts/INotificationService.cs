@@ -1,34 +1,33 @@
-﻿namespace Chess.Services.Data.Services.Contracts
+﻿namespace Chess.Services.Data.Services.Contracts;
+
+using System;
+
+using Chess.Common.Enums;
+using Chess.Services.Data.Models;
+
+public interface INotificationService
 {
-    using System;
+    event EventHandler OnGameOver;
 
-    using Chess.Common.Enums;
-    using Chess.Services.Data.Models;
+    event EventHandler OnTakePiece;
 
-    public interface INotificationService
-    {
-        event EventHandler OnGameOver;
+    event EventHandler OnAvailableThreefoldDraw;
 
-        event EventHandler OnTakePiece;
+    event EventHandler OnMoveEvent;
 
-        event EventHandler OnAvailableThreefoldDraw;
+    event EventHandler OnCompleteMove;
 
-        event EventHandler OnMoveEvent;
+    void ClearCheck(Player movingPlayer, Player opponent);
 
-        event EventHandler OnCompleteMove;
+    void InvalidMove(bool oldIsCheck, Player movingPlayer);
 
-        void ClearCheck(Player movingPlayer, Player opponent);
+    void SendCheck(Player movingPlayer);
 
-        void InvalidMove(bool oldIsCheck, Player movingPlayer);
+    void UpdateMoveHistory(Player movingPlayer, string notation);
 
-        void SendCheck(Player movingPlayer);
+    void UpdateTakenPiecesHistory(Player movingPlayer, string pieceName);
 
-        void UpdateMoveHistory(Player movingPlayer, string notation);
+    void SendThreefoldDrawAvailability(Player movingPlayer, bool available);
 
-        void UpdateTakenPiecesHistory(Player movingPlayer, string pieceName);
-
-        void SendThreefoldDrawAvailability(Player movingPlayer, bool available);
-
-        void SendGameOver(Player movingPlayer, GameOver gameOver);
-    }
+    void SendGameOver(Player movingPlayer, GameOver gameOver);
 }

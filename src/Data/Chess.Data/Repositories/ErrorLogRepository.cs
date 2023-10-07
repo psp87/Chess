@@ -1,12 +1,11 @@
-﻿namespace Chess.Data.Repositories
-{
-    using Chess.Data.Models;
+﻿namespace Chess.Data.Repositories;
 
-    public class ErrorLogRepository : EfRepository<ErrorLogEntity>
+using Chess.Data.Models;
+
+public class ErrorLogRepository : EfRepository<ErrorLogEntity>
+{
+    public ErrorLogRepository(ChessDbContext context)
+        : base(context)
     {
-        public ErrorLogRepository(ChessDbContext context)
-            : base(context)
-        {
-        }
     }
 }

@@ -1,7 +1,6 @@
-﻿namespace Chess.Data.Common.Models
+﻿namespace Chess.Data.Common.Models;
+
+public interface IHaveOwner
 {
-    public interface IHaveOwner
-    {
-        string UserId { get; set; }
-    }
+    string UserId { get; set; }
 }

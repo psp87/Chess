@@ -1,51 +1,50 @@
-﻿namespace Chess.Services.Messaging
+﻿namespace Chess.Services.Messaging;
+
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+
+using Chess.Services.Messaging.Contracts;
+using SendGrid;
+using SendGrid.Helpers.Mail;
+
+public class SendGridEmailSender : IEmailSender
 {
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
+    private readonly SendGridClient client;
 
-    using Chess.Services.Messaging.Contracts;
-    using SendGrid;
-    using SendGrid.Helpers.Mail;
-
-    public class SendGridEmailSender : IEmailSender
+    public SendGridEmailSender(string apiKey)
     {
-        private readonly SendGridClient client;
+        this.client = new SendGridClient(apiKey);
+    }
 
-        public SendGridEmailSender(string apiKey)
+    public async Task SendEmailAsync(MailMessage mailMessage)
+    {
+        if (string.IsNullOrWhiteSpace(mailMessage.Subject) && string.IsNullOrWhiteSpace(mailMessage.HtmlContent))
         {
-            this.client = new SendGridClient(apiKey);
+            throw new ArgumentException("Subject and message should be provided.");
         }
 
-        public async Task SendEmailAsync(MailMessage mailMessage)
+        var fromAddress = new EmailAddress(mailMessage.From, mailMessage.FromName);
+        var toAddress = new EmailAddress(mailMessage.To);
+        var message = MailHelper.CreateSingleEmail(fromAddress, toAddress, mailMessage.Subject, null, mailMessage.HtmlContent);
+        if (mailMessage.Attachments?.Any() == true)
         {
-            if (string.IsNullOrWhiteSpace(mailMessage.Subject) && string.IsNullOrWhiteSpace(mailMessage.HtmlContent))
+            foreach (var attachment in mailMessage.Attachments)
             {
-                throw new ArgumentException("Subject and message should be provided.");
+                message.AddAttachment(attachment.FileName, Convert.ToBase64String(attachment.Content), attachment.MimeType);
             }
+        }
 
-            var fromAddress = new EmailAddress(mailMessage.From, mailMessage.FromName);
-            var toAddress = new EmailAddress(mailMessage.To);
-            var message = MailHelper.CreateSingleEmail(fromAddress, toAddress, mailMessage.Subject, null, mailMessage.HtmlContent);
-            if (mailMessage.Attachments?.Any() == true)
-            {
-                foreach (var attachment in mailMessage.Attachments)
-                {
-                    message.AddAttachment(attachment.FileName, Convert.ToBase64String(attachment.Content), attachment.MimeType);
-                }
-            }
-
-            try
-            {
-                var response = await this.client.SendEmailAsync(message);
-                Console.WriteLine(response.StatusCode);
-                Console.WriteLine(await response.Body.ReadAsStringAsync());
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+        try
+        {
+            var response = await this.client.SendEmailAsync(message);
+            Console.WriteLine(response.StatusCode);
+            Console.WriteLine(await response.Body.ReadAsStringAsync());
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
         }
     }
 }

@@ -1,15 +1,14 @@
-﻿namespace Chess.Data.Configurations
-{
-    using Chess.Data.Models;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿namespace Chess.Data.Configurations;
 
-    public class ChessRoleConfiguration : IEntityTypeConfiguration<RoleEntity>
+using Chess.Data.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+public class ChessRoleConfiguration : IEntityTypeConfiguration<RoleEntity>
+{
+    public void Configure(EntityTypeBuilder<RoleEntity> builder)
     {
-        public void Configure(EntityTypeBuilder<RoleEntity> builder)
-        {
-            builder
-                .ToTable("roles");
-        }
+        builder
+            .ToTable("roles");
     }
 }
