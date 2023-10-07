@@ -82,7 +82,7 @@ public partial class GameHub
 
         if (isAccepted)
         {
-            var opponent = this.GetOpponentPlayer(game, player);
+            var opponent = GetOpponentPlayer(game, player);
 
             game.GameOver = GameOver.Draw;
             await this.Clients.Group(game.Id).SendAsync("GameOver", null, game.GameOver);
@@ -101,7 +101,7 @@ public partial class GameHub
     {
         var player = this.GetPlayer();
         var game = this.GetGame(player);
-        var opponent = this.GetOpponentPlayer(game, player);
+        var opponent = GetOpponentPlayer(game, player);
 
         game.GameOver = GameOver.Resign;
         await this.Clients.Group(game.Id).SendAsync("GameOver", player, game.GameOver);

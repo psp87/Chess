@@ -44,7 +44,7 @@ public partial class GameHub : Hub
 
     public override async Task OnDisconnectedAsync(Exception exception)
     {
-        if (this.players.Keys.Contains(this.Context.ConnectionId))
+        if (this.players.ContainsKey(this.Context.ConnectionId))
         {
             var leavingPlayer = this.players[this.Context.ConnectionId];
 
@@ -60,7 +60,7 @@ public partial class GameHub : Hub
                     if (game.Turn > 30)
                     {
                         var winner = game.MovingPlayer.Id != leavingPlayer.Id ? game.MovingPlayer : game.Opponent;
-                        if (this.players.Keys.Contains(winner.Id))
+                        if (this.players.ContainsKey(winner.Id))
                         {
                             this.UpdateStats(winner, leavingPlayer, game, GameOver.Disconnected);
                         }
@@ -77,14 +77,12 @@ public partial class GameHub : Hub
         }
     }
 
+    private static Player GetOpponentPlayer(Game game, Player player)
+        => game.MovingPlayer.Id != player.Id ? game.MovingPlayer : game.Opponent;
+
     private Player GetPlayer()
     {
         return this.players[this.Context.ConnectionId];
-    }
-
-    private Player GetOpponentPlayer(Game game, Player player)
-    {
-        return game.MovingPlayer.Id != player.Id ? game.MovingPlayer : game.Opponent;
     }
 
     private Game GetGame(Player player)
